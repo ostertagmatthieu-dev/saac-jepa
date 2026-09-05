@@ -1,0 +1,40 @@
+% Meta AI / FAIR figure style (I-JEPA / V-JEPA visual language)
+% White background, soft pastel rounded blocks, thin borders, sans-serif,
+% dashed arrows for EMA / stop-gradient, minimal ink.
+\usepackage{amsmath,amssymb}
+\usepackage[scaled]{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,calc,backgrounds}
+
+% --- FAIR-like palette -------------------------------------------------------
+\definecolor{mblue}{HTML}{BDD7EE}   \definecolor{mblueL}{HTML}{2E75B6}  % context / online encoder
+\definecolor{mpink}{HTML}{F8CBAD}   \definecolor{mpinkL}{HTML}{ED7D31}  % target (EMA) encoder
+\definecolor{mgreen}{HTML}{C6E0B4}  \definecolor{mgreenL}{HTML}{548235} % predictor
+\definecolor{myell}{HTML}{FFE699}   \definecolor{myellL}{HTML}{BF9000}  % actions / conditioning
+\definecolor{mgray}{HTML}{F2F2F2}   \definecolor{mgrayL}{HTML}{7F7F7F}  % latents / neutral
+\definecolor{mred}{HTML}{F4B8B8}    \definecolor{mredL}{HTML}{C00000}   % loss / dead controls
+\definecolor{ink}{HTML}{3B3B3B}
+
+\tikzset{
+  every node/.style={font=\sffamily},
+  blk/.style={rounded corners=7pt, line width=0.7pt, minimum height=9mm,
+              inner xsep=3mm, inner ysep=2mm, align=center, font=\sffamily\small},
+  enc/.style ={blk, fill=mblue,  draw=mblueL},
+  tgt/.style ={blk, fill=mpink,  draw=mpinkL},
+  prd/.style ={blk, fill=mgreen, draw=mgreenL},
+  act/.style ={blk, fill=myell,  draw=myellL},
+  lat/.style ={blk, fill=mgray,  draw=mgrayL},
+  los/.style ={circle, fill=mred, draw=mredL, line width=0.7pt, minimum size=7.5mm,
+               font=\sffamily\small, inner sep=0pt},
+  lbl/.style ={font=\sffamily\footnotesize, text=ink},
+  sub/.style ={font=\sffamily\scriptsize, text=mgrayL},
+  ar/.style  ={-{Latex[length=2.4mm]}, line width=0.8pt, draw=ink},
+  ema/.style ={-{Latex[length=2.4mm]}, line width=0.8pt, draw=mpinkL, dashed},
+  sg/.style  ={ar, postaction={decorate}},  % stop-gradient: annotate with // manually
+  cell/.style={draw=mgrayL, line width=0.4pt, minimum size=3.2mm, inner sep=0pt},
+  cellm/.style={cell, fill=mblue},          % visible patch
+  cellx/.style={cell, fill=mgray},          % masked patch
+}
+% stop-gradient tick: \sgmark{point}
+\newcommand{\sgmark}[1]{\node[rotate=65, font=\footnotesize\bfseries, text=ink] at (#1) {/\!/};}

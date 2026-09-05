@@ -1,0 +1,42 @@
+# Large data & experiment outputs (kept local only)
+/data/
+/outputs/
+
+# Vendored third-party repos (each has its own nested .git — excluded to
+# avoid broken git submodule links; clone them separately if needed)
+/third_party/iTransformer/
+/third_party/PatchTST/
+/third_party/SimMTM/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
+
+# Model / checkpoint artifacts anywhere in the tree
+*.pt
+*.pth
+*.ckpt
+
+# Logs
+*.log
+
+# Local Claude Code tool state (not project source)
+/.claude/
+
+# Environment variables / secrets
+.env

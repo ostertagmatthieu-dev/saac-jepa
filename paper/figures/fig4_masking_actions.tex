@@ -1,0 +1,74 @@
+% Figure 4 — Masking modes (top) and action-injection variants (bottom)
+\documentclass[tikz,border=6pt]{standalone}
+\input{meta_style}
+\begin{document}
+\begin{tikzpicture}
+
+% ============ row 1: masking modes ==========================================
+\foreach [count=\k from 0] \name/\capt in {%
+  random/interpolation locale, block/dynamique temporelle,
+  channel/\textbf{capteur absent}, event/zones actives, mixed/combin\'e}{
+  \begin{scope}[shift={(3.1*\k,0)}]
+    \node[lbl] at (0.9,0.45) {\name};
+    \foreach \i in {0,...,5}{\foreach \j in {0,...,4}{\node[cellm] at (0.36*\i,-0.36*\j) {};}}
+    \node[sub, anchor=north, align=center] at (0.9,-1.9) {\capt};
+  \end{scope}
+}
+% masks per mode
+\begin{scope}[shift={(0,0)}] % random points
+  \foreach \p in {(0.36,-0.36),(1.44,0),(0.72,-1.08),(1.8,-0.72),(0,-1.44)}{\node[cellx] at \p {};}
+\end{scope}
+\begin{scope}[shift={(3.1,0)}] % temporal block
+  \foreach \j in {0,...,4}{\node[cellx] at (0.72,-0.36*\j) {}; \node[cellx] at (1.08,-0.36*\j) {};}
+\end{scope}
+\begin{scope}[shift={(6.2,0)}] % channel rows
+  \foreach \i in {0,...,5}{\node[cellx] at (0.36*\i,-0.72) {}; \node[cellx] at (0.36*\i,-1.44) {};}
+  \draw[rounded corners=4pt, draw=mgreenL, line width=1.1pt] (-0.25,0.72) rectangle (2.05,-1.72);
+\end{scope}
+\begin{scope}[shift={(9.3,0)}] % event
+  \draw[draw=myellL, line width=1pt] (0,-1.3) -- (0.5,-1.2) -- (0.9,-0.3) -- (1.3,-0.4) -- (1.8,-1.1);
+  \foreach \i in {2,3}{\foreach \j in {0,...,2}{\node[cellx, fill opacity=0.75] at (0.36*\i,-0.36*\j) {};}}
+\end{scope}
+\begin{scope}[shift={(12.4,0)}] % mixed
+  \foreach \j in {0,...,4}{\node[cellx] at (0.36,-0.36*\j) {};}
+  \foreach \i in {0,...,5}{\node[cellx] at (0.36*\i,-1.08) {};}
+  \node[cellx] at (1.62,-0.36) {};
+\end{scope}
+\node[sub, text=mgreenL] at (7.1,-2.55) {le gagnant M03 utilise \textbf{channel} (0{,}35)};
+
+% ============ row 2: action injection =======================================
+\begin{scope}[shift={(0.4,-4.6)}]
+  % token
+  \node[lbl] at (1.5,0.5) {token \;{\scriptsize(M03 \checkmark)}};
+  \node[lat, minimum width=15mm] (t1) at (0.6,-0.4) {$z$};
+  \node[act, minimum width=15mm] (t2) at (0.6,-1.5) {$a$};
+  \node[blk, fill=mgray, draw=mgrayL, minimum width=13mm] (t3) at (3.0,-0.95) {$z + a$};
+  \draw[ar] (t1.east) -- ($(t3.west)+(0,0.15)$);
+  \draw[ar] (t2.east) -- ($(t3.west)+(0,-0.15)$);
+\end{scope}
+
+\begin{scope}[shift={(5.6,-4.6)}]
+  % FiLM
+  \node[lbl] at (1.6,0.5) {FiLM};
+  \node[lat, minimum width=15mm] (f1) at (0.6,-0.4) {$z$};
+  \node[act, minimum width=15mm] (f2) at (0.6,-1.5) {$a$};
+  \node[blk, fill=mgray, draw=mgrayL, minimum width=19mm] (f3) at (3.2,-0.95) {$\gamma(a)\,z + \beta(a)$};
+  \draw[ar] (f1.east) -- ($(f3.west)+(0,0.15)$);
+  \draw[ar] (f2.east) -- ($(f3.west)+(0,-0.15)$);
+\end{scope}
+
+\begin{scope}[shift={(11.2,-4.6)}]
+  % cross-attention
+  \node[lbl] at (1.8,0.5) {cross-attention};
+  \node[lat, minimum width=15mm] (c1) at (0.6,-0.4) {$z$ (Q)};
+  \node[act, minimum width=15mm] (c2) at (0.6,-1.5) {$a$ (K,V)};
+  \node[blk, fill=mgray, draw=mgrayL, minimum width=17mm] (c3) at (3.2,-0.95) {attention};
+  \draw[ar] (c1.east) -- ($(c3.west)+(0,0.15)$);
+  \draw[ar] (c2.east) -- ($(c3.west)+(0,-0.15)$);
+\end{scope}
+
+\node[sub] at (7.6,-7.0)
+  {RMSE val : token 0{,}832 $\approx$ FiLM 0{,}830 $<$ cross-attn 0{,}847 --- l'expressivit\'e ne paie pas \`a cette \'echelle de donn\'ees};
+
+\end{tikzpicture}
+\end{document}

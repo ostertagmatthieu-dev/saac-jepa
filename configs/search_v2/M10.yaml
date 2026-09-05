@@ -1,0 +1,142 @@
+seed: 20260820
+paths:
+  data: data/cnc.parquet
+  outputs: outputs
+schema:
+  timestamp: timestamp
+  machine: machine_id
+  session: session_id
+  run: run_id
+  source_machine: DS01
+  target_machine: DS03
+  actions:
+  - a_spindle_speed
+  - a_feed_x
+  - a_feed_y
+  - a_feed_z
+  sensors:
+  - spindle_current
+  - spindle_torque
+  - spindle_power
+  - x_current
+  - x_torque
+  - y_current
+  - y_torque
+  - z_current
+  - z_torque
+  - z_power
+  - spindle_motor_temp
+  - x_motor_temp
+  - y_motor_temp
+  - z_motor_temp
+  - spindle_dc_voltage
+  - spindle_mod_depth
+  - ambient_temp
+  transfer_sensors:
+  - spindle_current
+  - spindle_torque
+  - spindle_power
+  - x_current
+  - x_torque
+  - y_current
+  - y_torque
+  - z_current
+  - z_torque
+  - z_power
+etl:
+  ds01_csv: data/DS01/15735480/data_v1_0_1.csv
+  ds03_dir: data/DS03
+  ds03_ipo_seconds: 0.002
+  session_gap_seconds: 5
+  run_status_value: 3.0
+  exclude_programs:
+  - MA_JOG_STEP1
+  min_session_rows: 64
+  unit_scale:
+    ds03:
+      spindle_power: 0.001
+      z_power: 0.001
+protocol:
+  eval_hz: 1.0
+  context_len: 32
+  horizons:
+  - 1
+  - 2
+  - 4
+  - 8
+  - 16
+  source_train_fraction: 0.67
+  source_val_fraction: 0.17
+  target_support_fractions:
+  - 0.0
+  - 0.05
+  - 0.1
+  - 0.2
+  group_split_key: session_id
+  min_points_per_group: 64
+  strict_train_only_normalization: true
+normalization:
+  mode: source_zscore
+  eps: 1.0e-06
+masking:
+  mode: mixed
+  ratio: 0.35
+  block_min: 2
+  block_max: 12
+  channel_drop_prob: 0.15
+  event_quantile: 0.8
+model:
+  d_model: 256
+  nhead: 8
+  encoder_layers: 6
+  predictor_layers: 4
+  dim_feedforward: 1024
+  dropout: 0.1
+  patch_len: 4
+  action_injection: cross_attn
+  layernorm: pre
+  sensor_flexible: true
+  probabilistic_head: true
+jepa:
+  ema: 0.996
+  latent_loss: smooth_l1
+  latent_weight: 1.0
+  latent_layernorm: false
+  vicreg_mode: pooled
+  vicreg_placement: context_target
+  vicreg_weight: 0.05
+  vicreg_sim: 25.0
+  vicreg_var: 25.0
+  vicreg_cov: 1.0
+  variance_target: 1.0
+  target_aggregation: pooled
+  action_recovery_weight: 0.05
+  schema_consistency_weight: 0.1
+  physical_weight: 1.0
+train:
+  epochs: 100
+  batch_size: 128
+  lr: 0.0003
+  weight_decay: 0.01
+  warmup_epochs: 5
+  grad_clip: 1.0
+  amp: true
+  num_workers: 4
+  early_stop_patience: 15
+search:
+  num_random_methods: 20
+  seeds:
+  - 0
+  - 1
+  - 2
+  selection_metric: val_composite
+  test_lock_required: true
+  ft_head: fresh
+  candidate: M10
+  description: Pooled VICReg/target
+planning:
+  cem_population: 1024
+  cem_elites: 64
+  cem_iters: 6
+  temperature_limit: 75.0
+  wear_limit: 1.0

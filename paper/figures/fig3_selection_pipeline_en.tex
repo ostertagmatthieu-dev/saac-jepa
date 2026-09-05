@@ -1,0 +1,47 @@
+% Figure 3 — Leakage-free selection pipeline (20 candidates -> single DS03 test)
+\documentclass[tikz,border=6pt]{standalone}
+\input{meta_style}
+\begin{document}
+\begin{tikzpicture}[node distance=7mm]
+
+\node[enc, minimum width=27mm, minimum height=13mm, align=center] (cand)
+  {20 architectures\\[-1pt]{\scriptsize M00--M19 $\times$ 4 seeds}};
+
+\node[prd, minimum width=30mm, minimum height=15mm, right=9mm of cand, align=center] (score)
+  {composite score\\[-1pt]{\scriptsize 0.30 clean $\cdot$ 0.25 schema-drop}\\[-2pt]
+   {\scriptsize 0.15 masked $\cdot$ calib $\cdot$ SSL}};
+\node[sub, below=0.5mm of score] {penalties: collapse $+3$, weak action $+1$};
+
+\node[act, minimum width=20mm, right=9mm of score, align=center] (top5)
+  {top-5\\[-1pt]{\scriptsize $+$ 5\textsuperscript{th} seed}};
+
+\node[blk, fill=mred!45, draw=mredL, minimum width=27mm, above right=4mm and 8mm of top5, align=center] (unst)
+  {unstable winner\\[-1pt]{\scriptsize M01 $\to$ M03 : lock refused}};
+\node[blk, fill=myell, draw=myellL, minimum width=27mm, below=5mm of unst, align=center] (more)
+  {seeds 6--7 added\\[-1pt]{\scriptsize M03 : $-0.83$ vs $+0.09$}};
+
+\node[tgt, minimum width=25mm, right=9mm of unst, align=center] (lock)
+  {lock SHA-256\\[-1pt]{\scriptsize config $\cdot$ code $\cdot$ ckpt}};
+\node[blk, fill=mgreen, draw=mgreenL, line width=1.1pt, minimum width=25mm, below=5mm of lock, align=center] (test)
+  {\textbf{single DS03 test}\\[-1pt]{\scriptsize RMSE 0.546 $\cdot$ $R^2$ $+$0.012}};
+
+\draw[ar] (cand) -- (score);
+\draw[ar] (score) -- (top5);
+\draw[ar] (top5.east) -- ++(3mm,0) |- (unst.west);
+\draw[ar] (unst) -- (more);
+\draw[ar] (more.east) -- ++(3mm,0) |- (lock.west);
+\draw[ar] (lock) -- (test);
+
+% the seal: DS03 never crosses this line
+\begin{scope}[on background layer]
+  \draw[dashed, line width=0.9pt, draw=mredL]
+    ($(lock.north west)+(-0.45,0.55)$) -- ($(test.south west)+(-0.45,-0.55)$);
+\end{scope}
+\node[sub, text=mredL, rotate=90] at ($(lock.west)!0.5!(test.west)+(-0.7,0)$)
+  {DS03 sealed};
+
+\node[sub, align=center] at ($(cand.south)!0.5!(top5.south)+(0,-1.15)$)
+  {selection on source validation (DS01) only --- the target machine enters no arrow before the lock};
+
+\end{tikzpicture}
+\end{document}
