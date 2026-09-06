@@ -8,6 +8,8 @@ Ayoub Louaye Bouaziz (Universite de Bretagne Occidentale), Matthieu Joseph Paul 
 
 arXiv: link to be added after announcement
 
+Project page with animated schematics: https://ostertagmatthieu-dev.github.io/saac-jepa/
+
 This repository accompanies the arXiv preprint; the pipeline, configuration files, the twenty candidate specifications and the audit scripts are those used for the paper.
 
 
