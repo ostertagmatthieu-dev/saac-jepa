@@ -131,7 +131,10 @@ body{
 .strip__trace--flat{stroke:var(--absent);stroke-width:1;stroke-dasharray:3 3.5}
 .strip__wire{fill:none;stroke:var(--ink-28);stroke-width:1.2}
 .strip__latent{fill:rgba(91,75,196,.07);stroke:var(--violet);stroke-width:1.2}
-.strip__latentpulse{fill:none;stroke:var(--violet);stroke-width:1.2;opacity:0;animation:latentRing 2.6s ease-out infinite}
+.strip__field{stroke:none}
+/* Without fill-box the ring scales about the SVG origin and drifts out of the
+   latent panel instead of radiating from it. */
+.strip__latentpulse{fill:none;stroke:var(--violet);stroke-width:1.2;opacity:0;transform-box:fill-box;transform-origin:50% 50%;animation:latentRing 2.6s ease-out infinite}
 .strip__latentlabel{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.14em;fill:var(--violet)}
 .strip__emit{font-family:var(--mono);font-size:9px;letter-spacing:.14em;fill:var(--violet);opacity:.35;animation:emitBlink 2.6s ease-in-out infinite}
 .strip__bars rect{fill:var(--violet);opacity:.5;transform-box:fill-box;transform-origin:50% 100%;animation:barPump 2.6s ease-in-out infinite}
@@ -140,8 +143,6 @@ body{
 .strip__bars rect:nth-child(4){animation-delay:.36s}
 .strip__bars rect:nth-child(5){animation-delay:.48s}
 .strip__bars rect:nth-child(6){animation-delay:.6s}
-.strip__brace{fill:none;stroke:var(--absent);stroke-width:1}
-.strip__absent{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.12em;fill:var(--absent-ink)}
 
 .strip.is-paused .strip__latentpulse,
 .strip.is-paused .strip__emit,
@@ -189,6 +190,19 @@ body{
 .panel__body svg{display:block;width:100%;height:auto}
 .panel__cap{margin:0;padding:14px 16px 16px;font-size:15px;line-height:1.6;color:var(--ink-72);border-top:1px solid var(--ink-08)}
 .panel__cap strong{color:var(--ink);font-weight:600}
+
+/* ------------------------- shared SVG text halo -------------------------- */
+/* Small labels that are drawn over rules, grids or traces get a knocked-out
+   halo in the panel ground so they stay readable wherever they land. */
+.f1__sub--free,.f1__loss,.f1__tag,.f1__chip,
+.f2__note,.f2__lab,.f2__actlab,.f2__predlab,.f2__latlab,.f2__htick,
+.f3__sub--free,
+.f5__note,.f5__ytick,.f5__xtick,.f5__val,.f5__reflab{
+  paint-order:stroke;stroke:#fff;stroke-width:3px;stroke-linejoin:round;stroke-linecap:round
+}
+.strip__latentlabel,.strip__emit{
+  paint-order:stroke;stroke:var(--alu);stroke-width:3px;stroke-linejoin:round;stroke-linecap:round
+}
 
 /* ---------------------- shared SVG animation primitives ------------------ */
 .anim-in{opacity:1}

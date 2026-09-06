@@ -81,7 +81,7 @@ function periodic(rand, n) {
   const tgtAbs = document.getElementById("tgtAbsent");
   if (!srcFlow) return;
 
-  const W = 404;                 // scroll period, one panel width
+  const W = 404;                 // scroll period == pattern tile width == panel width
   const TOP = 52, BOT = 240;
   const LANES = 21;              // 17 sensors + 4 action channels
   const pitch = (BOT - TOP) / (LANES - 1);
@@ -97,7 +97,9 @@ function periodic(rand, n) {
     const n1 = periodic(r, 9), n2 = periodic(r, 23), n3 = periodic(r, 47);
     let d = "";
     const step = 4;
-    for (let x = 0; x <= 2 * W; x += step) {
+    /* Exactly one period: the tile repeats it, and every noise term is
+       W-periodic, so the tile edges join without a seam. */
+    for (let x = 0; x <= W; x += step) {
       const u = x / W;
       const v = 0.62 * n1(u * 9) + 0.28 * n2(u * 23) + 0.14 * n3(u * 47);
       d += (x === 0 ? "M" : "L") + x.toFixed(1) + " " + (y + v * amp).toFixed(2);
@@ -109,7 +111,7 @@ function periodic(rand, n) {
     const lv = [];
     for (let i = 0; i < segs; i++) lv.push((Math.round(r() * 3) / 3) * 2 - 1);
     let d = "M0 " + (y + lv[0] * amp).toFixed(2);
-    for (let k = 0; k < 2 * segs; k++) {
+    for (let k = 0; k < segs; k++) {
       const x = ((k + 1) * W) / segs;
       const cur = lv[k % segs], nxt = lv[(k + 1) % segs];
       d += "L" + x.toFixed(1) + " " + (y + cur * amp).toFixed(2);
@@ -129,25 +131,36 @@ function periodic(rand, n) {
     });
   }
 
-  function paint(group, xoff, filter) {
-    geom.forEach(function (g, i) {
+  function paint(group, filter) {
+    geom.forEach(function (g) {
       if (!filter(g)) return;
-      el("path", {
+      const p = el("path", {
         class: "strip__trace" + (g.isAct ? " strip__trace--act" : ""),
-        d: g.d, transform: "translate(" + xoff + ",0)"
+        d: g.d
       }, group);
+      if (g.isAct) {
+        /* A tile restarts the dash phase at every seam, so round the 6/3 dash
+           period to an exact divisor of this lane's length — the dashes then
+           line up across tile boundaries. */
+        const L = p.getTotalLength();
+        const n = Math.max(1, Math.round(L / 9));
+        p.style.strokeDasharray =
+          ((L / n) * (2 / 3)).toFixed(3) + " " + ((L / n) / 3).toFixed(3);
+      }
     });
   }
-  paint(srcFlow, 16, function () { return true; });
-  paint(tgtFlow, 660, function (g) { return !g.absent; });
-  paint(tgtFade, 660, function (g) { return g.absent; });
+  paint(srcFlow, function () { return true; });
+  paint(tgtFlow, function (g) { return !g.absent; });
+  paint(tgtFade, function (g) { return g.absent; });
   geom.forEach(function (g) {
     if (!g.absent) return;
     el("path", { class: "strip__trace strip__trace--flat", d: "M660 " + g.y + " H 1064" }, tgtAbs);
   });
 
-  /* scroll: one transform per panel per frame */
-  const layers = [srcFlow, tgtFlow, tgtFade];
+  /* scroll: slide the three pattern tilings, one attribute per panel per frame */
+  const tilings = ["srcPat", "tgtPat", "tgtFadePat"]
+    .map(function (id) { return document.getElementById(id); })
+    .filter(Boolean);
   let t0 = null, raf = null, running = false;
   const SPEED = 26; // px per second
 
@@ -155,8 +168,8 @@ function periodic(rand, n) {
     if (!running) return;
     if (t0 === null) t0 = ts;
     const off = -(((ts - t0) / 1000) * SPEED % W);
-    for (let i = 0; i < layers.length; i++) {
-      layers[i].setAttribute("transform", "translate(" + off.toFixed(2) + ",0)");
+    for (let i = 0; i < tilings.length; i++) {
+      tilings[i].setAttribute("patternTransform", "translate(" + off.toFixed(2) + ",0)");
     }
     raf = requestAnimationFrame(frame);
   }
@@ -296,20 +309,22 @@ function periodic(rand, n) {
     const t = el("text", { class: "f2__htick", x: xh(h).toFixed(1), y: PY1 + 15, "text-anchor": "middle" }, root);
     t.textContent = h + " s"; stage(t, 2.8 + i * 0.05);
   });
-  let note = el("text", { class: "f2__note", x: HX0 + 8, y: PY1 - 8 }, root);
+  /* below the horizon tick row, not across the horizon rules */
+  let note = el("text", { class: "f2__note", x: HX0 + 8, y: PY1 + 40 }, root);
   note.textContent = "one channel shown · band = ±1σ from the probabilistic head"; stage(note, 3.1);
 
-  /* control row */
-  el("rect", { class: "f2__panel", x: CX0, y: 330, width: HX1 - CX0, height: 80, rx: 2 }, root);
-  let ct = el("text", { class: "f2__head", x: CX0 + 8, y: 350 }, root);
+  /* control row — shifted down and given room so each candidate label sits
+     clear of both step traces */
+  el("rect", { class: "f2__panel", x: CX0, y: 360, width: HX1 - CX0, height: 100, rx: 2 }, root);
+  let ct = el("text", { class: "f2__head", x: CX0 + 8, y: 379 }, root);
   ct.textContent = "CONTROL · COMMANDED SPINDLE SPEED"; stage(ct, 0);
 
   /* past action */
   (function () {
     const r = mulberry32(777);
-    let d = "M" + (CX0 + 8) + " 384", y = 384;
+    let d = "M" + (CX0 + 8) + " 432", y = 432;
     for (let x = CX0 + 8; x <= CX1 - 6; x += 46) {
-      const ny = 384 - Math.round(r() * 2) * 6;
+      const ny = 432 - Math.round(r() * 2) * 6;
       d += "L" + x + " " + y + "L" + x + " " + ny; y = ny;
     }
     d += "L" + (CX1 - 6) + " " + y;
@@ -317,13 +332,13 @@ function periodic(rand, n) {
   })();
 
   /* two candidate action sequences */
-  const stepUp = "M" + HX0 + " 384 L" + (HX0 + 40) + " 384 L" + (HX0 + 40) + " 362 L" + (HX1 - 8) + " 362";
-  const stepDn = "M" + HX0 + " 384 L" + (HX0 + 40) + " 384 L" + (HX0 + 40) + " 398 L" + (HX1 - 8) + " 398";
+  const stepUp = "M" + HX0 + " 432 L" + (HX0 + 40) + " 432 L" + (HX0 + 40) + " 412 L" + (HX1 - 8) + " 412";
+  const stepDn = "M" + HX0 + " 432 L" + (HX0 + 40) + " 432 L" + (HX0 + 40) + " 452 L" + (HX1 - 8) + " 452";
   draw(el("path", { class: "f2__act", d: stepUp }, root), 1.25);
   draw(el("path", { class: "f2__act f2__act--b", d: stepDn }, root), 2.05);
-  let a1 = el("text", { class: "f2__actlab", x: HX0 + 48, y: 356 }, root);
+  let a1 = el("text", { class: "f2__actlab", x: HX0 + 48, y: 398 }, root);
   a1.textContent = "candidate A"; stage(a1, 1.4);
-  let a2 = el("text", { class: "f2__actlab", x: HX0 + 48, y: 394 }, root);
+  let a2 = el("text", { class: "f2__actlab", x: HX0 + 48, y: 436 }, root);
   a2.textContent = "candidate B"; stage(a2, 2.2);
 })();
 
