@@ -109,10 +109,14 @@
         <svg class="strip__svg" viewBox="0 0 1080 268" role="img" focusable="false"
              aria-labelledby="stripTitle" aria-describedby="stripDesc">
           <title id="stripTitle">Source machine, latent state, target machine</title>
-          <desc id="stripDesc">Animated schematic: a left panel labelled THWS source shows seventeen scrolling teal sensor traces and four amber step-shaped action traces; a violet latent bar in the middle pulses when a prediction is emitted; a right panel labelled JOANNEUM target shows the same traces entering, where ten keep flowing in teal and seven fade to grey dashed flat lines marked absent.</desc>
+          <desc id="stripDesc">Animated schematic: a left panel labelled THWS source shows seventeen scrolling teal sensor traces and four amber step-shaped action traces; a violet latent bar in the middle pulses when a prediction is emitted; a right panel labelled JOANNEUM target, whose header reads 10 SHARED and 7 ABSENT for the seventeen channels, shows the same traces entering, where ten keep flowing in teal and seven fade to grey dashed flat lines.</desc>
           <defs>
-            <clipPath id="clipSrc"><rect x="16" y="44" width="404" height="204"/></clipPath>
-            <clipPath id="clipTgt"><rect x="660" y="44" width="404" height="204"/></clipPath>
+            <!-- The scrolling traces are painted as tiling patterns, not as long
+                 translated paths: a pattern tile clips at its own edges, so no
+                 trace geometry can ever exist outside its panel. -->
+            <pattern id="srcPat" patternUnits="userSpaceOnUse" x="16" y="0" width="404" height="268"><g id="srcFlow"></g></pattern>
+            <pattern id="tgtPat" patternUnits="userSpaceOnUse" x="660" y="0" width="404" height="268"><g id="tgtFlow"></g></pattern>
+            <pattern id="tgtFadePat" patternUnits="userSpaceOnUse" x="660" y="0" width="404" height="268"><g id="tgtFadeFlow"></g></pattern>
             <linearGradient id="fadeOut" x1="0" x2="1" y1="0" y2="0">
               <stop offset="0" stop-color="#fff" stop-opacity="1"/>
               <stop offset="0.30" stop-color="#fff" stop-opacity="1"/>
@@ -131,7 +135,7 @@
           <rect class="strip__panelhead" x="16" y="26" width="404" height="19"/>
           <text class="strip__title" x="26" y="40">THWS SOURCE <tspan class="strip__titledim">· SPINNER U5-620</tspan></text>
           <text class="strip__meta" x="410" y="40" text-anchor="end">17 CH · 1 Hz</text>
-          <g clip-path="url(#clipSrc)"><g id="srcFlow"></g></g>
+          <rect class="strip__field" x="16" y="44" width="404" height="204" fill="url(#srcPat)"/>
 
           <!-- latent bridge -->
           <g class="strip__bridge">
@@ -139,8 +143,8 @@
             <path class="strip__wire" d="M610 146 H 656"/>
             <rect class="strip__latent" x="472" y="70" width="136" height="152" rx="3"/>
             <rect class="strip__latentpulse" x="472" y="70" width="136" height="152" rx="3"/>
-            <text class="strip__latentlabel" x="540" y="105" text-anchor="middle">LATENT</text>
-            <text class="strip__latentlabel" x="540" y="121" text-anchor="middle">STATE z</text>
+            <text class="strip__latentlabel" x="540" y="104" text-anchor="middle">LATENT</text>
+            <text class="strip__latentlabel" x="540" y="122" text-anchor="middle">STATE z</text>
             <g class="strip__bars">
               <rect x="492" y="140" width="10" height="46" rx="1.5"/>
               <rect x="510" y="140" width="10" height="46" rx="1.5"/>
@@ -156,16 +160,10 @@
           <rect class="strip__panel" x="660" y="26" width="404" height="222" rx="3"/>
           <rect class="strip__panelhead" x="660" y="26" width="404" height="19"/>
           <text class="strip__title" x="670" y="40">JOANNEUM TARGET <tspan class="strip__titledim">· SEALED</tspan></text>
-          <text class="strip__meta" x="1054" y="40" text-anchor="end">10 CH SHARED</text>
-          <g clip-path="url(#clipTgt)">
-            <g mask="url(#maskIn)"><g id="tgtAbsent"></g></g>
-            <g mask="url(#maskOut)"><g id="tgtFadeFlow"></g></g>
-            <g id="tgtFlow"></g>
-          </g>
-          <path class="strip__brace" d="M994 62 h6 v58 h-6"/>
-          <rect x="1004" y="75" width="57" height="27" rx="2" fill="#F7F9FA" fill-opacity="0.92"/>
-          <text class="strip__absent" x="1058" y="86" text-anchor="end">7 CHANNELS</text>
-          <text class="strip__absent" x="1058" y="98" text-anchor="end">ABSENT</text>
+          <text class="strip__meta" x="1054" y="40" text-anchor="end">10 SHARED · 7 ABSENT</text>
+          <g mask="url(#maskIn)"><g id="tgtAbsent"></g></g>
+          <rect class="strip__field" x="660" y="44" width="404" height="204" fill="url(#tgtFadePat)" mask="url(#maskOut)"/>
+          <rect class="strip__field" x="660" y="44" width="404" height="204" fill="url(#tgtPat)"/>
         </svg>
       </div>
       <p class="panel__hint">Scroll sideways to read the figure</p>
@@ -247,11 +245,11 @@
             <path class="f1__link anim-draw" style="--d:1.02s" d="M466 120 H 498"/>
             <path class="f1__link anim-draw" style="--d:1.30s" d="M546 146 V 246"/>
             <path class="f1__link anim-draw f1__link--act" style="--d:1.62s" d="M600 334 V 314"/>
-            <path class="f1__link anim-draw" style="--d:1.94s" d="M652 280 H 686 V 214 H 716"/>
-            <path class="f1__link anim-draw" style="--d:2.00s" d="M652 280 H 686 V 254 H 716"/>
-            <path class="f1__link anim-draw" style="--d:2.06s" d="M652 280 H 686 V 294 H 716"/>
-            <path class="f1__link anim-draw" style="--d:2.12s" d="M652 280 H 686 V 334 H 716"/>
-            <path class="f1__link anim-draw" style="--d:2.18s" d="M652 280 H 686 V 374 H 716"/>
+            <path class="f1__link anim-draw" style="--d:1.94s" d="M661 280 H 686 V 214 H 716"/>
+            <path class="f1__link anim-draw" style="--d:2.00s" d="M661 280 H 686 V 254 H 716"/>
+            <path class="f1__link anim-draw" style="--d:2.06s" d="M661 280 H 686 V 294 H 716"/>
+            <path class="f1__link anim-draw" style="--d:2.12s" d="M661 280 H 686 V 334 H 716"/>
+            <path class="f1__link anim-draw" style="--d:2.18s" d="M661 280 H 686 V 374 H 716"/>
             <path class="f1__link anim-draw" style="--d:2.50s" d="M172 430 H 328"/>
             <path class="f1__link anim-draw" style="--d:2.74s" d="M466 430 H 498"/>
             <path class="f1__link f1__link--ema anim-draw" style="--d:2.90s" d="M396 154 V 396"/>
@@ -259,7 +257,7 @@
             <path class="f1__link anim-draw" style="--d:3.20s" d="M846 294 H 872 V 347"/>
             <path class="f1__link anim-draw" style="--d:3.26s" d="M592 430 H 872 V 394"/>
             <path class="f1__link f1__link--vic anim-draw" style="--d:3.60s" d="M498 132 H 476 V 418 H 498"/>
-            <path class="f1__link f1__link--vic anim-draw" style="--d:3.66s" d="M456 275 H 476"/>
+            <path class="f1__link f1__link--vic anim-draw" style="--d:3.66s" d="M400 268 H 476"/>
             <path class="f1__link f1__link--sch anim-draw" style="--d:3.90s" d="M300 200 H 318 V 232 H 300"/>
             <path class="f1__link anim-draw" style="--d:4.10s" d="M594 120 H 700"/>
           </g>
@@ -290,7 +288,7 @@
             <g class="f1__cells" id="f1cellsA" transform="translate(238,192)"></g>
             <g class="f1__cells" id="f1cellsB" transform="translate(238,224)"></g>
             <text class="f1__loss" x="326" y="220" text-anchor="start">L schema</text>
-            <text class="f1__sub" x="326" y="234" text-anchor="start">two partial views must agree</text>
+            <text class="f1__sub f1__sub--free" x="200" y="250" text-anchor="start">two partial views must agree</text>
           </g>
 
           <g class="f1__node anim-in" style="--d:.82s">
@@ -298,7 +296,7 @@
             <text class="f1__lab" x="397" y="115" text-anchor="middle">CONTEXT ENCODER</text>
             <text class="f1__sub" x="397" y="133" text-anchor="middle">f θ</text>
           </g>
-          <text class="f1__tag f1__tag--ema anim-in" style="--d:3.02s" x="474" y="334" text-anchor="start">EMA  τ</text>
+          <text class="f1__tag f1__tag--ema anim-in" style="--d:3.02s" x="404" y="190" text-anchor="start">EMA  τ</text>
 
           <g class="f1__node anim-in" style="--d:1.14s">
             <rect class="f1__box f1__box--lat" x="498" y="96" width="96" height="48" rx="3"/>
@@ -307,13 +305,13 @@
           </g>
 
           <g class="f1__node anim-in" style="--d:1.42s">
-            <rect class="f1__box f1__box--mdl" x="498" y="246" width="154" height="68" rx="3"/>
+            <rect class="f1__box f1__box--mdl" x="489" y="246" width="172" height="68" rx="3"/>
             <text class="f1__lab" x="575" y="273" text-anchor="middle">PREDICTOR</text>
             <text class="f1__sub" x="575" y="291" text-anchor="middle">g φ  ·  direct multi-horizon</text>
           </g>
 
           <g class="f1__node anim-in" style="--d:1.70s">
-            <rect class="f1__box f1__box--act" x="498" y="334" width="154" height="52" rx="3"/>
+            <rect class="f1__box f1__box--act" x="489" y="334" width="172" height="52" rx="3"/>
             <text class="f1__lab" x="575" y="355" text-anchor="middle">FUTURE ACTIONS</text>
             <text class="f1__sub" x="575" y="371" text-anchor="middle">mean of a t:t+h−1</text>
           </g>
@@ -348,8 +346,8 @@
             <text class="f1__lossin" x="872" y="381" text-anchor="middle">lat</text>
           </g>
 
-          <text class="f1__loss anim-in" style="--d:3.70s" x="448" y="272" text-anchor="end">L VICReg</text>
-          <text class="f1__sub anim-in" style="--d:3.70s" x="448" y="286" text-anchor="end">variance–covariance, anti-collapse</text>
+          <text class="f1__loss anim-in" style="--d:3.70s" x="388" y="272" text-anchor="end">L VICReg</text>
+          <text class="f1__sub f1__sub--free anim-in" style="--d:3.70s" x="388" y="290" text-anchor="end">variance–covariance, anti-collapse</text>
 
           <g class="f1__node anim-in" style="--d:4.18s">
             <rect class="f1__box f1__box--head" x="700" y="96" width="156" height="48" rx="3"/>
@@ -376,7 +374,7 @@
         <button class="panel__replay" type="button" data-replay="f2" aria-label="Replay the Figure 2 animation">Replay</button>
       </figcaption>
       <div class="panel__body">
-        <svg class="f2" viewBox="0 0 1080 424" role="img" focusable="false"
+        <svg class="f2" viewBox="0 0 1080 474" role="img" focusable="false"
              aria-labelledby="f2Title" aria-describedby="f2Desc">
           <title id="f2Title">Action-conditioned simulation of candidate futures</title>
           <desc id="f2Desc">Animated schematic: a 32-second context window of observed sensor traces is encoded into a latent state; two candidate action sequences, spindle up and spindle down, then produce two diverging multi-horizon predictions with widening uncertainty bands at 1, 2, 4, 8 and 16 seconds. Conceptual, not a closed-loop result.</desc>
@@ -407,8 +405,8 @@
           <desc id="f3Desc">Animated schematic of the model-selection pipeline: twenty candidate chips are each run with four seeds, ranked by a composite source-validation score; the top five receive a fifth seed, at which point the provisional winner changes — per-horizon VICReg drops from first place and the schema-consistency plus action-recovery variant rises to first. Seven seeds confirm it, the configuration is locked with a SHA-256 hash, and a single arrow leads to the sealed JOANNEUM target test. Target data enters no arrow before the lock.</desc>
 
           <g class="f3__wires">
-            <path class="f3__link anim-draw" style="--d:.90s" d="M232 118 H 268"/>
-            <path class="f3__link anim-draw" style="--d:1.50s" d="M436 118 H 472"/>
+            <path class="f3__link anim-draw" style="--d:.90s" d="M232 118 H 262"/>
+            <path class="f3__link anim-draw" style="--d:1.50s" d="M442 118 H 472"/>
             <path class="f3__link anim-draw" style="--d:2.05s" d="M640 118 H 676"/>
             <path class="f3__link anim-draw" style="--d:2.60s" d="M888 160 V 196 H 148 V 236"/>
             <path class="f3__link anim-draw" style="--d:4.00s" d="M348 316 H 396"/>
@@ -423,11 +421,11 @@
             <g class="f3__chips" id="f3chips" transform="translate(52,106)"></g>
             <text class="f3__sub" x="136" y="152" text-anchor="middle">× 4 seeds each · source only</text>
           </g>
-          <text class="f3__sub anim-in" style="--d:.72s" x="40" y="180" text-anchor="start">2 collapsed — plain control 4/4 seeds, d = 512 3/4</text>
+          <text class="f3__sub f3__sub--free anim-in" style="--d:.72s" x="40" y="180" text-anchor="start">2 collapsed — plain control 4/4 seeds, d = 512 3/4</text>
 
           <!-- stage 2 : composite score -->
           <g class="f3__node anim-in" style="--d:1.02s">
-            <rect class="f3__box" x="268" y="76" width="168" height="84" rx="3"/>
+            <rect class="f3__box" x="262" y="76" width="180" height="84" rx="3"/>
             <text class="f3__lab" x="352" y="97" text-anchor="middle">COMPOSITE SCORE</text>
             <text class="f3__sub" x="352" y="115" text-anchor="middle">.30 clean · .25 schema-drop</text>
             <text class="f3__sub" x="352" y="129" text-anchor="middle">.15 masked · .10 long-h</text>
@@ -482,13 +480,14 @@
 
           <!-- stage 7 : lock -->
           <g class="f3__node anim-in" style="--d:4.57s">
-            <rect class="f3__box f3__box--lock" x="608" y="266" width="152" height="100" rx="3"/>
-            <g class="f3__padlock" transform="translate(684,300)">
+            <rect class="f3__box f3__box--lock" x="608" y="256" width="152" height="120" rx="3"/>
+            <g class="f3__padlock" transform="translate(684,290)">
               <path class="f3__shackle" d="M-9 0 v-7 a9 9 0 0 1 18 0 v7"/>
               <rect class="f3__body" x="-14" y="0" width="28" height="22" rx="3"/>
             </g>
-            <text class="f3__lab" x="684" y="343" text-anchor="middle">LOCK · SHA-256</text>
-            <text class="f3__sub" x="684" y="359" text-anchor="middle">config · code · normalizer · ckpt</text>
+            <text class="f3__lab" x="684" y="334" text-anchor="middle">LOCK · SHA-256</text>
+            <text class="f3__sub" x="684" y="352" text-anchor="middle">config · code</text>
+            <text class="f3__sub" x="684" y="368" text-anchor="middle">normalizer · ckpt</text>
           </g>
 
           <!-- stage 8 : sealed test -->
@@ -581,24 +580,24 @@
 
           <!-- reference lines -->
           <path class="f5__ref f5__ref--alert anim-draw" style="--d:.60s" d="M120 99 H 1010"/>
-          <text class="f5__reflab f5__reflab--alert anim-in" style="--d:.80s" x="1004" y="92" text-anchor="end">persistence, sealed pass — 0.654</text>
+          <text class="f5__reflab f5__reflab--alert anim-in" style="--d:.80s" x="1004" y="121" text-anchor="end">persistence, sealed pass — 0.654</text>
           <path class="f5__ref f5__ref--lat anim-draw" style="--d:.90s" d="M120 261 H 1010"/>
-          <text class="f5__reflab f5__reflab--lat anim-in" style="--d:1.10s" x="1004" y="254" text-anchor="end">locked model, sealed pass — 0.546</text>
+          <text class="f5__reflab f5__reflab--lat anim-in" style="--d:1.10s" x="1004" y="248" text-anchor="end">locked model, sealed pass — 0.546</text>
 
           <!-- series -->
           <path class="f5__line anim-draw" style="--d:1.35s" d="M178 162 L 371.5 163.5 L 565 270 L 951.9 300"/>
           <g class="f5__pts">
-            <g class="anim-in" style="--d:1.45s"><circle class="f5__dot" cx="178" cy="162" r="6"/><text class="f5__val" x="178" y="146" text-anchor="middle">0.612</text></g>
-            <g class="anim-in" style="--d:1.75s"><circle class="f5__dot" cx="371.5" cy="163.5" r="6"/><text class="f5__val" x="371.5" y="147" text-anchor="middle">0.611</text></g>
-            <g class="anim-in" style="--d:2.15s"><circle class="f5__dot" cx="565" cy="270" r="6"/><text class="f5__val" x="565" y="254" text-anchor="middle">0.540</text></g>
-            <g class="anim-in" style="--d:2.55s"><circle class="f5__dot" cx="951.9" cy="300" r="6"/><text class="f5__val" x="951.9" y="284" text-anchor="middle">0.520</text></g>
+            <g class="anim-in" style="--d:1.45s"><circle class="f5__dot" cx="178" cy="162" r="6"/><text class="f5__val" x="178" y="136" text-anchor="middle">0.612</text></g>
+            <g class="anim-in" style="--d:1.75s"><circle class="f5__dot" cx="371.5" cy="163.5" r="6"/><text class="f5__val" x="371.5" y="136" text-anchor="middle">0.611</text></g>
+            <g class="anim-in" style="--d:2.15s"><circle class="f5__dot" cx="565" cy="270" r="6"/><text class="f5__val" x="565" y="246" text-anchor="middle">0.540</text></g>
+            <g class="anim-in" style="--d:2.55s"><circle class="f5__dot" cx="951.9" cy="300" r="6"/><text class="f5__val" x="964" y="305" text-anchor="start">0.520</text></g>
           </g>
 
           <!-- 5% callout -->
           <g class="anim-in" style="--d:2.05s">
-            <path class="f5__callout" d="M371.5 176 V 206 H 452"/>
-            <text class="f5__note" x="460" y="203">no complete 48-step support window at 5% —</text>
-            <text class="f5__note" x="460" y="219">this point is effectively zero-shot, not an adaptation failure</text>
+            <path class="f5__callout" d="M371.5 176 V 186 H 452"/>
+            <text class="f5__note" x="460" y="178">no complete 48-step support window at 5% —</text>
+            <text class="f5__note" x="460" y="196">this point is effectively zero-shot, not an adaptation failure</text>
           </g>
 
           <g class="anim-in" style="--d:2.85s">
