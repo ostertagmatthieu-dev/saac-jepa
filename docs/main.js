@@ -5,10 +5,13 @@
 
 const CONFIG = {
   // Set to the arXiv abs URL once announced, e.g. "https://arxiv.org/abs/2609.01234".
-  // While null, the arXiv and PDF buttons render as "coming soon" and stay inert.
+  // While null, the arXiv button renders as "coming soon" and stays inert.
+  // The PDF button is a plain relative link to paper.pdf and is not driven by CONFIG.
   arxivUrl: null,
   arxivPlaceholder: "arXiv: coming soon",
   codeUrl: "https://github.com/ostertagmatthieu-dev/saac-jepa",
+  // index.html carries the SAME BibTeX as static text inside #bibtex, so the page
+  // works with JavaScript off. Edit BOTH, or the two will drift. See UPDATING.md.
   bibtex: [
     "@article{bouaziz2026saacjepa,",
     "  title   = {Schema-Adaptive Action-Conditioned JEPA for Cross-Machine CNC",
@@ -17,8 +20,11 @@ const CONFIG = {
     "             and Demasles, Anton},",
     "  journal = {arXiv preprint},",
     "  year    = {2026},",
+    "  eprint  = {ARXIV-ID},",
+    "  archivePrefix = {arXiv},",
+    "  primaryClass  = {cs.LG},",
     "  note    = {arXiv identifier to be added after announcement},",
-    "  url     = {https://github.com/ostertagmatthieu-dev/saac-jepa}",
+    "  url     = {https://ostertagmatthieu-dev.github.io/saac-jepa/}",
     "}"
   ].join("\n")
 };
@@ -77,12 +83,14 @@ function periodic(rand, n) {
 
   const W = 404;                 // scroll period, one panel width
   const TOP = 52, BOT = 240;
-  const LANES = 19;              // 17 sensors + 2 action channels
+  const LANES = 21;              // 17 sensors + 4 action channels
   const pitch = (BOT - TOP) / (LANES - 1);
   const rand = mulberry32(20260906);
 
-  /* which 7 of the 17 sensor lanes are absent on the target */
-  const absentSet = new Set([1, 4, 6, 9, 11, 14, 16]);
+  /* the four amber action lanes, evenly spread through the stack */
+  const actSet = new Set([4, 9, 14, 19]);
+  /* which 7 of the 17 sensor lanes are absent on the target — action lanes excluded */
+  const absentSet = new Set([1, 3, 6, 8, 12, 16, 18]);
 
   function tracePath(y, amp, seed) {
     const r = mulberry32(seed);
@@ -113,10 +121,10 @@ function periodic(rand, n) {
   const geom = [];
   for (let i = 0; i < LANES; i++) {
     const y = TOP + i * pitch;
-    const isAct = i === 7 || i === 15;              // two amber action lanes
+    const isAct = actSet.has(i);                   // four amber action lanes
     geom.push({
       y, isAct,
-      d: isAct ? stepPath(y, 3.4, 900 + i, 7) : tracePath(y, 3.6, 100 + i),
+      d: isAct ? stepPath(y, 2.8, 900 + i, 7) : tracePath(y, 3.0, 100 + i),
       absent: !isAct && absentSet.has(i)
     });
   }
@@ -162,14 +170,24 @@ function periodic(rand, n) {
     if (raf) cancelAnimationFrame(raf);
   }
 
+  /* The loop costs a full repaint per frame, so it runs only while the strip is
+     BOTH on screen and in a visible tab. Without IntersectionObserver we fall
+     back to assuming it is on screen and rely on visibility alone. */
+  let onScreen = !("IntersectionObserver" in window);
+  let pageVisible = !document.hidden;
+  function sync() { (onScreen && pageVisible) ? start() : stop(); }
+
   if ("IntersectionObserver" in window) {
     new IntersectionObserver(function (es) {
-      es[0].isIntersecting ? start() : stop();
+      onScreen = es[0].isIntersecting;
+      sync();
     }, { threshold: 0.01 }).observe(strip);
-  } else { start(); }
+  }
   document.addEventListener("visibilitychange", function () {
-    document.hidden ? stop() : start();
+    pageVisible = !document.hidden;
+    sync();
   });
+  sync();
 })();
 
 /* ======================================================================== */
@@ -264,7 +282,7 @@ function periodic(rand, n) {
 
     HORIZONS.forEach(function (h) {
       const f = Math.pow(h / 16, 0.78);
-      stage(el("circle", { class: "f2__dot", cx: xh(h).toFixed(1), cy: (START_Y + br.amp * f).toFixed(1), r: 3.2, fill: "#5B4BC4" }, root), t0 + 0.6);
+      stage(el("circle", { class: "f2__dot", cx: xh(h).toFixed(1), cy: (START_Y + br.amp * f).toFixed(1), r: 3.2 }, root), t0 + 0.6);
     });
 
     const end = START_Y + br.amp;
@@ -278,7 +296,7 @@ function periodic(rand, n) {
     const t = el("text", { class: "f2__htick", x: xh(h).toFixed(1), y: PY1 + 15, "text-anchor": "middle" }, root);
     t.textContent = h + " s"; stage(t, 2.8 + i * 0.05);
   });
-  let note = el("text", { class: "f2__note", x: HX0 + 6, y: PY1 + 15 }, root);
+  let note = el("text", { class: "f2__note", x: HX0 + 8, y: PY1 - 8 }, root);
   note.textContent = "one channel shown · band = ±1σ from the probabilistic head"; stage(note, 3.1);
 
   /* control row */
@@ -360,38 +378,45 @@ function periodic(rand, n) {
 /* ======================================================================== */
 (function meta() {
   const bib = document.getElementById("bibtex");
-  if (bib) bib.textContent = CONFIG.bibtex;
+  /* index.html ships the same BibTeX as static text so the page still cites
+     correctly with JavaScript off. Only overwrite it once there is an arXiv URL
+     — i.e. once CONFIG carries something the static block does not. */
+  if (bib && CONFIG.arxivUrl) bib.textContent = CONFIG.bibtex;
 
   const code = document.getElementById("btnCode");
   if (code) code.href = CONFIG.codeUrl;
 
   const note = document.getElementById("arxivNote");
-  [["btnArxiv", "arXiv"], ["btnPdf", "PDF"]].forEach(function (pair) {
-    const a = document.getElementById(pair[0]);
-    if (!a) return;
-    if (CONFIG.arxivUrl) {
-      a.href = pair[0] === "btnPdf" ? CONFIG.arxivUrl.replace("/abs/", "/pdf/") : CONFIG.arxivUrl;
-    } else {
-      a.classList.add("btn--muted");
-      a.setAttribute("aria-disabled", "true");
-      a.href = "#cite";
-      a.textContent = pair[1] + " — soon";
-    }
-  });
+  /* The PDF button is a real relative link to docs/paper.pdf and is left alone.
+     Only the arXiv button follows CONFIG.arxivUrl. index.html ships the muted
+     "soon" state, so with JS off the button never over-promises. */
+  const ax = document.getElementById("btnArxiv");
+  if (ax && CONFIG.arxivUrl) {
+    ax.href = CONFIG.arxivUrl;
+    ax.classList.remove("btn--muted");
+    ax.removeAttribute("aria-disabled");
+    ax.textContent = "arXiv";
+  }
   if (note) note.textContent = CONFIG.arxivUrl ? CONFIG.arxivUrl : CONFIG.arxivPlaceholder;
 
   const copy = document.getElementById("copyBib");
+  const status = document.getElementById("copyStatus");
   if (copy) copy.addEventListener("click", function () {
+    /* The button label stays "Copy" so its accessible name never changes
+       underneath a screen reader; the outcome goes to the live region. */
     const done = function (ok) {
-      copy.textContent = ok ? "Copied" : "Press ⌘C";
-      setTimeout(function () { copy.textContent = "Copy"; }, 1800);
+      if (!status) return;
+      status.textContent = ok ? "Copied" : "Copy failed, select the text manually";
+      setTimeout(function () { status.textContent = ""; }, 4000);
     };
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(CONFIG.bibtex).then(function () { done(true); }, function () { done(false); });
-    } else {
+    } else if (bib) {
       const r = document.createRange();
       r.selectNodeContents(bib);
       const s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+      done(false);
+    } else {
       done(false);
     }
   });
