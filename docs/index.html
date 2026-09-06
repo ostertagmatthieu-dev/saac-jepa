@@ -1,0 +1,559 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SAAC-JEPA — Schema-Adaptive Action-Conditioned JEPA for Cross-Machine CNC Transfer</title>
+<meta name="description" content="Project page for SAAC-JEPA: a schema-adaptive, action-conditioned JEPA world model for CNC milling, transferred from a 17-sensor source machine to a 10-sensor target machine under a leakage-audited protocol.">
+<meta property="og:title" content="SAAC-JEPA — Cross-Machine CNC Transfer under Partial Sensor Overlap">
+<meta property="og:description" content="Same process, different machine, fewer sensors. An audited cross-machine CNC world-model benchmark.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=JetBrains+Mono:wght@400;500;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<a class="skiplink" href="#overview">Skip to content</a>
+
+<header class="masthead">
+  <div class="wrap">
+
+    <p class="masthead__eyebrow">SAAC-JEPA <span class="masthead__sep">/</span> project page <span class="masthead__sep">/</span> preprint 2026</p>
+
+    <!-- ============ HERO SIGNATURE: live two-panel machine strip ============ -->
+    <figure class="strip" id="strip">
+      <svg class="strip__svg" viewBox="0 0 1080 268" role="img"
+           aria-label="Animated schematic: a left panel labelled THWS source shows seventeen scrolling teal sensor traces and two amber step-shaped action traces; a violet latent bar in the middle pulses when a prediction is emitted; a right panel labelled JOANNEUM target shows the same traces entering, where ten keep flowing in teal and seven fade to grey dashed flat lines marked absent.">
+        <defs>
+          <clipPath id="clipSrc"><rect x="16" y="44" width="404" height="204"/></clipPath>
+          <clipPath id="clipTgt"><rect x="660" y="44" width="404" height="204"/></clipPath>
+          <linearGradient id="fadeOut" x1="0" x2="1" y1="0" y2="0">
+            <stop offset="0" stop-color="#fff" stop-opacity="1"/>
+            <stop offset="0.30" stop-color="#fff" stop-opacity="1"/>
+            <stop offset="0.62" stop-color="#fff" stop-opacity="0"/>
+          </linearGradient>
+          <linearGradient id="fadeIn" x1="0" x2="1" y1="0" y2="0">
+            <stop offset="0.34" stop-color="#fff" stop-opacity="0"/>
+            <stop offset="0.66" stop-color="#fff" stop-opacity="1"/>
+          </linearGradient>
+          <mask id="maskOut"><rect x="660" y="44" width="404" height="204" fill="url(#fadeOut)"/></mask>
+          <mask id="maskIn"><rect x="660" y="44" width="404" height="204" fill="url(#fadeIn)"/></mask>
+        </defs>
+
+        <!-- source panel -->
+        <rect class="strip__panel" x="16" y="26" width="404" height="222" rx="3"/>
+        <rect class="strip__panelhead" x="16" y="26" width="404" height="19"/>
+        <text class="strip__title" x="26" y="40">THWS SOURCE <tspan class="strip__titledim">· SPINNER U5-620</tspan></text>
+        <text class="strip__meta" x="410" y="40" text-anchor="end">17 CH · 1 Hz</text>
+        <g clip-path="url(#clipSrc)"><g id="srcFlow"></g></g>
+
+        <!-- latent bridge -->
+        <g class="strip__bridge">
+          <path class="strip__wire" d="M424 146 H 470"/>
+          <path class="strip__wire" d="M610 146 H 656"/>
+          <rect class="strip__latent" x="472" y="70" width="136" height="152" rx="3"/>
+          <rect class="strip__latentpulse" x="472" y="70" width="136" height="152" rx="3"/>
+          <text class="strip__latentlabel" x="540" y="105" text-anchor="middle">LATENT</text>
+          <text class="strip__latentlabel" x="540" y="121" text-anchor="middle">STATE z</text>
+          <g class="strip__bars">
+            <rect x="492" y="140" width="10" height="46" rx="1.5"/>
+            <rect x="510" y="140" width="10" height="46" rx="1.5"/>
+            <rect x="528" y="140" width="10" height="46" rx="1.5"/>
+            <rect x="546" y="140" width="10" height="46" rx="1.5"/>
+            <rect x="564" y="140" width="10" height="46" rx="1.5"/>
+            <rect x="582" y="140" width="10" height="46" rx="1.5"/>
+          </g>
+          <text class="strip__emit" x="540" y="208" text-anchor="middle">PREDICTION EMITTED</text>
+        </g>
+
+        <!-- target panel -->
+        <rect class="strip__panel" x="660" y="26" width="404" height="222" rx="3"/>
+        <rect class="strip__panelhead" x="660" y="26" width="404" height="19"/>
+        <text class="strip__title" x="670" y="40">JOANNEUM TARGET <tspan class="strip__titledim">· SEALED</tspan></text>
+        <text class="strip__meta" x="1054" y="40" text-anchor="end">10 CH SHARED</text>
+        <g clip-path="url(#clipTgt)">
+          <g mask="url(#maskIn)"><g id="tgtAbsent"></g></g>
+          <g mask="url(#maskOut)"><g id="tgtFadeFlow"></g></g>
+          <g id="tgtFlow"></g>
+        </g>
+        <path class="strip__brace" d="M1020 62 h6 v58 h-6"/>
+        <text class="strip__absent" x="1030" y="86">7 CHANNELS</text>
+        <text class="strip__absent" x="1030" y="98">ABSENT</text>
+      </svg>
+    </figure>
+
+    <h1 class="masthead__title">Schema-Adaptive Action-Conditioned JEPA for Cross-Machine CNC Transfer under Partial Sensor Overlap</h1>
+
+    <p class="masthead__authors">
+      <span class="masthead__author">Ayoub Louaye Bouaziz<span class="masthead__aff">Université de Bretagne Occidentale</span></span>
+      <span class="masthead__author">Matthieu Joseph Paul Ostertag Tressoux<span class="masthead__aff">Université de Lorraine</span></span>
+      <span class="masthead__author">Anton Demasles<span class="masthead__aff">Université de Lorraine</span></span>
+    </p>
+
+    <p class="btnrow">
+      <a class="btn btn--primary" id="btnArxiv" href="#cite">arXiv</a>
+      <a class="btn" id="btnPdf" href="#cite">PDF</a>
+      <a class="btn" id="btnCode" href="https://github.com/ostertagmatthieu-dev/saac-jepa">Code</a>
+      <a class="btn" href="#cite">Cite</a>
+    </p>
+
+    <ul class="legend" aria-label="Colour legend used in every schematic">
+      <li class="legend__item"><span class="legend__swatch legend__swatch--act"></span>actions — spindle speed, commanded X/Y/Z feeds</li>
+      <li class="legend__item"><span class="legend__swatch legend__swatch--obs"></span>observed sensors</li>
+      <li class="legend__item"><span class="legend__swatch legend__swatch--lat"></span>latent states and latent-derived predictions</li>
+      <li class="legend__item"><span class="legend__swatch legend__swatch--abs"></span>sensors absent on the target machine</li>
+    </ul>
+
+  </div>
+</header>
+
+<main>
+<div class="wrap">
+
+  <!-- ================================ OVERVIEW =============================== -->
+  <section class="sec" id="overview">
+    <hr class="rule">
+    <h2 class="sec__head"><span class="sec__num">01</span>Same process, different machine, fewer sensors</h2>
+    <p class="lede">A CNC world model should predict what the process does next <em>under a candidate action</em>, and it should keep working when it is moved to another machine whose sensing interface is not the one it was trained on.</p>
+    <p class="body">We train on the <strong>THWS Spinner U5-620</strong> five-axis machining centre — 17 canonical sensor channels, 62 NC-program sessions on a 1 Hz grid — and transfer to the <strong>FH JOANNEUM</strong> repository, where only 10 of those channels exist across 7 independent runs. Actions are the spindle speed and the commanded X/Y/Z feeds. The model takes a <span class="mono">K&nbsp;=&nbsp;32&nbsp;s</span> context and predicts directly at horizons <span class="mono">{1,&nbsp;2,&nbsp;4,&nbsp;8,&nbsp;16}&nbsp;s</span> rather than rolling out autoregressively.</p>
+    <p class="body">The headline is deliberately narrow and partly negative. JEPA pretraining does <em>not</em> improve clean-source forecasting over matched scratch training. What it buys is a controllable, uncertainty-aware latent that survives a 17-to-10 schema drop on a machine it has never seen — measured once, after the configuration was locked on source data alone.</p>
+    <dl class="facts">
+      <div class="facts__cell"><dt class="facts__k">Source</dt><dd class="facts__v">17 sensors · 62 sessions</dd></div>
+      <div class="facts__cell"><dt class="facts__k">Target</dt><dd class="facts__v">10 shared · 7 runs</dd></div>
+      <div class="facts__cell"><dt class="facts__k">Context</dt><dd class="facts__v">32 s @ 1 Hz</dd></div>
+      <div class="facts__cell"><dt class="facts__k">Horizons</dt><dd class="facts__v">1 2 4 8 16 s</dd></div>
+      <div class="facts__cell"><dt class="facts__k">Zero-shot</dt><dd class="facts__v">RMSE 0.546</dd></div>
+      <div class="facts__cell"><dt class="facts__k">Persistence</dt><dd class="facts__v">RMSE 0.654</dd></div>
+    </dl>
+  </section>
+
+  <!-- ================================= FIG 1 ================================= -->
+  <section class="sec" id="fig1">
+    <hr class="rule">
+    <h2 class="sec__head"><span class="sec__num">02</span>The architecture</h2>
+    <figure class="panel" data-fig="f1">
+      <figcaption class="panel__bar">
+        <span class="panel__id">FIG. 1</span>
+        <span class="panel__name">SAAC-JEPA training graph</span>
+        <button class="panel__replay" type="button" data-replay="f1">Replay</button>
+      </figcaption>
+      <div class="panel__body">
+        <svg class="f1" viewBox="0 0 1080 512" role="img"
+             aria-label="Animated schematic of the SAAC-JEPA training graph. Sensors and past actions pass through a schema mask into the context encoder, producing a context latent. Future actions and that latent enter the predictor, which emits predicted latents at horizons of 1, 2, 4, 8 and 16 seconds. The future observation window passes through an EMA target encoder to give target latents, compared to the predictions through a stop-gradient by the latent loss. Two partial schema views drive the schema-consistency loss, a variance-covariance term regularises both latent sets, and an action-recovery head reconstructs the applied action.">
+
+          <!-- links (drawn first, under nodes) -->
+          <g class="f1__wires">
+            <path class="f1__link anim-draw" style="--d:.30s" d="M172 110 H 200"/>
+            <path class="f1__link anim-draw f1__link--act" style="--d:.34s" d="M172 158 H 190 V 122 H 200"/>
+            <path class="f1__link anim-draw" style="--d:.70s" d="M296 122 H 328"/>
+            <path class="f1__link anim-draw" style="--d:1.02s" d="M466 120 H 498"/>
+            <path class="f1__link anim-draw" style="--d:1.30s" d="M546 146 V 246"/>
+            <path class="f1__link anim-draw f1__link--act" style="--d:1.62s" d="M600 334 V 314"/>
+            <path class="f1__link anim-draw" style="--d:1.94s" d="M652 280 H 686 V 214 H 716"/>
+            <path class="f1__link anim-draw" style="--d:2.00s" d="M652 280 H 686 V 254 H 716"/>
+            <path class="f1__link anim-draw" style="--d:2.06s" d="M652 280 H 686 V 294 H 716"/>
+            <path class="f1__link anim-draw" style="--d:2.12s" d="M652 280 H 686 V 334 H 716"/>
+            <path class="f1__link anim-draw" style="--d:2.18s" d="M652 280 H 686 V 374 H 716"/>
+            <path class="f1__link anim-draw" style="--d:2.50s" d="M172 430 H 328"/>
+            <path class="f1__link anim-draw" style="--d:2.74s" d="M466 430 H 498"/>
+            <path class="f1__link f1__link--ema anim-draw" style="--d:2.90s" d="M396 154 V 396"/>
+            <path class="f1__link f1__link--thin anim-draw" style="--d:3.10s" d="M820 214 H 846 M820 254 H 846 M820 294 H 846 M820 334 H 846 M820 374 H 846 M846 214 V 374"/>
+            <path class="f1__link anim-draw" style="--d:3.20s" d="M846 294 H 872 V 347"/>
+            <path class="f1__link anim-draw" style="--d:3.26s" d="M592 430 H 872 V 394"/>
+            <path class="f1__link f1__link--vic anim-draw" style="--d:3.60s" d="M498 132 H 476 V 418 H 498"/>
+            <path class="f1__link f1__link--vic anim-draw" style="--d:3.66s" d="M456 275 H 476"/>
+            <path class="f1__link f1__link--sch anim-draw" style="--d:3.90s" d="M300 200 H 318 V 232 H 300"/>
+            <path class="f1__link anim-draw" style="--d:4.10s" d="M594 120 H 700"/>
+          </g>
+
+          <!-- nodes -->
+          <g class="f1__node anim-in" style="--d:0s">
+            <rect class="f1__box f1__box--obs" x="36" y="88" width="136" height="44" rx="3"/>
+            <text class="f1__lab" x="104" y="106" text-anchor="middle">SENSORS</text>
+            <text class="f1__sub" x="104" y="122" text-anchor="middle">x t−K:t · 17 ch</text>
+          </g>
+          <g class="f1__node anim-in" style="--d:.10s">
+            <rect class="f1__box f1__box--act" x="36" y="140" width="136" height="38" rx="3"/>
+            <text class="f1__lab" x="104" y="157" text-anchor="middle">PAST ACTIONS</text>
+            <text class="f1__sub" x="104" y="171" text-anchor="middle">a t−K:t</text>
+          </g>
+
+          <g class="f1__node anim-in" style="--d:.46s">
+            <rect class="f1__box f1__box--mask" x="200" y="90" width="96" height="64" rx="3"/>
+            <text class="f1__lab" x="248" y="112" text-anchor="middle">SCHEMA</text>
+            <text class="f1__lab" x="248" y="128" text-anchor="middle">MASK m</text>
+            <text class="f1__sub" x="248" y="144" text-anchor="middle">presence bits</text>
+          </g>
+
+          <!-- two partial views: 17 cells each -->
+          <g class="f1__node anim-in" style="--d:3.74s">
+            <text class="f1__sub" x="200" y="196" text-anchor="start">view A</text>
+            <text class="f1__sub" x="200" y="228" text-anchor="start">view B</text>
+            <g class="f1__cells" id="f1cellsA" transform="translate(238,192)"></g>
+            <g class="f1__cells" id="f1cellsB" transform="translate(238,224)"></g>
+            <text class="f1__loss" x="326" y="220" text-anchor="start">L schema</text>
+            <text class="f1__sub" x="326" y="234" text-anchor="start">two partial views must agree</text>
+          </g>
+
+          <g class="f1__node anim-in" style="--d:.82s">
+            <rect class="f1__box f1__box--mdl" x="328" y="90" width="138" height="64" rx="3"/>
+            <text class="f1__lab" x="397" y="115" text-anchor="middle">CONTEXT ENCODER</text>
+            <text class="f1__sub" x="397" y="133" text-anchor="middle">f θ</text>
+          </g>
+          <text class="f1__tag f1__tag--ema anim-in" style="--d:3.02s" x="404" y="278" text-anchor="start">EMA  τ</text>
+
+          <g class="f1__node anim-in" style="--d:1.14s">
+            <rect class="f1__box f1__box--lat" x="498" y="96" width="96" height="48" rx="3"/>
+            <text class="f1__lab" x="546" y="119" text-anchor="middle">z c</text>
+            <text class="f1__sub" x="546" y="134" text-anchor="middle">context latent</text>
+          </g>
+
+          <g class="f1__node anim-in" style="--d:1.42s">
+            <rect class="f1__box f1__box--mdl" x="498" y="246" width="154" height="68" rx="3"/>
+            <text class="f1__lab" x="575" y="273" text-anchor="middle">PREDICTOR</text>
+            <text class="f1__sub" x="575" y="291" text-anchor="middle">g φ  ·  direct multi-horizon</text>
+          </g>
+
+          <g class="f1__node anim-in" style="--d:1.70s">
+            <rect class="f1__box f1__box--act" x="498" y="334" width="154" height="52" rx="3"/>
+            <text class="f1__lab" x="575" y="355" text-anchor="middle">FUTURE ACTIONS</text>
+            <text class="f1__sub" x="575" y="371" text-anchor="middle">mean of a t:t+h−1</text>
+          </g>
+
+          <!-- horizon chips -->
+          <g class="f1__node anim-in" style="--d:2.22s"><rect class="f1__box f1__box--lat" x="716" y="199" width="104" height="30" rx="3"/><text class="f1__chip" x="768" y="219" text-anchor="middle">ẑ  h = 1 s</text></g>
+          <g class="f1__node anim-in" style="--d:2.30s"><rect class="f1__box f1__box--lat" x="716" y="239" width="104" height="30" rx="3"/><text class="f1__chip" x="768" y="259" text-anchor="middle">ẑ  h = 2 s</text></g>
+          <g class="f1__node anim-in" style="--d:2.38s"><rect class="f1__box f1__box--lat" x="716" y="279" width="104" height="30" rx="3"/><text class="f1__chip" x="768" y="299" text-anchor="middle">ẑ  h = 4 s</text></g>
+          <g class="f1__node anim-in" style="--d:2.46s"><rect class="f1__box f1__box--lat" x="716" y="319" width="104" height="30" rx="3"/><text class="f1__chip" x="768" y="339" text-anchor="middle">ẑ  h = 8 s</text></g>
+          <g class="f1__node anim-in" style="--d:2.54s"><rect class="f1__box f1__box--lat" x="716" y="359" width="104" height="30" rx="3"/><text class="f1__chip" x="768" y="379" text-anchor="middle">ẑ  h = 16 s</text></g>
+
+          <g class="f1__node anim-in" style="--d:2.42s">
+            <rect class="f1__box f1__box--obs" x="36" y="404" width="136" height="52" rx="3"/>
+            <text class="f1__lab" x="104" y="425" text-anchor="middle">FUTURE WINDOW</text>
+            <text class="f1__sub" x="104" y="441" text-anchor="middle">x t+1:t+H</text>
+          </g>
+          <g class="f1__node anim-in" style="--d:2.58s">
+            <rect class="f1__box f1__box--mdl" x="328" y="396" width="138" height="68" rx="3"/>
+            <text class="f1__lab" x="397" y="422" text-anchor="middle">TARGET ENCODER</text>
+            <text class="f1__sub" x="397" y="440" text-anchor="middle">f θ̄  ·  EMA, stop-grad</text>
+          </g>
+          <g class="f1__node anim-in" style="--d:2.82s">
+            <rect class="f1__box f1__box--lat" x="498" y="406" width="94" height="48" rx="3"/>
+            <text class="f1__lab" x="545" y="429" text-anchor="middle">z̄ t+h</text>
+            <text class="f1__sub" x="545" y="444" text-anchor="middle">target latent</text>
+          </g>
+          <text class="f1__tag anim-in" style="--d:3.34s" x="700" y="422" text-anchor="middle">sg[ · ]</text>
+
+          <g class="f1__node anim-in" style="--d:3.42s">
+            <circle class="f1__lossdot" cx="872" cy="371" r="24"/>
+            <text class="f1__lossin" x="872" y="368" text-anchor="middle">L</text>
+            <text class="f1__lossin" x="872" y="381" text-anchor="middle">lat</text>
+          </g>
+
+          <text class="f1__loss anim-in" style="--d:3.70s" x="448" y="272" text-anchor="end">L VICReg</text>
+          <text class="f1__sub anim-in" style="--d:3.70s" x="448" y="286" text-anchor="end">variance–covariance, anti-collapse</text>
+
+          <g class="f1__node anim-in" style="--d:4.18s">
+            <rect class="f1__box f1__box--head" x="700" y="96" width="156" height="48" rx="3"/>
+            <text class="f1__loss" x="778" y="116" text-anchor="middle">L act</text>
+            <text class="f1__sub" x="778" y="132" text-anchor="middle">â = head( z c , z̄ t+h )</text>
+          </g>
+
+        </svg>
+      </div>
+      <p class="panel__cap">Sensors and past actions are masked to a partial schema, encoded to a context latent; future actions condition a direct multi-horizon predictor whose five predicted latents are matched, through a stop-gradient, to an EMA target encoder — with variance–covariance, schema-consistency and action-recovery terms holding the representation in place.</p>
+    </figure>
+  </section>
+
+  <!-- ================================= FIG 2 ================================= -->
+  <section class="sec" id="fig2">
+    <hr class="rule">
+    <h2 class="sec__head"><span class="sec__num">03</span>What a world model buys you</h2>
+    <p class="body">A forecaster answers “what happens next”. A world model answers “what happens next <em>if I do this</em>”. On highly autocorrelated industrial streams the two are easy to confuse: a model can score well at short horizons while effectively ignoring the control input.</p>
+    <figure class="panel" data-fig="f2">
+      <figcaption class="panel__bar">
+        <span class="panel__id">FIG. 2</span>
+        <span class="panel__name">Action-conditioned simulation of candidate futures</span>
+        <button class="panel__replay" type="button" data-replay="f2">Replay</button>
+      </figcaption>
+      <div class="panel__body">
+        <svg class="f2" viewBox="0 0 1080 424" role="img"
+             aria-label="Animated schematic: a 32-second context window of observed sensor traces is encoded into a latent state; two candidate action sequences, spindle up and spindle down, then produce two diverging multi-horizon predictions with widening uncertainty bands at 1, 2, 4, 8 and 16 seconds. Conceptual, not a closed-loop result.">
+          <g id="f2gen"></g>
+        </svg>
+      </div>
+      <p class="panel__cap"><strong>Conceptual schematic, not a closed-loop deployment result.</strong> The same 32 s context and latent state are rolled forward under two candidate spindle commands; the bands widen with the horizon because the probabilistic head emits a mean and a log-variance per channel.</p>
+    </figure>
+  </section>
+
+  <!-- ================================= FIG 3 ================================= -->
+  <section class="sec" id="fig3">
+    <hr class="rule">
+    <h2 class="sec__head"><span class="sec__num">04</span>The lock: how the target machine was kept out</h2>
+    <p class="body">Twenty candidate architectures were written down before any of them ran. Ranking used a composite source-validation score — 0.30 clean RMSE, 0.25 schema-drop RMSE, 0.15 masked RMSE, 0.10 long-horizon RMSE, 0.10 calibration, 0.10 SSL validation loss, plus penalties of 3.0 per collapsed seed and 1.0 for weak action usage. When the provisional winner changed under confirmation, locking was <em>refused</em> and more seeds were added.</p>
+    <figure class="panel" data-fig="f3">
+      <figcaption class="panel__bar">
+        <span class="panel__id">FIG. 3</span>
+        <span class="panel__name">Leakage-safe selection pipeline</span>
+        <button class="panel__replay" type="button" data-replay="f3">Replay</button>
+      </figcaption>
+      <div class="panel__body">
+        <svg class="f3" viewBox="0 0 1080 470" role="img"
+             aria-label="Animated schematic of the model-selection pipeline: twenty candidate chips are each run with four seeds, ranked by a composite source-validation score; the top five receive a fifth seed, at which point the provisional winner changes — per-horizon VICReg drops from first place and the schema-consistency plus action-recovery variant rises to first. Seven seeds confirm it, the configuration is locked with a SHA-256 hash, and a single arrow leads to the sealed JOANNEUM target test. Target data enters no arrow before the lock.">
+
+          <g class="f3__wires">
+            <path class="f3__link anim-draw" style="--d:.90s" d="M232 118 H 268"/>
+            <path class="f3__link anim-draw" style="--d:1.50s" d="M436 118 H 472"/>
+            <path class="f3__link anim-draw" style="--d:2.05s" d="M640 118 H 676"/>
+            <path class="f3__link anim-draw" style="--d:2.60s" d="M888 160 V 196 H 148 V 236"/>
+            <path class="f3__link anim-draw" style="--d:4.00s" d="M348 316 H 396"/>
+            <path class="f3__link anim-draw" style="--d:4.45s" d="M560 316 H 608"/>
+            <path class="f3__link f3__link--lock anim-draw" style="--d:5.00s" d="M760 316 H 820"/>
+          </g>
+
+          <!-- stage 1 : candidates -->
+          <g class="f3__node anim-in" style="--d:0s">
+            <rect class="f3__box" x="40" y="76" width="192" height="84" rx="3"/>
+            <text class="f3__lab" x="136" y="97" text-anchor="middle">20 CANDIDATES</text>
+            <g class="f3__chips" id="f3chips" transform="translate(52,106)"></g>
+            <text class="f3__sub" x="136" y="152" text-anchor="middle">× 4 seeds each · source only</text>
+          </g>
+
+          <!-- stage 2 : composite score -->
+          <g class="f3__node anim-in" style="--d:1.02s">
+            <rect class="f3__box" x="268" y="76" width="168" height="84" rx="3"/>
+            <text class="f3__lab" x="352" y="97" text-anchor="middle">COMPOSITE SCORE</text>
+            <text class="f3__sub" x="352" y="115" text-anchor="middle">.30 clean · .25 schema-drop</text>
+            <text class="f3__sub" x="352" y="129" text-anchor="middle">.15 masked · .10 long-h</text>
+            <text class="f3__sub" x="352" y="143" text-anchor="middle">.10 calib · .10 SSL</text>
+            <text class="f3__sub" x="352" y="156" text-anchor="middle">collapse +3 · weak action +1</text>
+          </g>
+
+          <!-- stage 3 : top 5 -->
+          <g class="f3__node anim-in" style="--d:1.62s">
+            <rect class="f3__box" x="472" y="76" width="168" height="84" rx="3"/>
+            <text class="f3__lab" x="556" y="105" text-anchor="middle">TOP-5</text>
+            <text class="f3__sub" x="556" y="124" text-anchor="middle">+ a 5th seed</text>
+            <text class="f3__sub" x="556" y="142" text-anchor="middle">confirmation stage</text>
+          </g>
+
+          <!-- stage 4 : leader change -->
+          <g class="f3__node anim-in" style="--d:2.17s">
+            <rect class="f3__box f3__box--alert" x="676" y="76" width="212" height="84" rx="3"/>
+            <text class="f3__lab f3__lab--alert" x="782" y="103" text-anchor="middle">LEADER CHANGES</text>
+            <text class="f3__sub" x="782" y="122" text-anchor="middle">lock refused</text>
+            <text class="f3__sub" x="782" y="140" text-anchor="middle">extra seeds added to the leaders</text>
+          </g>
+
+          <!-- stage 5 : the swap -->
+          <g class="f3__node anim-in" style="--d:2.90s">
+            <rect class="f3__box" x="40" y="236" width="308" height="160" rx="3"/>
+            <text class="f3__lab" x="194" y="258" text-anchor="middle">RANK AFTER 7 SEEDS</text>
+            <text class="f3__rk" x="56" y="292">#1</text>
+            <text class="f3__rk" x="56" y="340">#2</text>
+            <g class="f3__swapA">
+              <rect class="f3__bar f3__bar--win" x="84" y="272" width="246" height="30" rx="2"/>
+              <text class="f3__barlab" x="94" y="292">schema + action recovery</text>
+              <text class="f3__barval" x="320" y="292" text-anchor="end">−0.83</text>
+            </g>
+            <g class="f3__swapB">
+              <rect class="f3__bar" x="84" y="320" width="246" height="30" rx="2"/>
+              <text class="f3__barlab" x="94" y="340">per-horizon VICReg</text>
+              <text class="f3__barval" x="320" y="340" text-anchor="end">+0.09</text>
+            </g>
+            <text class="f3__sub" x="194" y="378" text-anchor="middle">the four-seed discovery leader is not the winner</text>
+          </g>
+
+          <!-- stage 6 : 7 seeds -->
+          <g class="f3__node anim-in" style="--d:4.12s">
+            <rect class="f3__box" x="396" y="266" width="164" height="100" rx="3"/>
+            <text class="f3__lab" x="478" y="294" text-anchor="middle">7 SEEDS</text>
+            <text class="f3__sub" x="478" y="314" text-anchor="middle">stability confirmed</text>
+            <text class="f3__sub" x="478" y="332" text-anchor="middle">0.822 ± 0.009 RMSE</text>
+            <text class="f3__sub" x="478" y="350" text-anchor="middle">source validation</text>
+          </g>
+
+          <!-- stage 7 : lock -->
+          <g class="f3__node anim-in" style="--d:4.57s">
+            <rect class="f3__box f3__box--lock" x="608" y="266" width="152" height="100" rx="3"/>
+            <g class="f3__padlock" transform="translate(684,300)">
+              <path class="f3__shackle" d="M-9 0 v-7 a9 9 0 0 1 18 0 v7"/>
+              <rect class="f3__body" x="-14" y="0" width="28" height="22" rx="3"/>
+            </g>
+            <text class="f3__lab" x="684" y="343" text-anchor="middle">LOCK · SHA-256</text>
+            <text class="f3__sub" x="684" y="359" text-anchor="middle">config · code · normalizer · ckpt</text>
+          </g>
+
+          <!-- stage 8 : sealed test -->
+          <g class="f3__node anim-in" style="--d:5.12s">
+            <rect class="f3__box f3__box--seal" x="820" y="256" width="220" height="120" rx="3"/>
+            <text class="f3__lab" x="930" y="284" text-anchor="middle">JOANNEUM · ONE PASS</text>
+            <text class="f3__big" x="930" y="318" text-anchor="middle">0.546</text>
+            <text class="f3__sub" x="930" y="336" text-anchor="middle">zero-shot RMSE</text>
+            <text class="f3__sub" x="930" y="356" text-anchor="middle">R² = 0.012 · NLL = 0.52</text>
+          </g>
+
+          <rect class="f3__banner anim-in" style="--d:5.40s" x="40" y="416" width="1000" height="34" rx="3"/>
+          <text class="f3__bannertext anim-in" style="--d:5.44s" x="540" y="438" text-anchor="middle">Selection runs on THWS source validation only — the target machine enters no arrow before the lock.</text>
+
+        </svg>
+      </div>
+      <p class="panel__cap">Twenty candidates, four seeds each, ranked on a composite source-validation score; the top five get a fifth seed, the leader changes, locking is refused, seven seeds settle it — and only then does one arrow reach the sealed target machine.</p>
+    </figure>
+  </section>
+
+  <!-- ================================ RESULTS ================================ -->
+  <section class="sec" id="results">
+    <hr class="rule">
+    <h2 class="sec__head"><span class="sec__num">05</span>Results at a glance</h2>
+    <div class="tablewrap">
+      <table class="rt">
+        <caption class="rt__caption">RMSE in z units, lower is better. Source values are on THWS; target values are the single confirmatory pass on the 10 shared JOANNEUM channels (2,457 windows).</caption>
+        <thead>
+          <tr><th class="rt__th" scope="col">Setting</th><th class="rt__th rt__th--num" scope="col">Source RMSE</th><th class="rt__th rt__th--num" scope="col">Target zero-shot RMSE</th><th class="rt__th" scope="col">Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr class="rt__group"><th class="rt__gh" colspan="4" scope="colgroup">Does pretraining help on the source machine?</th></tr>
+          <tr><th class="rt__rh" scope="row">Scratch</th><td class="rt__num">0.811 ± 0.022</td><td class="rt__num rt__num--none">—</td><td class="rt__note">five matched seeds</td></tr>
+          <tr><th class="rt__rh" scope="row">Pretrained body + fresh head</th><td class="rt__num">0.813 ± 0.022</td><td class="rt__num rt__num--none">—</td><td class="rt__note">p = 0.76 vs scratch</td></tr>
+          <tr class="rt__group"><th class="rt__gh" colspan="4" scope="colgroup">Does it transfer to an unseen machine?</th></tr>
+          <tr><th class="rt__rh" scope="row">Persistence</th><td class="rt__num rt__num--none">—</td><td class="rt__num">0.654</td><td class="rt__note">trivial floor</td></tr>
+          <tr><th class="rt__rh" scope="row">PatchTST (official, RevIN)</th><td class="rt__num">0.804</td><td class="rt__num rt__num--best">0.503</td><td class="rt__note">deterministic</td></tr>
+          <tr><th class="rt__rh" scope="row">iTransformer (official, RevIN)</th><td class="rt__num">0.822</td><td class="rt__num rt__num--best">0.498</td><td class="rt__note">deterministic</td></tr>
+          <tr class="rt__row--ours"><th class="rt__rh" scope="row">SAAC-JEPA (locked)</th><td class="rt__num">0.822 ± 0.009</td><td class="rt__num">0.546</td><td class="rt__note">probabilistic, action-conditioned</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="honest"><strong>Said plainly:</strong> official RevIN-equipped forecasters remain stronger than SAAC-JEPA in raw zero-shot RMSE. The locked model beats persistence on a machine it has never seen while losing 7 of 17 channels, and it does so with an action-conditioned, uncertainty-aware latent — but that is a different claim from state of the art.</p>
+  </section>
+
+  <!-- ================================= FIG 5 ================================= -->
+  <section class="sec" id="fig5">
+    <hr class="rule">
+    <h2 class="sec__head"><span class="sec__num">06</span>A little target data goes a long way</h2>
+    <figure class="panel" data-fig="f5">
+      <figcaption class="panel__bar">
+        <span class="panel__id">FIG. 5</span>
+        <span class="panel__name">THWS → JOANNEUM few-shot adaptation (pre-lock model)</span>
+        <button class="panel__replay" type="button" data-replay="f5">Replay</button>
+      </figcaption>
+      <div class="panel__body">
+        <svg class="f5" viewBox="0 0 1080 420" role="img"
+             aria-label="Animated line chart. Horizontal axis: target support fraction of 0, 5, 10 and 20 percent. Vertical axis: RMSE on the JOANNEUM target in z units. The line runs 0.612 at zero support, 0.611 at five percent, 0.540 at ten percent and 0.520 at twenty percent. Two dashed reference lines mark persistence at 0.654 and the locked zero-shot result at 0.546. The curve was measured before the model lock and is diagnostic, not confirmatory.">
+
+          <!-- grid -->
+          <g class="f5__grid">
+            <path class="f5__gridline anim-draw" style="--d:0s" d="M120 330 H 1010"/>
+            <path class="f5__gridline anim-draw" style="--d:.05s" d="M120 270 H 1010"/>
+            <path class="f5__gridline anim-draw" style="--d:.10s" d="M120 210 H 1010"/>
+            <path class="f5__gridline anim-draw" style="--d:.15s" d="M120 150 H 1010"/>
+            <path class="f5__gridline anim-draw" style="--d:.20s" d="M120 90 H 1010"/>
+          </g>
+          <path class="f5__axis anim-draw" style="--d:0s" d="M120 60 V 330"/>
+          <path class="f5__axis anim-draw" style="--d:0s" d="M120 330 H 1010"/>
+
+          <g class="f5__ticks anim-in" style="--d:.28s">
+            <text class="f5__ytick" x="108" y="334" text-anchor="end">0.50</text>
+            <text class="f5__ytick" x="108" y="274" text-anchor="end">0.54</text>
+            <text class="f5__ytick" x="108" y="214" text-anchor="end">0.58</text>
+            <text class="f5__ytick" x="108" y="154" text-anchor="end">0.62</text>
+            <text class="f5__ytick" x="108" y="94" text-anchor="end">0.66</text>
+            <text class="f5__xtick" x="178" y="352" text-anchor="middle">0</text>
+            <text class="f5__xtick" x="371.5" y="352" text-anchor="middle">5%</text>
+            <text class="f5__xtick" x="565" y="352" text-anchor="middle">10%</text>
+            <text class="f5__xtick" x="951.9" y="352" text-anchor="middle">20%</text>
+            <text class="f5__axlab" x="565" y="380" text-anchor="middle">target support</text>
+            <text class="f5__axlab" x="40" y="195" text-anchor="middle" transform="rotate(-90 40 195)">RMSE on JOANNEUM (z units)</text>
+          </g>
+
+          <!-- reference lines -->
+          <path class="f5__ref f5__ref--alert anim-draw" style="--d:.60s" d="M120 99 H 1010"/>
+          <text class="f5__reflab f5__reflab--alert anim-in" style="--d:.80s" x="1004" y="92" text-anchor="end">persistence 0.654</text>
+          <path class="f5__ref f5__ref--lat anim-draw" style="--d:.90s" d="M120 261 H 1010"/>
+          <text class="f5__reflab f5__reflab--lat anim-in" style="--d:1.10s" x="1004" y="254" text-anchor="end">locked zero-shot 0.546</text>
+
+          <!-- series -->
+          <path class="f5__line anim-draw" style="--d:1.35s" d="M178 162 L 371.5 163.5 L 565 270 L 951.9 300"/>
+          <g class="f5__pts">
+            <g class="anim-in" style="--d:1.45s"><circle class="f5__dot" cx="178" cy="162" r="6"/><text class="f5__val" x="178" y="146" text-anchor="middle">0.612</text></g>
+            <g class="anim-in" style="--d:1.75s"><circle class="f5__dot" cx="371.5" cy="163.5" r="6"/><text class="f5__val" x="371.5" y="147" text-anchor="middle">0.611</text></g>
+            <g class="anim-in" style="--d:2.15s"><circle class="f5__dot" cx="565" cy="270" r="6"/><text class="f5__val" x="565" y="254" text-anchor="middle">0.540</text></g>
+            <g class="anim-in" style="--d:2.55s"><circle class="f5__dot" cx="951.9" cy="300" r="6"/><text class="f5__val" x="951.9" y="284" text-anchor="middle">0.520</text></g>
+          </g>
+
+          <!-- 5% callout -->
+          <g class="anim-in" style="--d:2.05s">
+            <path class="f5__callout" d="M371.5 176 V 206 H 452"/>
+            <text class="f5__note" x="460" y="203">no complete 48-step support window at 5% —</text>
+            <text class="f5__note" x="460" y="219">this point is effectively zero-shot, not an adaptation failure</text>
+          </g>
+
+          <g class="anim-in" style="--d:2.85s">
+            <rect class="f5__flag" x="120" y="392" width="890" height="24" rx="3"/>
+            <text class="f5__flagtext" x="132" y="408">Pre-lock model. Diagnostic, not confirmatory — the curve must be re-measured on the locked configuration.</text>
+          </g>
+
+        </svg>
+      </div>
+      <p class="panel__cap">On the pre-lock model, zero-shot transfer gives RMSE 0.612 (MAE 0.401, R² = −0.244); 10 % support brings it to 0.540 with R² = 0.046, and 20 % to 0.520 (MAE 0.299, R² = 0.167).</p>
+    </figure>
+  </section>
+
+  <!-- =============================== LIMITATIONS ============================= -->
+  <section class="sec" id="limits">
+    <hr class="rule">
+    <h2 class="sec__head"><span class="sec__num">07</span>What this does not show</h2>
+    <div class="warn">
+      <p class="warn__head">Read the limitations before citing a number.</p>
+      <ul class="warn__list">
+        <li class="warn__item"><strong>One source machine and one target machine.</strong> Nothing here measures invariance to machine-specific dynamics; it assumes it. Seven independent JOANNEUM runs also restrict statistical power, and seven source channels have no target counterpart at all.</li>
+        <li class="warn__item"><strong>The confirmatory target result is a single checkpoint, evaluated once.</strong> It is the best-composite seed of seven source-validation seeds, so the target number is single-seed. Run-level confidence intervals on the locked model have not been computed.</li>
+        <li class="warn__item"><strong>The few-shot curve is pre-lock.</strong> It was obtained before the model was frozen and must be re-measured on the locked configuration before it counts as confirmatory evidence.</li>
+        <li class="warn__item"><strong>Action use under transfer is unverified.</strong> On the pre-lock model, zeroing or shuffling the future actions changed target RMSE by less than 0.005. That is the first thing to test. The same model was also under-calibrated: 67 % empirical coverage at a nominal 90 %.</li>
+        <li class="warn__item"><strong>Ablations are single-seed</strong> on the pre-search base configuration, and the official baselines are single-seed runs at repository defaults without hyperparameter search.</li>
+        <li class="warn__item"><strong>No downstream policy learning or off-policy control</strong> is evaluated, so the world-model interpretation stays predictive rather than decision-theoretic.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ================================== CITE ================================= -->
+  <section class="sec" id="cite">
+    <hr class="rule">
+    <h2 class="sec__head"><span class="sec__num">08</span>Cite</h2>
+    <div class="cite">
+      <div class="cite__bar">
+        <span class="cite__label">BibTeX</span>
+        <button class="cite__copy" type="button" id="copyBib">Copy</button>
+      </div>
+      <pre class="cite__block" id="bibtex" tabindex="0"></pre>
+    </div>
+    <p class="body"><span id="arxivNote" class="mono"></span></p>
+  </section>
+
+</div>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <hr class="rule">
+    <div class="foot__cols">
+      <div class="foot__col">
+        <h2 class="foot__h">Datasets</h2>
+        <p class="foot__p">THWS five-axis CNC milling with multiple changeovers — <a class="link" href="https://doi.org/10.5281/zenodo.14094887">10.5281/zenodo.14094887</a> · CC BY 4.0</p>
+        <p class="foot__p">FH JOANNEUM CNC machining data repository — <a class="link" href="https://doi.org/10.17632/gtvvwmz7r7.2">10.17632/gtvvwmz7r7.2</a> · CC BY 4.0</p>
+      </div>
+      <div class="foot__col">
+        <h2 class="foot__h">Code</h2>
+        <p class="foot__p"><a class="link" href="https://github.com/ostertagmatthieu-dev/saac-jepa">github.com/ostertagmatthieu-dev/saac-jepa</a></p>
+        <p class="foot__p">Pipeline, configuration files, the twenty candidate specifications and the audit scripts. Released under the MIT license.</p>
+      </div>
+    </div>
+    <p class="foot__fine">Page and figures © 2026 the authors. Animated versions of the paper schematics; all reported numbers follow the preprint.</p>
+  </div>
+</footer>
+
+<script src="main.js"></script>
+</body>
+</html>
