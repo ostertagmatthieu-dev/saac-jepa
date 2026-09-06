@@ -4,18 +4,99 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>SAAC-JEPA — Schema-Adaptive Action-Conditioned JEPA for Cross-Machine CNC Transfer</title>
-<meta name="description" content="Project page for SAAC-JEPA: a schema-adaptive, action-conditioned JEPA world model for CNC milling, transferred from a 17-sensor source machine to a 10-sensor target machine under a leakage-audited protocol.">
+<meta name="description" content="Project page for SAAC-JEPA: a schema-adaptive, action-conditioned JEPA world model for CNC milling, transferred from a 17-channel source machine to a target machine sharing only 10 of those channels, under a leakage-audited protocol.">
+<meta name="robots" content="index,follow">
+<meta name="theme-color" content="#0F1B2D">
+<link rel="canonical" href="https://ostertagmatthieu-dev.github.io/saac-jepa/">
+
+<!-- ------------------------------ Open Graph ------------------------------ -->
 <meta property="og:title" content="SAAC-JEPA — Cross-Machine CNC Transfer under Partial Sensor Overlap">
 <meta property="og:description" content="Same process, different machine, fewer sensors. An audited cross-machine CNC world-model benchmark.">
-<meta property="og:type" content="website">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://ostertagmatthieu-dev.github.io/saac-jepa/">
+<meta property="og:site_name" content="SAAC-JEPA">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://ostertagmatthieu-dev.github.io/saac-jepa/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="SAAC-JEPA project page card: a two-panel machine strip showing a 17-channel THWS source machine, a latent state, and a JOANNEUM target machine where 7 of the channels are absent.">
+
+<!-- -------------------------------- Twitter ------------------------------- -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="SAAC-JEPA — Cross-Machine CNC Transfer under Partial Sensor Overlap">
+<meta name="twitter:description" content="Same process, different machine, fewer sensors. An audited cross-machine CNC world-model benchmark.">
+<meta name="twitter:image" content="https://ostertagmatthieu-dev.github.io/saac-jepa/og.png">
+
+<!-- --------------------------- Google Scholar ----------------------------- -->
+<!-- TODO after arXiv announcement: add
+     <meta name="citation_arxiv_id" content="XXXX.XXXXX">
+     and mirror the same identifier in the JSON-LD block below. -->
+<meta name="citation_title" content="Schema-Adaptive Action-Conditioned JEPA for Cross-Machine CNC Transfer under Partial Sensor Overlap">
+<meta name="citation_author" content="Bouaziz, Ayoub Louaye">
+<meta name="citation_author_institution" content="Université de Bretagne Occidentale">
+<meta name="citation_author" content="Ostertag Tressoux, Matthieu Joseph Paul">
+<meta name="citation_author_institution" content="Université de Lorraine">
+<meta name="citation_author" content="Demasles, Anton">
+<meta name="citation_author_institution" content="Université de Lorraine">
+<meta name="citation_publication_date" content="2026">
+<meta name="citation_technical_report_institution" content="arXiv">
+<meta name="citation_pdf_url" content="https://ostertagmatthieu-dev.github.io/saac-jepa/paper.pdf">
+
+<!-- ------------------------------- JSON-LD -------------------------------- -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ScholarlyArticle",
+  "headline": "Schema-Adaptive Action-Conditioned JEPA for Cross-Machine CNC Transfer under Partial Sensor Overlap",
+  "name": "Schema-Adaptive Action-Conditioned JEPA for Cross-Machine CNC Transfer under Partial Sensor Overlap",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Ayoub Louaye Bouaziz",
+      "email": "abouaziz@univ-brest.fr",
+      "affiliation": { "@type": "Organization", "name": "Université de Bretagne Occidentale" }
+    },
+    {
+      "@type": "Person",
+      "name": "Matthieu Joseph Paul Ostertag Tressoux",
+      "email": "matthieu.ostertag7@etu.univ-lorraine.fr",
+      "affiliation": { "@type": "Organization", "name": "Université de Lorraine" }
+    },
+    {
+      "@type": "Person",
+      "name": "Anton Demasles",
+      "email": "anton.demasles2@etu.univ-lorraine.fr",
+      "affiliation": { "@type": "Organization", "name": "Université de Lorraine" }
+    }
+  ],
+  "datePublished": "2026",
+  "url": "https://ostertagmatthieu-dev.github.io/saac-jepa/",
+  "sameAs": "https://github.com/ostertagmatthieu-dev/saac-jepa",
+  "image": "https://ostertagmatthieu-dev.github.io/saac-jepa/og.png",
+  "publisher": { "@type": "Organization", "name": "arXiv" },
+  "isAccessibleForFree": true,
+  "license": "https://opensource.org/licenses/MIT",
+  "creativeWorkStatus": "Preprint"
+}
+</script>
+<!-- TODO after arXiv announcement: add an "identifier" entry to the JSON-LD above, e.g.
+     "identifier": { "@type": "PropertyValue", "propertyID": "arXiv", "value": "arXiv:XXXX.XXXXX" }
+     The "license" field above refers to the CODE released at the sameAs repository (MIT).
+     It is not a licence statement for the paper or for this page. -->
+
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=JetBrains+Mono:wght@400;500;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=JetBrains+Mono:wght@400..700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
 <link rel="stylesheet" href="styles.css">
+<script src="main.js" defer></script>
 </head>
 <body>
 
-<a class="skiplink" href="#overview">Skip to content</a>
+<a class="skiplink" href="#main">Skip to content</a>
 
 <header class="masthead">
   <div class="wrap">
@@ -24,82 +105,88 @@
 
     <!-- ============ HERO SIGNATURE: live two-panel machine strip ============ -->
     <figure class="strip" id="strip">
-      <svg class="strip__svg" viewBox="0 0 1080 268" role="img"
-           aria-label="Animated schematic: a left panel labelled THWS source shows seventeen scrolling teal sensor traces and two amber step-shaped action traces; a violet latent bar in the middle pulses when a prediction is emitted; a right panel labelled JOANNEUM target shows the same traces entering, where ten keep flowing in teal and seven fade to grey dashed flat lines marked absent.">
-        <defs>
-          <clipPath id="clipSrc"><rect x="16" y="44" width="404" height="204"/></clipPath>
-          <clipPath id="clipTgt"><rect x="660" y="44" width="404" height="204"/></clipPath>
-          <linearGradient id="fadeOut" x1="0" x2="1" y1="0" y2="0">
-            <stop offset="0" stop-color="#fff" stop-opacity="1"/>
-            <stop offset="0.30" stop-color="#fff" stop-opacity="1"/>
-            <stop offset="0.62" stop-color="#fff" stop-opacity="0"/>
-          </linearGradient>
-          <linearGradient id="fadeIn" x1="0" x2="1" y1="0" y2="0">
-            <stop offset="0.34" stop-color="#fff" stop-opacity="0"/>
-            <stop offset="0.66" stop-color="#fff" stop-opacity="1"/>
-          </linearGradient>
-          <mask id="maskOut"><rect x="660" y="44" width="404" height="204" fill="url(#fadeOut)"/></mask>
-          <mask id="maskIn"><rect x="660" y="44" width="404" height="204" fill="url(#fadeIn)"/></mask>
-        </defs>
+      <div class="strip__scroll">
+        <svg class="strip__svg" viewBox="0 0 1080 268" role="img" focusable="false"
+             aria-labelledby="stripTitle" aria-describedby="stripDesc">
+          <title id="stripTitle">Source machine, latent state, target machine</title>
+          <desc id="stripDesc">Animated schematic: a left panel labelled THWS source shows seventeen scrolling teal sensor traces and four amber step-shaped action traces; a violet latent bar in the middle pulses when a prediction is emitted; a right panel labelled JOANNEUM target shows the same traces entering, where ten keep flowing in teal and seven fade to grey dashed flat lines marked absent.</desc>
+          <defs>
+            <clipPath id="clipSrc"><rect x="16" y="44" width="404" height="204"/></clipPath>
+            <clipPath id="clipTgt"><rect x="660" y="44" width="404" height="204"/></clipPath>
+            <linearGradient id="fadeOut" x1="0" x2="1" y1="0" y2="0">
+              <stop offset="0" stop-color="#fff" stop-opacity="1"/>
+              <stop offset="0.30" stop-color="#fff" stop-opacity="1"/>
+              <stop offset="0.62" stop-color="#fff" stop-opacity="0"/>
+            </linearGradient>
+            <linearGradient id="fadeIn" x1="0" x2="1" y1="0" y2="0">
+              <stop offset="0.34" stop-color="#fff" stop-opacity="0"/>
+              <stop offset="0.66" stop-color="#fff" stop-opacity="1"/>
+            </linearGradient>
+            <mask id="maskOut"><rect x="660" y="44" width="404" height="204" fill="url(#fadeOut)"/></mask>
+            <mask id="maskIn"><rect x="660" y="44" width="404" height="204" fill="url(#fadeIn)"/></mask>
+          </defs>
 
-        <!-- source panel -->
-        <rect class="strip__panel" x="16" y="26" width="404" height="222" rx="3"/>
-        <rect class="strip__panelhead" x="16" y="26" width="404" height="19"/>
-        <text class="strip__title" x="26" y="40">THWS SOURCE <tspan class="strip__titledim">· SPINNER U5-620</tspan></text>
-        <text class="strip__meta" x="410" y="40" text-anchor="end">17 CH · 1 Hz</text>
-        <g clip-path="url(#clipSrc)"><g id="srcFlow"></g></g>
+          <!-- source panel -->
+          <rect class="strip__panel" x="16" y="26" width="404" height="222" rx="3"/>
+          <rect class="strip__panelhead" x="16" y="26" width="404" height="19"/>
+          <text class="strip__title" x="26" y="40">THWS SOURCE <tspan class="strip__titledim">· SPINNER U5-620</tspan></text>
+          <text class="strip__meta" x="410" y="40" text-anchor="end">17 CH · 1 Hz</text>
+          <g clip-path="url(#clipSrc)"><g id="srcFlow"></g></g>
 
-        <!-- latent bridge -->
-        <g class="strip__bridge">
-          <path class="strip__wire" d="M424 146 H 470"/>
-          <path class="strip__wire" d="M610 146 H 656"/>
-          <rect class="strip__latent" x="472" y="70" width="136" height="152" rx="3"/>
-          <rect class="strip__latentpulse" x="472" y="70" width="136" height="152" rx="3"/>
-          <text class="strip__latentlabel" x="540" y="105" text-anchor="middle">LATENT</text>
-          <text class="strip__latentlabel" x="540" y="121" text-anchor="middle">STATE z</text>
-          <g class="strip__bars">
-            <rect x="492" y="140" width="10" height="46" rx="1.5"/>
-            <rect x="510" y="140" width="10" height="46" rx="1.5"/>
-            <rect x="528" y="140" width="10" height="46" rx="1.5"/>
-            <rect x="546" y="140" width="10" height="46" rx="1.5"/>
-            <rect x="564" y="140" width="10" height="46" rx="1.5"/>
-            <rect x="582" y="140" width="10" height="46" rx="1.5"/>
+          <!-- latent bridge -->
+          <g class="strip__bridge">
+            <path class="strip__wire" d="M424 146 H 470"/>
+            <path class="strip__wire" d="M610 146 H 656"/>
+            <rect class="strip__latent" x="472" y="70" width="136" height="152" rx="3"/>
+            <rect class="strip__latentpulse" x="472" y="70" width="136" height="152" rx="3"/>
+            <text class="strip__latentlabel" x="540" y="105" text-anchor="middle">LATENT</text>
+            <text class="strip__latentlabel" x="540" y="121" text-anchor="middle">STATE z</text>
+            <g class="strip__bars">
+              <rect x="492" y="140" width="10" height="46" rx="1.5"/>
+              <rect x="510" y="140" width="10" height="46" rx="1.5"/>
+              <rect x="528" y="140" width="10" height="46" rx="1.5"/>
+              <rect x="546" y="140" width="10" height="46" rx="1.5"/>
+              <rect x="564" y="140" width="10" height="46" rx="1.5"/>
+              <rect x="582" y="140" width="10" height="46" rx="1.5"/>
+            </g>
+            <text class="strip__emit" x="540" y="208" text-anchor="middle">PREDICTION EMITTED</text>
           </g>
-          <text class="strip__emit" x="540" y="208" text-anchor="middle">PREDICTION EMITTED</text>
-        </g>
 
-        <!-- target panel -->
-        <rect class="strip__panel" x="660" y="26" width="404" height="222" rx="3"/>
-        <rect class="strip__panelhead" x="660" y="26" width="404" height="19"/>
-        <text class="strip__title" x="670" y="40">JOANNEUM TARGET <tspan class="strip__titledim">· SEALED</tspan></text>
-        <text class="strip__meta" x="1054" y="40" text-anchor="end">10 CH SHARED</text>
-        <g clip-path="url(#clipTgt)">
-          <g mask="url(#maskIn)"><g id="tgtAbsent"></g></g>
-          <g mask="url(#maskOut)"><g id="tgtFadeFlow"></g></g>
-          <g id="tgtFlow"></g>
-        </g>
-        <path class="strip__brace" d="M1020 62 h6 v58 h-6"/>
-        <text class="strip__absent" x="1030" y="86">7 CHANNELS</text>
-        <text class="strip__absent" x="1030" y="98">ABSENT</text>
-      </svg>
+          <!-- target panel -->
+          <rect class="strip__panel" x="660" y="26" width="404" height="222" rx="3"/>
+          <rect class="strip__panelhead" x="660" y="26" width="404" height="19"/>
+          <text class="strip__title" x="670" y="40">JOANNEUM TARGET <tspan class="strip__titledim">· SEALED</tspan></text>
+          <text class="strip__meta" x="1054" y="40" text-anchor="end">10 CH SHARED</text>
+          <g clip-path="url(#clipTgt)">
+            <g mask="url(#maskIn)"><g id="tgtAbsent"></g></g>
+            <g mask="url(#maskOut)"><g id="tgtFadeFlow"></g></g>
+            <g id="tgtFlow"></g>
+          </g>
+          <path class="strip__brace" d="M994 62 h6 v58 h-6"/>
+          <rect x="1004" y="75" width="57" height="27" rx="2" fill="#F7F9FA" fill-opacity="0.92"/>
+          <text class="strip__absent" x="1058" y="86" text-anchor="end">7 CHANNELS</text>
+          <text class="strip__absent" x="1058" y="98" text-anchor="end">ABSENT</text>
+        </svg>
+      </div>
+      <p class="panel__hint">Scroll sideways to read the figure</p>
     </figure>
 
     <h1 class="masthead__title">Schema-Adaptive Action-Conditioned JEPA for Cross-Machine CNC Transfer under Partial Sensor Overlap</h1>
 
     <p class="masthead__authors">
-      <span class="masthead__author">Ayoub Louaye Bouaziz<span class="masthead__aff">Université de Bretagne Occidentale</span></span>
-      <span class="masthead__author">Matthieu Joseph Paul Ostertag Tressoux<span class="masthead__aff">Université de Lorraine</span></span>
-      <span class="masthead__author">Anton Demasles<span class="masthead__aff">Université de Lorraine</span></span>
+      <span class="masthead__author"><a class="masthead__mail" href="mailto:abouaziz@univ-brest.fr">Ayoub Louaye Bouaziz</a><span class="masthead__aff">Université de Bretagne Occidentale</span></span>
+      <span class="masthead__author"><a class="masthead__mail" href="mailto:matthieu.ostertag7@etu.univ-lorraine.fr">Matthieu Joseph Paul Ostertag Tressoux</a><span class="masthead__aff">Université de Lorraine</span></span>
+      <span class="masthead__author"><a class="masthead__mail" href="mailto:anton.demasles2@etu.univ-lorraine.fr">Anton Demasles</a><span class="masthead__aff">Université de Lorraine</span></span>
     </p>
 
     <p class="btnrow">
-      <a class="btn btn--primary" id="btnArxiv" href="#cite">arXiv</a>
-      <a class="btn" id="btnPdf" href="#cite">PDF</a>
+      <a class="btn btn--primary btn--muted" id="btnArxiv" href="#cite" aria-disabled="true">arXiv — soon</a>
+      <a class="btn" id="btnPdf" href="paper.pdf">PDF</a>
       <a class="btn" id="btnCode" href="https://github.com/ostertagmatthieu-dev/saac-jepa">Code</a>
       <a class="btn" href="#cite">Cite</a>
     </p>
 
-    <ul class="legend" aria-label="Colour legend used in every schematic">
+    <ul class="legend" aria-label="Colour and line-style legend used in every schematic">
       <li class="legend__item"><span class="legend__swatch legend__swatch--act"></span>actions — spindle speed, commanded X/Y/Z feeds</li>
       <li class="legend__item"><span class="legend__swatch legend__swatch--obs"></span>observed sensors</li>
       <li class="legend__item"><span class="legend__swatch legend__swatch--lat"></span>latent states and latent-derived predictions</li>
@@ -109,44 +196,53 @@
   </div>
 </header>
 
-<main>
+<main id="main" tabindex="-1">
 <div class="wrap">
+
+  <!-- ================================ ABSTRACT =============================== -->
+  <section class="sec" id="abstract">
+    <hr class="rule">
+    <h2 class="sec__head"><span class="sec__num">01</span>Abstract</h2>
+    <p class="body">Cross-machine deployment of industrial world models requires transfer across changes in machine dynamics, sensing interfaces, sampling regimes, and control units. This study investigates a schema-adaptive action-conditioned Joint-Embedding Predictive Architecture (SAAC-JEPA) for CNC dynamics when a source machine provides 17 canonical sensor channels and a target machine shares only 10. The evaluation protocol contains group-disjoint source splits, source-only normalization, deterministic held-out self-supervised validation, explicit unit audits, and a sealed target-machine test used only after model locking. A matched five-seed comparison shows no clean-source forecasting gain from JEPA pretraining: scratch and pretrained-body models obtain RMSE 0.811 ± 0.022 and 0.813 ± 0.022, respectively. A source-only architecture search over 20 candidates then selects a schema-consistent action-conditioned JEPA variant after stability checks across seven seeds. On the single confirmatory target-machine pass, the locked model reaches zero-shot RMSE 0.546, R² = 0.012, and NLL 0.52, improving over persistence but not over official PatchTST and iTransformer zero-shot baselines (0.503 and 0.498). A pre-lock adaptation sweep further suggests that small target support can reduce RMSE to 0.520. The evidence supports a narrow conclusion: source-domain forecasting accuracy alone is insufficient for evaluating industrial predictive representations, and cross-machine adaptation under partial sensor overlap is a distinct evaluation axis for action-conditioned world models.</p>
+  </section>
 
   <!-- ================================ OVERVIEW =============================== -->
   <section class="sec" id="overview">
     <hr class="rule">
-    <h2 class="sec__head"><span class="sec__num">01</span>Same process, different machine, fewer sensors</h2>
+    <h2 class="sec__head"><span class="sec__num">02</span>Same process, different machine, fewer sensors</h2>
     <p class="lede">A CNC world model should predict what the process does next <em>under a candidate action</em>, and it should keep working when it is moved to another machine whose sensing interface is not the one it was trained on.</p>
     <p class="body">We train on the <strong>THWS Spinner U5-620</strong> five-axis machining centre — 17 canonical sensor channels, 62 NC-program sessions on a 1 Hz grid — and transfer to the <strong>FH JOANNEUM</strong> repository, where only 10 of those channels exist across 7 independent runs. Actions are the spindle speed and the commanded X/Y/Z feeds. The model takes a <span class="mono">K&nbsp;=&nbsp;32&nbsp;s</span> context and predicts directly at horizons <span class="mono">{1,&nbsp;2,&nbsp;4,&nbsp;8,&nbsp;16}&nbsp;s</span> rather than rolling out autoregressively.</p>
-    <p class="body">The headline is deliberately narrow and partly negative. JEPA pretraining does <em>not</em> improve clean-source forecasting over matched scratch training. What it buys is a controllable, uncertainty-aware latent that survives a 17-to-10 schema drop on a machine it has never seen — measured once, after the configuration was locked on source data alone.</p>
+    <p class="body">The headline is deliberately narrow and partly negative. JEPA pretraining does <em>not</em> improve clean-source forecasting over matched scratch training. What it buys is an action-conditioned, uncertainty-aware latent that survives a 17-to-10 schema drop on a machine it has never seen — measured once, after the configuration was locked on source data alone. Whether the transferred latent is genuinely <em>controllable</em> is not yet established (see §08).</p>
     <dl class="facts">
       <div class="facts__cell"><dt class="facts__k">Source</dt><dd class="facts__v">17 sensors · 62 sessions</dd></div>
       <div class="facts__cell"><dt class="facts__k">Target</dt><dd class="facts__v">10 shared · 7 runs</dd></div>
       <div class="facts__cell"><dt class="facts__k">Context</dt><dd class="facts__v">32 s @ 1 Hz</dd></div>
       <div class="facts__cell"><dt class="facts__k">Horizons</dt><dd class="facts__v">1 2 4 8 16 s</dd></div>
-      <div class="facts__cell"><dt class="facts__k">Zero-shot</dt><dd class="facts__v">RMSE 0.546</dd></div>
-      <div class="facts__cell"><dt class="facts__k">Persistence</dt><dd class="facts__v">RMSE 0.654</dd></div>
+      <div class="facts__cell"><dt class="facts__k">Zero-shot (target)</dt><dd class="facts__v">RMSE 0.546</dd></div>
+      <div class="facts__cell"><dt class="facts__k">Persistence (target)</dt><dd class="facts__v">RMSE 0.654</dd></div>
     </dl>
   </section>
 
   <!-- ================================= FIG 1 ================================= -->
   <section class="sec" id="fig1">
     <hr class="rule">
-    <h2 class="sec__head"><span class="sec__num">02</span>The architecture</h2>
+    <h2 class="sec__head"><span class="sec__num">03</span>The architecture</h2>
     <figure class="panel" data-fig="f1">
       <figcaption class="panel__bar">
         <span class="panel__id">FIG. 1</span>
         <span class="panel__name">SAAC-JEPA training graph</span>
-        <button class="panel__replay" type="button" data-replay="f1">Replay</button>
+        <button class="panel__replay" type="button" data-replay="f1" aria-label="Replay the Figure 1 animation">Replay</button>
       </figcaption>
       <div class="panel__body">
-        <svg class="f1" viewBox="0 0 1080 512" role="img"
-             aria-label="Animated schematic of the SAAC-JEPA training graph. Sensors and past actions pass through a schema mask into the context encoder, producing a context latent. Future actions and that latent enter the predictor, which emits predicted latents at horizons of 1, 2, 4, 8 and 16 seconds. The future observation window passes through an EMA target encoder to give target latents, compared to the predictions through a stop-gradient by the latent loss. Two partial schema views drive the schema-consistency loss, a variance-covariance term regularises both latent sets, and an action-recovery head reconstructs the applied action.">
+        <svg class="f1" viewBox="0 0 1080 512" role="img" focusable="false"
+             aria-labelledby="f1Title" aria-describedby="f1Desc">
+          <title id="f1Title">SAAC-JEPA training graph</title>
+          <desc id="f1Desc">Animated schematic of the SAAC-JEPA training graph. Sensors pass through a schema mask and enter the context encoder together with the presence mask and past actions, producing a context latent. Future actions and that latent enter the predictor, which emits predicted latents at horizons of 1, 2, 4, 8 and 16 seconds. The future observation window passes through an EMA target encoder to give target latents, compared to the predictions through a stop-gradient by the latent loss. Two partial schema views drive the schema-consistency loss, a variance-covariance term regularises both latent sets, and an action-recovery head reconstructs the applied action.</desc>
 
           <!-- links (drawn first, under nodes) -->
           <g class="f1__wires">
             <path class="f1__link anim-draw" style="--d:.30s" d="M172 110 H 200"/>
-            <path class="f1__link anim-draw f1__link--act" style="--d:.34s" d="M172 158 H 190 V 122 H 200"/>
+            <path class="f1__link anim-draw f1__link--act" style="--d:.34s" d="M172 158 H 310 V 140 H 328"/>
             <path class="f1__link anim-draw" style="--d:.70s" d="M296 122 H 328"/>
             <path class="f1__link anim-draw" style="--d:1.02s" d="M466 120 H 498"/>
             <path class="f1__link anim-draw" style="--d:1.30s" d="M546 146 V 246"/>
@@ -202,7 +298,7 @@
             <text class="f1__lab" x="397" y="115" text-anchor="middle">CONTEXT ENCODER</text>
             <text class="f1__sub" x="397" y="133" text-anchor="middle">f θ</text>
           </g>
-          <text class="f1__tag f1__tag--ema anim-in" style="--d:3.02s" x="404" y="278" text-anchor="start">EMA  τ</text>
+          <text class="f1__tag f1__tag--ema anim-in" style="--d:3.02s" x="474" y="334" text-anchor="start">EMA  τ</text>
 
           <g class="f1__node anim-in" style="--d:1.14s">
             <rect class="f1__box f1__box--lat" x="498" y="96" width="96" height="48" rx="3"/>
@@ -263,45 +359,52 @@
 
         </svg>
       </div>
-      <p class="panel__cap">Sensors and past actions are masked to a partial schema, encoded to a context latent; future actions condition a direct multi-horizon predictor whose five predicted latents are matched, through a stop-gradient, to an EMA target encoder — with variance–covariance, schema-consistency and action-recovery terms holding the representation in place.</p>
+      <p class="panel__hint">Scroll sideways to read the figure</p>
+      <p class="panel__cap">Sensors are masked to a partial schema and encoded together with the presence mask and past actions into a context latent; future actions condition a direct multi-horizon predictor whose five predicted latents are matched, through a stop-gradient, to an EMA target encoder — with variance–covariance, schema-consistency and action-recovery terms holding the representation in place.</p>
     </figure>
   </section>
 
   <!-- ================================= FIG 2 ================================= -->
   <section class="sec" id="fig2">
     <hr class="rule">
-    <h2 class="sec__head"><span class="sec__num">03</span>What a world model buys you</h2>
+    <h2 class="sec__head"><span class="sec__num">04</span>What a world model buys you</h2>
     <p class="body">A forecaster answers “what happens next”. A world model answers “what happens next <em>if I do this</em>”. On highly autocorrelated industrial streams the two are easy to confuse: a model can score well at short horizons while effectively ignoring the control input.</p>
     <figure class="panel" data-fig="f2">
       <figcaption class="panel__bar">
         <span class="panel__id">FIG. 2</span>
         <span class="panel__name">Action-conditioned simulation of candidate futures</span>
-        <button class="panel__replay" type="button" data-replay="f2">Replay</button>
+        <button class="panel__replay" type="button" data-replay="f2" aria-label="Replay the Figure 2 animation">Replay</button>
       </figcaption>
       <div class="panel__body">
-        <svg class="f2" viewBox="0 0 1080 424" role="img"
-             aria-label="Animated schematic: a 32-second context window of observed sensor traces is encoded into a latent state; two candidate action sequences, spindle up and spindle down, then produce two diverging multi-horizon predictions with widening uncertainty bands at 1, 2, 4, 8 and 16 seconds. Conceptual, not a closed-loop result.">
+        <svg class="f2" viewBox="0 0 1080 424" role="img" focusable="false"
+             aria-labelledby="f2Title" aria-describedby="f2Desc">
+          <title id="f2Title">Action-conditioned simulation of candidate futures</title>
+          <desc id="f2Desc">Animated schematic: a 32-second context window of observed sensor traces is encoded into a latent state; two candidate action sequences, spindle up and spindle down, then produce two diverging multi-horizon predictions with widening uncertainty bands at 1, 2, 4, 8 and 16 seconds. Conceptual, not a closed-loop result.</desc>
           <g id="f2gen"></g>
         </svg>
+        <noscript><p class="panel__noscript">This schematic is drawn by script; open the PDF for the static figure.</p></noscript>
       </div>
-      <p class="panel__cap"><strong>Conceptual schematic, not a closed-loop deployment result.</strong> The same 32 s context and latent state are rolled forward under two candidate spindle commands; the bands widen with the horizon because the probabilistic head emits a mean and a log-variance per channel.</p>
+      <p class="panel__hint">Scroll sideways to read the figure</p>
+      <p class="panel__cap"><strong>Conceptual schematic, not a closed-loop deployment result.</strong> The same 32 s context and latent state are predicted forward at each horizon — directly, not autoregressively — under two candidate spindle commands; the head emits a mean and a log-variance per channel, and the bands are drawn illustratively. Measured predictive intervals were under-calibrated on the pre-lock model (67 % coverage at nominal 90 %) and coverage has not been computed for the locked model.</p>
     </figure>
   </section>
 
   <!-- ================================= FIG 3 ================================= -->
   <section class="sec" id="fig3">
     <hr class="rule">
-    <h2 class="sec__head"><span class="sec__num">04</span>The lock: how the target machine was kept out</h2>
-    <p class="body">Twenty candidate architectures were written down before any of them ran. Ranking used a composite source-validation score — 0.30 clean RMSE, 0.25 schema-drop RMSE, 0.15 masked RMSE, 0.10 long-horizon RMSE, 0.10 calibration, 0.10 SSL validation loss, plus penalties of 3.0 per collapsed seed and 1.0 for weak action usage. When the provisional winner changed under confirmation, locking was <em>refused</em> and more seeds were added.</p>
+    <h2 class="sec__head"><span class="sec__num">05</span>The lock: how the target machine was kept out</h2>
+    <p class="body">Twenty candidate architectures were written down before any of them ran. Ranking used a composite source-validation score — 0.30 clean RMSE, 0.25 schema-drop RMSE, 0.15 masked RMSE, 0.10 long-horizon RMSE, 0.10 calibration penalty, 0.10 SSL validation loss — each component z-scored within the candidate pool, lower is better — plus penalties of 3.0 per collapsed seed and 1.0 for weak action usage. When the provisional winner changed under confirmation, locking was <em>refused</em> and more seeds were added. Two candidates collapsed outright — the plain JEPA control without anti-collapse regularization on all four seeds, and the largest model (d = 512, eight layers) on three of four. Moving the regularizers to the right latents raised target-encoder effective rank from roughly 5 % to 58 % of the latent dimensionality.</p>
     <figure class="panel" data-fig="f3">
       <figcaption class="panel__bar">
         <span class="panel__id">FIG. 3</span>
         <span class="panel__name">Leakage-safe selection pipeline</span>
-        <button class="panel__replay" type="button" data-replay="f3">Replay</button>
+        <button class="panel__replay" type="button" data-replay="f3" aria-label="Replay the Figure 3 animation">Replay</button>
       </figcaption>
       <div class="panel__body">
-        <svg class="f3" viewBox="0 0 1080 470" role="img"
-             aria-label="Animated schematic of the model-selection pipeline: twenty candidate chips are each run with four seeds, ranked by a composite source-validation score; the top five receive a fifth seed, at which point the provisional winner changes — per-horizon VICReg drops from first place and the schema-consistency plus action-recovery variant rises to first. Seven seeds confirm it, the configuration is locked with a SHA-256 hash, and a single arrow leads to the sealed JOANNEUM target test. Target data enters no arrow before the lock.">
+        <svg class="f3" viewBox="0 0 1080 470" role="img" focusable="false"
+             aria-labelledby="f3Title" aria-describedby="f3Desc">
+          <title id="f3Title">Leakage-safe selection pipeline</title>
+          <desc id="f3Desc">Animated schematic of the model-selection pipeline: twenty candidate chips are each run with four seeds, ranked by a composite source-validation score; the top five receive a fifth seed, at which point the provisional winner changes — per-horizon VICReg drops from first place and the schema-consistency plus action-recovery variant rises to first. Seven seeds confirm it, the configuration is locked with a SHA-256 hash, and a single arrow leads to the sealed JOANNEUM target test. Target data enters no arrow before the lock.</desc>
 
           <g class="f3__wires">
             <path class="f3__link anim-draw" style="--d:.90s" d="M232 118 H 268"/>
@@ -320,6 +423,7 @@
             <g class="f3__chips" id="f3chips" transform="translate(52,106)"></g>
             <text class="f3__sub" x="136" y="152" text-anchor="middle">× 4 seeds each · source only</text>
           </g>
+          <text class="f3__sub anim-in" style="--d:.72s" x="40" y="180" text-anchor="start">2 collapsed — plain control 4/4 seeds, d = 512 3/4</text>
 
           <!-- stage 2 : composite score -->
           <g class="f3__node anim-in" style="--d:1.02s">
@@ -327,7 +431,7 @@
             <text class="f3__lab" x="352" y="97" text-anchor="middle">COMPOSITE SCORE</text>
             <text class="f3__sub" x="352" y="115" text-anchor="middle">.30 clean · .25 schema-drop</text>
             <text class="f3__sub" x="352" y="129" text-anchor="middle">.15 masked · .10 long-h</text>
-            <text class="f3__sub" x="352" y="143" text-anchor="middle">.10 calib · .10 SSL</text>
+            <text class="f3__sub" x="352" y="143" text-anchor="middle">.10 calib penalty · .10 SSL</text>
             <text class="f3__sub" x="352" y="156" text-anchor="middle">collapse +3 · weak action +1</text>
           </g>
 
@@ -350,7 +454,8 @@
           <!-- stage 5 : the swap -->
           <g class="f3__node anim-in" style="--d:2.90s">
             <rect class="f3__box" x="40" y="236" width="308" height="160" rx="3"/>
-            <text class="f3__lab" x="194" y="258" text-anchor="middle">RANK AFTER 7 SEEDS</text>
+            <text class="f3__lab" x="194" y="253" text-anchor="middle">RANK AFTER 7 SEEDS</text>
+            <text class="f3__sub" x="194" y="267" text-anchor="middle">composite score (z-normalized, lower is better)</text>
             <text class="f3__rk" x="56" y="292">#1</text>
             <text class="f3__rk" x="56" y="340">#2</text>
             <g class="f3__swapA">
@@ -400,6 +505,7 @@
 
         </svg>
       </div>
+      <p class="panel__hint">Scroll sideways to read the figure</p>
       <p class="panel__cap">Twenty candidates, four seeds each, ranked on a composite source-validation score; the top five get a fifth seed, the leader changes, locking is refused, seven seeds settle it — and only then does one arrow reach the sealed target machine.</p>
     </figure>
   </section>
@@ -407,10 +513,10 @@
   <!-- ================================ RESULTS ================================ -->
   <section class="sec" id="results">
     <hr class="rule">
-    <h2 class="sec__head"><span class="sec__num">05</span>Results at a glance</h2>
+    <h2 class="sec__head"><span class="sec__num">06</span>Results at a glance</h2>
     <div class="tablewrap">
       <table class="rt">
-        <caption class="rt__caption">RMSE in z units, lower is better. Source values are on THWS; target values are the single confirmatory pass on the 10 shared JOANNEUM channels (2,457 windows).</caption>
+        <caption class="rt__caption">RMSE in z units, lower is better. Source column: the official baselines are scored on the source test split (5,189 windows, 17 sensors); SAAC-JEPA is the seven-seed mean ± SD on source validation, and the scratch/pretrained rows are five-seed source validation — the source column therefore does not compare like with like. Target column: the single confirmatory pass on the 10 shared JOANNEUM channels (2,457 windows).</caption>
         <thead>
           <tr><th class="rt__th" scope="col">Setting</th><th class="rt__th rt__th--num" scope="col">Source RMSE</th><th class="rt__th rt__th--num" scope="col">Target zero-shot RMSE</th><th class="rt__th" scope="col">Notes</th></tr>
         </thead>
@@ -418,30 +524,35 @@
           <tr class="rt__group"><th class="rt__gh" colspan="4" scope="colgroup">Does pretraining help on the source machine?</th></tr>
           <tr><th class="rt__rh" scope="row">Scratch</th><td class="rt__num">0.811 ± 0.022</td><td class="rt__num rt__num--none">—</td><td class="rt__note">five matched seeds</td></tr>
           <tr><th class="rt__rh" scope="row">Pretrained body + fresh head</th><td class="rt__num">0.813 ± 0.022</td><td class="rt__num rt__num--none">—</td><td class="rt__note">p = 0.76 vs scratch</td></tr>
+          <tr><th class="rt__rh" scope="row">Complete pretrained checkpoint</th><td class="rt__num">0.812 ± 0.012</td><td class="rt__num rt__num--none">—</td><td class="rt__note">third matched control</td></tr>
           <tr class="rt__group"><th class="rt__gh" colspan="4" scope="colgroup">Does it transfer to an unseen machine?</th></tr>
-          <tr><th class="rt__rh" scope="row">Persistence</th><td class="rt__num rt__num--none">—</td><td class="rt__num">0.654</td><td class="rt__note">trivial floor</td></tr>
+          <tr><th class="rt__rh" scope="row">Persistence</th><td class="rt__num">1.135</td><td class="rt__num">0.654</td><td class="rt__note">trivial floor; 1.135 on source validation, 1.128 on the source test split</td></tr>
+          <tr><th class="rt__rh" scope="row">Linear drift</th><td class="rt__num">0.928</td><td class="rt__num rt__num--none">—</td><td class="rt__note">trivial reference</td></tr>
           <tr><th class="rt__rh" scope="row">PatchTST (official, RevIN)</th><td class="rt__num">0.804</td><td class="rt__num rt__num--best">0.503</td><td class="rt__note">deterministic</td></tr>
           <tr><th class="rt__rh" scope="row">iTransformer (official, RevIN)</th><td class="rt__num">0.822</td><td class="rt__num rt__num--best">0.498</td><td class="rt__note">deterministic</td></tr>
           <tr class="rt__row--ours"><th class="rt__rh" scope="row">SAAC-JEPA (locked)</th><td class="rt__num">0.822 ± 0.009</td><td class="rt__num">0.546</td><td class="rt__note">probabilistic, action-conditioned</td></tr>
         </tbody>
       </table>
     </div>
-    <p class="honest"><strong>Said plainly:</strong> official RevIN-equipped forecasters remain stronger than SAAC-JEPA in raw zero-shot RMSE. The locked model beats persistence on a machine it has never seen while losing 7 of 17 channels, and it does so with an action-conditioned, uncertainty-aware latent — but that is a different claim from state of the art.</p>
+    <p class="body">Ordinary supervised baselines are also stronger than the locked model on the source machine: RSSM reaches 0.759 and MLP 0.771 on source validation, against 0.822 for the locked candidate and 0.809 for the pre-search JEPA reference (source test split). The paper draws no source-forecasting superiority claim.</p>
+    <p class="honest"><strong>Said plainly:</strong> official RevIN-equipped forecasters remain stronger than SAAC-JEPA in raw zero-shot RMSE. The locked model beats persistence on a machine it has never seen while losing 7 of 17 channels, and it does so with an action-conditioned, uncertainty-aware latent — but that is a different claim from state of the art. Per horizon the transferred model explains variance only at short horizons — target R² is 0.035, 0.055, 0.052, −0.023 and −0.059 at h = 1, 2, 4, 8, 16 s, i.e. below the pooled target-mean predictor at 8 and 16 s.</p>
   </section>
 
   <!-- ================================= FIG 5 ================================= -->
   <section class="sec" id="fig5">
     <hr class="rule">
-    <h2 class="sec__head"><span class="sec__num">06</span>A little target data goes a long way</h2>
+    <h2 class="sec__head"><span class="sec__num">07</span>A little target data goes a long way</h2>
     <figure class="panel" data-fig="f5">
       <figcaption class="panel__bar">
         <span class="panel__id">FIG. 5</span>
         <span class="panel__name">THWS → JOANNEUM few-shot adaptation (pre-lock model)</span>
-        <button class="panel__replay" type="button" data-replay="f5">Replay</button>
+        <button class="panel__replay" type="button" data-replay="f5" aria-label="Replay the Figure 5 animation">Replay</button>
       </figcaption>
       <div class="panel__body">
-        <svg class="f5" viewBox="0 0 1080 420" role="img"
-             aria-label="Animated line chart. Horizontal axis: target support fraction of 0, 5, 10 and 20 percent. Vertical axis: RMSE on the JOANNEUM target in z units. The line runs 0.612 at zero support, 0.611 at five percent, 0.540 at ten percent and 0.520 at twenty percent. Two dashed reference lines mark persistence at 0.654 and the locked zero-shot result at 0.546. The curve was measured before the model lock and is diagnostic, not confirmatory.">
+        <svg class="f5" viewBox="0 0 1080 466" role="img" focusable="false"
+             aria-labelledby="f5Title" aria-describedby="f5Desc">
+          <title id="f5Title">THWS to JOANNEUM few-shot adaptation curve</title>
+          <desc id="f5Desc">Animated line chart. Horizontal axis: target support fraction of 0, 5, 10 and 20 percent. Vertical axis: RMSE on the JOANNEUM target in z units. The line runs 0.612 at zero support, 0.611 at five percent, 0.540 at ten percent and 0.520 at twenty percent. Two dashed reference lines mark persistence at 0.654 and the locked model's sealed-pass result at 0.546. The curve was measured before the model lock and is diagnostic, not confirmatory.</desc>
 
           <!-- grid -->
           <g class="f5__grid">
@@ -470,9 +581,9 @@
 
           <!-- reference lines -->
           <path class="f5__ref f5__ref--alert anim-draw" style="--d:.60s" d="M120 99 H 1010"/>
-          <text class="f5__reflab f5__reflab--alert anim-in" style="--d:.80s" x="1004" y="92" text-anchor="end">persistence 0.654</text>
+          <text class="f5__reflab f5__reflab--alert anim-in" style="--d:.80s" x="1004" y="92" text-anchor="end">persistence, sealed pass — 0.654</text>
           <path class="f5__ref f5__ref--lat anim-draw" style="--d:.90s" d="M120 261 H 1010"/>
-          <text class="f5__reflab f5__reflab--lat anim-in" style="--d:1.10s" x="1004" y="254" text-anchor="end">locked zero-shot 0.546</text>
+          <text class="f5__reflab f5__reflab--lat anim-in" style="--d:1.10s" x="1004" y="254" text-anchor="end">locked model, sealed pass — 0.546</text>
 
           <!-- series -->
           <path class="f5__line anim-draw" style="--d:1.35s" d="M178 162 L 371.5 163.5 L 565 270 L 951.9 300"/>
@@ -491,12 +602,15 @@
           </g>
 
           <g class="anim-in" style="--d:2.85s">
-            <rect class="f5__flag" x="120" y="392" width="890" height="24" rx="3"/>
-            <text class="f5__flagtext" x="132" y="408">Pre-lock model. Diagnostic, not confirmatory — the curve must be re-measured on the locked configuration.</text>
+            <rect class="f5__flag" x="120" y="386" width="890" height="64" rx="3"/>
+            <text class="f5__flagtext" x="132" y="404">Pre-lock model, evaluated on the query windows left after the support fraction is removed.</text>
+            <text class="f5__flagtext" x="132" y="422">Diagnostic, not confirmatory — the dashed references come from the locked model’s separate</text>
+            <text class="f5__flagtext" x="132" y="440">sealed 2,457-window pass and are not a like-for-like comparison.</text>
           </g>
 
         </svg>
       </div>
+      <p class="panel__hint">Scroll sideways to read the figure</p>
       <p class="panel__cap">On the pre-lock model, zero-shot transfer gives RMSE 0.612 (MAE 0.401, R² = −0.244); 10 % support brings it to 0.540 with R² = 0.046, and 20 % to 0.520 (MAE 0.299, R² = 0.167).</p>
     </figure>
   </section>
@@ -504,7 +618,7 @@
   <!-- =============================== LIMITATIONS ============================= -->
   <section class="sec" id="limits">
     <hr class="rule">
-    <h2 class="sec__head"><span class="sec__num">07</span>What this does not show</h2>
+    <h2 class="sec__head"><span class="sec__num">08</span>What this does not show</h2>
     <div class="warn">
       <p class="warn__head">Read the limitations before citing a number.</p>
       <ul class="warn__list">
@@ -512,7 +626,8 @@
         <li class="warn__item"><strong>The confirmatory target result is a single checkpoint, evaluated once.</strong> It is the best-composite seed of seven source-validation seeds, so the target number is single-seed. Run-level confidence intervals on the locked model have not been computed.</li>
         <li class="warn__item"><strong>The few-shot curve is pre-lock.</strong> It was obtained before the model was frozen and must be re-measured on the locked configuration before it counts as confirmatory evidence.</li>
         <li class="warn__item"><strong>Action use under transfer is unverified.</strong> On the pre-lock model, zeroing or shuffling the future actions changed target RMSE by less than 0.005. That is the first thing to test. The same model was also under-calibrated: 67 % empirical coverage at a nominal 90 %.</li>
-        <li class="warn__item"><strong>Ablations are single-seed</strong> on the pre-search base configuration, and the official baselines are single-seed runs at repository defaults without hyperparameter search.</li>
+        <li class="warn__item"><strong>Ablations are single-seed</strong> on the pre-search base configuration, and the official baselines are single-seed runs at repository defaults without hyperparameter search. They also see a different input contract: 17 sensors plus 4 action channels forecast jointly, with the 7 channels absent on the target zero-imputed in normalized space and RevIN enabled, where SAAC-JEPA receives an explicit sensor-presence mask.</li>
+        <li class="warn__item"><strong>The target stream is resampled under a 2 ms controller-cycle assumption.</strong> The JOANNEUM records are reduced from 1,503,915 raw controller-cycle rows to a 1 Hz grid on that assumption; sensitivity to the resampling choice is a separate robustness analysis that has not been run.</li>
         <li class="warn__item"><strong>No downstream policy learning or off-policy control</strong> is evaluated, so the world-model interpretation stays predictive rather than decision-theoretic.</li>
       </ul>
     </div>
@@ -521,15 +636,30 @@
   <!-- ================================== CITE ================================= -->
   <section class="sec" id="cite">
     <hr class="rule">
-    <h2 class="sec__head"><span class="sec__num">08</span>Cite</h2>
+    <h2 class="sec__head"><span class="sec__num">09</span>Cite</h2>
     <div class="cite">
       <div class="cite__bar">
         <span class="cite__label">BibTeX</span>
         <button class="cite__copy" type="button" id="copyBib">Copy</button>
+        <span class="vh" role="status" aria-live="polite" id="copyStatus"></span>
       </div>
-      <pre class="cite__block" id="bibtex" tabindex="0"></pre>
+      <!-- This block is the source of truth with JavaScript off. It must stay
+           byte-identical to CONFIG.bibtex in main.js — see UPDATING.md. -->
+      <pre class="cite__block" id="bibtex" tabindex="0">@article{bouaziz2026saacjepa,
+  title   = {Schema-Adaptive Action-Conditioned JEPA for Cross-Machine CNC
+             Transfer under Partial Sensor Overlap},
+  author  = {Bouaziz, Ayoub Louaye and Ostertag Tressoux, Matthieu Joseph Paul
+             and Demasles, Anton},
+  journal = {arXiv preprint},
+  year    = {2026},
+  eprint  = {ARXIV-ID},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG},
+  note    = {arXiv identifier to be added after announcement},
+  url     = {https://ostertagmatthieu-dev.github.io/saac-jepa/}
+}</pre>
     </div>
-    <p class="body"><span id="arxivNote" class="mono"></span></p>
+    <p class="body"><span id="arxivNote" class="mono">arXiv: coming soon</span></p>
   </section>
 
 </div>
@@ -538,7 +668,7 @@
 <footer class="foot">
   <div class="wrap">
     <hr class="rule">
-    <div class="foot__cols">
+    <div class="foot__cols foot__cols--three">
       <div class="foot__col">
         <h2 class="foot__h">Datasets</h2>
         <p class="foot__p">THWS five-axis CNC milling with multiple changeovers — <a class="link" href="https://doi.org/10.5281/zenodo.14094887">10.5281/zenodo.14094887</a> · CC BY 4.0</p>
@@ -549,11 +679,18 @@
         <p class="foot__p"><a class="link" href="https://github.com/ostertagmatthieu-dev/saac-jepa">github.com/ostertagmatthieu-dev/saac-jepa</a></p>
         <p class="foot__p">Pipeline, configuration files, the twenty candidate specifications and the audit scripts. Released under the MIT license.</p>
       </div>
+      <div class="foot__col">
+        <h2 class="foot__h">Protocol and compute</h2>
+        <p class="foot__p">Source sessions split 42 / 11 / 9 (group-disjoint), giving 18,267 / 3,423 / 5,189 windows with zero overlap. A unit audit corrected three cross-machine mismatches before modelling: power W→kW, commanded feeds mm/s→mm/min (×60) and spindle deg/s→rpm (÷6). All experiments ran on one NVIDIA DGX Spark (single GB10 GPU), about six GPU-days in total.</p>
+      </div>
     </div>
+    <!-- TODO (authors' decision, deliberately not made here): if you want an explicit
+         licence for THIS PAGE and its figures — e.g. CC BY 4.0 — add it to the line
+         below. The MIT licence named in the Code column and in the JSON-LD covers the
+         software repository only, not the page, the figures or the paper. -->
     <p class="foot__fine">Page and figures © 2026 the authors. Animated versions of the paper schematics; all reported numbers follow the preprint.</p>
   </div>
 </footer>
 
-<script src="main.js"></script>
 </body>
 </html>
