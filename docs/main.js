@@ -16,7 +16,7 @@ const CONFIG = {
     "@article{bouaziz2026saacjepa,",
     "  title   = {Schema-Adaptive Action-Conditioned JEPA for Cross-Machine CNC",
     "             Transfer under Partial Sensor Overlap},",
-    "  author  = {Bouaziz, Ayoub Louaye and Ostertag Tressoux, Matthieu Joseph Paul",
+    "  author  = {Bouaziz, Ayoub Louaye and Ostertag, Matthieu",
     "             and Demasles, Anton},",
     "  journal = {arXiv preprint},",
     "  year    = {2026},",

@@ -4,7 +4,7 @@
 
 **Schema-Adaptive Action-Conditioned JEPA for Cross-Machine CNC Transfer under Partial Sensor Overlap**
 
-Ayoub Louaye Bouaziz (Universite de Bretagne Occidentale), Matthieu Joseph Paul Ostertag Tressoux (Mines Nancy, Universite de Lorraine), Anton Demasles (Mines Nancy, Universite de Lorraine)
+Ayoub Louaye Bouaziz (Universite de Bretagne Occidentale), Matthieu Ostertag (Mines Nancy, Universite de Lorraine), Anton Demasles (Mines Nancy, Universite de Lorraine)
 
 arXiv: link to be added after announcement
 
