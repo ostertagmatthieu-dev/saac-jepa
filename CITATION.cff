@@ -8,10 +8,10 @@ authors:
     affiliation: "Universite de Bretagne Occidentale"
   - given-names: Matthieu Joseph Paul
     family-names: Ostertag Tressoux
-    affiliation: "Universite de Lorraine"
+    affiliation: "Mines Nancy, Universite de Lorraine"
   - given-names: Anton
     family-names: Demasles
-    affiliation: "Universite de Lorraine"
+    affiliation: "Mines Nancy, Universite de Lorraine"
 repository-code: "https://github.com/ostertagmatthieu-dev/saac-jepa"
 license: MIT
 year: 2026
@@ -24,10 +24,10 @@ preferred-citation:
       affiliation: "Universite de Bretagne Occidentale"
     - given-names: Matthieu Joseph Paul
       family-names: Ostertag Tressoux
-      affiliation: "Universite de Lorraine"
+      affiliation: "Mines Nancy, Universite de Lorraine"
     - given-names: Anton
       family-names: Demasles
-      affiliation: "Universite de Lorraine"
+      affiliation: "Mines Nancy, Universite de Lorraine"
   journal: "arXiv preprint"
   year: 2026
   notes: "arXiv identifier to be added after announcement"
