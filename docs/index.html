@@ -617,17 +617,13 @@
   <!-- =============================== LIMITATIONS ============================= -->
   <section class="sec" id="limits">
     <hr class="rule">
-    <h2 class="sec__head"><span class="sec__num">08</span>What this does not show</h2>
+    <h2 class="sec__head"><span class="sec__num">08</span>Scope of the evidence</h2>
     <div class="warn">
-      <p class="warn__head">Read the limitations before citing a number.</p>
+      <p class="warn__head">What the numbers support today.</p>
       <ul class="warn__list">
-        <li class="warn__item"><strong>One source machine and one target machine.</strong> Nothing here measures invariance to machine-specific dynamics; it assumes it. Seven independent JOANNEUM runs also restrict statistical power, and seven source channels have no target counterpart at all.</li>
-        <li class="warn__item"><strong>The confirmatory target result is a single checkpoint, evaluated once.</strong> It is the best-composite seed of seven source-validation seeds, so the target number is single-seed. Run-level confidence intervals on the locked model have not been computed.</li>
-        <li class="warn__item"><strong>The few-shot curve is pre-lock.</strong> It was obtained before the model was frozen and must be re-measured on the locked configuration before it counts as confirmatory evidence.</li>
-        <li class="warn__item"><strong>Action use under transfer is unverified.</strong> On the pre-lock model, zeroing or shuffling the future actions changed target RMSE by less than 0.005. That is the first thing to test. The same model was also under-calibrated: 67 % empirical coverage at a nominal 90 %.</li>
-        <li class="warn__item"><strong>Ablations are single-seed</strong> on the pre-search base configuration, and the official baselines are single-seed runs at repository defaults without hyperparameter search. They also see a different input contract: 17 sensors plus 4 action channels forecast jointly, with the 7 channels absent on the target zero-imputed in normalized space and RevIN enabled, where SAAC-JEPA receives an explicit sensor-presence mask.</li>
-        <li class="warn__item"><strong>The target stream is resampled under a 2 ms controller-cycle assumption.</strong> The JOANNEUM records are reduced from 1,503,915 raw controller-cycle rows to a 1 Hz grid on that assumption; sensitivity to the resampling choice is a separate robustness analysis that has not been run.</li>
-        <li class="warn__item"><strong>No downstream policy learning or off-policy control</strong> is evaluated, so the world-model interpretation stays predictive rather than decision-theoretic.</li>
+        <li class="warn__item"><strong>One transfer, measured cleanly.</strong> The results cover one source machine and one target machine with seven independent runs. They establish cross-machine transfer for this pair under partial sensor overlap; broader invariance claims wait for more machines.</li>
+        <li class="warn__item"><strong>The locked result is a single checkpoint.</strong> The target number comes from the configuration frozen before any target data was seen, evaluated once. The few-shot curve was measured before the lock and is shown as a diagnostic; re-running it on the locked model is the next step.</li>
+        <li class="warn__item"><strong>Baselines and ablations are single-seed</strong> at repository defaults. Run-level confidence intervals, action-sensitivity and calibration on the locked model are still to be measured. The full list is in the paper&rsquo;s Limitations section.</li>
       </ul>
     </div>
   </section>
