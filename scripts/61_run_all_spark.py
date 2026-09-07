@@ -73,15 +73,19 @@ def build_jobs(cfg, py):
     ]
     jobs['p6_evals'] = [J(s[:2], sc(py, f'{s}.py', '--config', cfg, '--ckpt', ckpt, '--device', 'cuda:0')) for s in eval_scripts]
 
-    # Architecture search V2: 20 candidates x 3 discovery seeds (60 jobs, packed 3-per-GPU),
-    # validation-only ranking, top-5 confirmation to 5 seeds, lock, then the single target test.
+    # Architecture search V2: 20 candidates x 4 discovery seeds (80 jobs, packed 3-per-GPU),
+    # validation-only ranking, top-5 confirmation to 5 seeds, then to 7 seeds because the
+    # provisional winner changed under confirmation, lock, then the single target test.
     search_manifest = 'configs/search_v2/manifest.json'
     jobs['p7_search'] = [
         J('40', sc(py, '40_generate_20_random_methods.py', '--config', cfg)),
         J('42', sc(py, '42_run_20_random_methods_dgx.py', '--manifest', search_manifest, '--gpus', '0,0,0', '--seeds', '0,1,2,3'), deps=['40']),
         J('43', sc(py, '43_rank_methods_validation_only.py'), deps=['42']),
         J('64', sc(py, '64_confirm_top5.py', '--manifest', search_manifest, '--gpus', '0,0,0', '--top', '5', '--seeds', '0,1,2,3,4'), deps=['43']),
-        J('44', sc(py, '44_lock_best_method.py'), deps=['64']),
+        # Seeds 5 and 6: script 64 runs only the missing seeds for the top-5 and re-ranks; this is
+        # the "refuse to lock, add seeds" step of the paper's selection protocol.
+        J('64b', sc(py, '64_confirm_top5.py', '--manifest', search_manifest, '--gpus', '0,0,0', '--top', '5', '--seeds', '0,1,2,3,4,5,6'), deps=['64']),
+        J('44', sc(py, '44_lock_best_method.py'), deps=['64b']),
         J('45', sc(py, '45_test_locked_method_ds03.py', '--device', 'cuda:0'), deps=['44']),
     ]
 

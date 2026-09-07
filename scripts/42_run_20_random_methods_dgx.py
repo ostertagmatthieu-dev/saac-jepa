@@ -7,7 +7,8 @@ p.add_argument('--out',default='outputs/random_search')
 p.add_argument('--seeds',default='0,1,2')
 p.add_argument('--dry-run',action='store_true')
 a=p.parse_args(); methods=json.loads(Path(a.manifest).read_text()); seeds=[int(x) for x in a.seeds.split(',')]; gpus=a.gpus.split(',')
-# 20 methods x 3 seeds = 60 independent source-validation runs on DGX.
+# 20 methods x N seeds of independent source-validation runs on DGX; the pipeline runner
+# (scripts/61_run_all_spark.py) passes --seeds 0,1,2,3, i.e. four discovery seeds (80 runs).
 # Slot-based pool: duplicate gpu ids (e.g. --gpus 0,0,0) pack several jobs on one GPU.
 slots=list(enumerate(gpus))
 queue=[(m,seed) for m in methods for seed in seeds]; procs=[]; Path(a.out).mkdir(parents=True,exist_ok=True)
