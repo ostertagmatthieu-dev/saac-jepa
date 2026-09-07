@@ -6,8 +6,8 @@ authors:
   - given-names: Ayoub Louaye
     family-names: Bouaziz
     affiliation: "Universite de Bretagne Occidentale"
-  - given-names: Matthieu Joseph Paul
-    family-names: Ostertag Tressoux
+  - given-names: Matthieu
+    family-names: Ostertag
     affiliation: "Mines Nancy, Universite de Lorraine"
   - given-names: Anton
     family-names: Demasles
@@ -22,8 +22,8 @@ preferred-citation:
     - given-names: Ayoub Louaye
       family-names: Bouaziz
       affiliation: "Universite de Bretagne Occidentale"
-    - given-names: Matthieu Joseph Paul
-      family-names: Ostertag Tressoux
+    - given-names: Matthieu
+      family-names: Ostertag
       affiliation: "Mines Nancy, Universite de Lorraine"
     - given-names: Anton
       family-names: Demasles
