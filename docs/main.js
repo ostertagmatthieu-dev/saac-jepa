@@ -410,7 +410,8 @@ function periodic(rand, n) {
     ax.href = CONFIG.arxivUrl;
     ax.classList.remove("btn--muted");
     ax.removeAttribute("aria-disabled");
-    ax.textContent = "arXiv";
+    const lbl = ax.querySelector(".btn__label");
+    if (lbl) lbl.textContent = "arXiv"; else ax.textContent = "arXiv";
   }
   if (note) note.textContent = CONFIG.arxivUrl ? CONFIG.arxivUrl : CONFIG.arxivPlaceholder;
 
