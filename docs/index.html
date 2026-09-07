@@ -171,6 +171,8 @@
 
     <h1 class="masthead__title">Schema-Adaptive Action-Conditioned JEPA for Cross-Machine CNC Transfer under Partial Sensor Overlap</h1>
 
+    <p class="masthead__deck">A CNC world model trained on 17 sensors, locked on source data alone, then evaluated in a single sealed pass on a machine it was never trained on, with 7 of them missing.</p>
+
     <p class="masthead__authors">
       <span class="masthead__author"><a class="masthead__mail" href="mailto:abouaziz@univ-brest.fr">Ayoub Louaye Bouaziz</a><span class="masthead__aff">Université de Bretagne Occidentale</span></span>
       <span class="masthead__author"><a class="masthead__mail" href="mailto:matthieu.ostertag7@etu.univ-lorraine.fr">Matthieu Ostertag</a><span class="masthead__aff">Mines Nancy, Université de Lorraine</span></span>
@@ -210,7 +212,7 @@
     <h2 class="sec__head"><span class="sec__num">02</span>Same process, different machine, fewer sensors</h2>
     <p class="lede">A CNC world model should predict what the process does next <em>under a candidate action</em>, and it should keep working when it is moved to another machine whose sensing interface is not the one it was trained on.</p>
     <p class="body">We train on the <strong>THWS Spinner U5-620</strong> five-axis machining centre — 17 canonical sensor channels, 62 NC-program sessions on a 1 Hz grid — and transfer to the <strong>FH JOANNEUM</strong> repository, where only 10 of those channels exist across 7 independent runs. Actions are the spindle speed and the commanded X/Y/Z feeds. The model takes a <span class="mono">K&nbsp;=&nbsp;32&nbsp;s</span> context and predicts directly at horizons <span class="mono">{1,&nbsp;2,&nbsp;4,&nbsp;8,&nbsp;16}&nbsp;s</span> rather than rolling out autoregressively.</p>
-    <p class="body">The headline is deliberately narrow and partly negative. JEPA pretraining does <em>not</em> improve clean-source forecasting over matched scratch training. What it buys is an action-conditioned, uncertainty-aware latent that survives a 17-to-10 schema drop on a machine it has never seen — measured once, after the configuration was locked on source data alone. Whether the transferred latent is genuinely <em>controllable</em> is not yet established (see §08).</p>
+    <p class="body">Trained on 17 channels and locked on source data alone, with the target machine kept outside the architecture search, the model transfers to an unseen machine missing 7 of them and beats persistence on a single sealed pass. JEPA pretraining does <em>not</em> improve clean-source forecasting over matched scratch training. Source accuracy alone is therefore not sufficient to judge a transferred representation, and cross-machine adaptation under partial sensor overlap has to be evaluated as an axis of its own. Whether the transferred latent actually uses the control input is still to be measured on the locked model (see §08).</p>
     <dl class="facts">
       <div class="facts__cell"><dt class="facts__k">Source</dt><dd class="facts__v">17 sensors · 62 sessions</dd></div>
       <div class="facts__cell"><dt class="facts__k">Target</dt><dd class="facts__v">10 shared · 7 runs</dd></div>
@@ -362,35 +364,38 @@
     </figure>
   </section>
 
-  <!-- ================================= FIG 2 ================================= -->
-  <section class="sec" id="fig2">
+  <!-- ================================ RESULTS ================================ -->
+  <section class="sec" id="results">
     <hr class="rule">
-    <h2 class="sec__head"><span class="sec__num">04</span>What a world model buys you</h2>
-    <p class="body">A forecaster answers “what happens next”. A world model answers “what happens next <em>if I do this</em>”. On highly autocorrelated industrial streams the two are easy to confuse: a model can score well at short horizons while effectively ignoring the control input.</p>
-    <figure class="panel" data-fig="f2">
-      <figcaption class="panel__bar">
-        <span class="panel__id">FIG. 2</span>
-        <span class="panel__name">Action-conditioned simulation of candidate futures</span>
-        <button class="panel__replay" type="button" data-replay="f2" aria-label="Replay the Figure 2 animation">Replay</button>
-      </figcaption>
-      <div class="panel__body">
-        <svg class="f2" viewBox="0 0 1080 474" role="img" focusable="false"
-             aria-labelledby="f2Title" aria-describedby="f2Desc">
-          <title id="f2Title">Action-conditioned simulation of candidate futures</title>
-          <desc id="f2Desc">Animated schematic: a 32-second context window of observed sensor traces is encoded into a latent state; two candidate action sequences, spindle up and spindle down, then produce two diverging multi-horizon predictions with widening uncertainty bands at 1, 2, 4, 8 and 16 seconds. Conceptual, not a closed-loop result.</desc>
-          <g id="f2gen"></g>
-        </svg>
-        <noscript><p class="panel__noscript">This schematic is drawn by script; open the PDF for the static figure.</p></noscript>
-      </div>
-      <p class="panel__hint">Scroll sideways to read the figure</p>
-      <p class="panel__cap"><strong>Conceptual schematic, not a closed-loop deployment result.</strong> The same 32 s context and latent state are predicted forward at each horizon — directly, not autoregressively — under two candidate spindle commands; the head emits a mean and a log-variance per channel, and the bands are drawn illustratively. Measured predictive intervals were under-calibrated on the pre-lock model (67 % coverage at nominal 90 %) and coverage has not been computed for the locked model.</p>
-    </figure>
+    <h2 class="sec__head"><span class="sec__num">04</span>Results at a glance</h2>
+    <p class="lede"><strong>One sealed pass on a machine never seen in training, 7 of 17 sensors missing: RMSE 0.546 against 0.654 for persistence.</strong> Two official baselines still do better: PatchTST 0.503 and iTransformer 0.498 (lower is better).</p>
+    <div class="tablewrap">
+      <table class="rt">
+        <caption class="rt__caption">RMSE in z units, lower is better. Source column: the official baselines are scored on the source test split (5,189 windows, 17 sensors); SAAC-JEPA is the seven-seed mean ± SD on source validation, and the scratch/pretrained rows are five-seed source validation — the source column therefore does not compare like with like. Target column: the single confirmatory pass on the 10 shared JOANNEUM channels (2,457 windows).</caption>
+        <thead>
+          <tr><th class="rt__th" scope="col">Setting</th><th class="rt__th rt__th--num" scope="col">Source RMSE</th><th class="rt__th rt__th--num" scope="col">Target zero-shot RMSE</th><th class="rt__th" scope="col">Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr class="rt__group"><th class="rt__gh" colspan="4" scope="colgroup">Does pretraining help on the source machine?</th></tr>
+          <tr><th class="rt__rh" scope="row">Scratch</th><td class="rt__num">0.811 ± 0.022</td><td class="rt__num rt__num--none">—</td><td class="rt__note">five matched seeds</td></tr>
+          <tr><th class="rt__rh" scope="row">Pretrained body + fresh head</th><td class="rt__num">0.813 ± 0.022</td><td class="rt__num rt__num--none">—</td><td class="rt__note">p = 0.76 vs scratch</td></tr>
+          <tr><th class="rt__rh" scope="row">Complete pretrained checkpoint</th><td class="rt__num">0.812 ± 0.012</td><td class="rt__num rt__num--none">—</td><td class="rt__note">third matched control</td></tr>
+          <tr class="rt__group"><th class="rt__gh" colspan="4" scope="colgroup">Does it transfer to an unseen machine?</th></tr>
+          <tr><th class="rt__rh" scope="row">Persistence</th><td class="rt__num">1.135</td><td class="rt__num">0.654</td><td class="rt__note">trivial floor; 1.135 on source validation, 1.128 on the source test split</td></tr>
+          <tr><th class="rt__rh" scope="row">Linear drift</th><td class="rt__num">0.928</td><td class="rt__num rt__num--none">—</td><td class="rt__note">trivial reference</td></tr>
+          <tr><th class="rt__rh" scope="row">PatchTST (official, RevIN)</th><td class="rt__num">0.804</td><td class="rt__num rt__num--best">0.503</td><td class="rt__note">deterministic</td></tr>
+          <tr><th class="rt__rh" scope="row">iTransformer (official, RevIN)</th><td class="rt__num">0.822</td><td class="rt__num rt__num--best">0.498</td><td class="rt__note">deterministic</td></tr>
+          <tr class="rt__row--ours"><th class="rt__rh" scope="row">SAAC-JEPA (locked)</th><td class="rt__num">0.822 ± 0.009</td><td class="rt__num">0.546</td><td class="rt__note">probabilistic (mean and log-variance head)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="honest"><strong>Said plainly:</strong> official RevIN-equipped forecasters remain stronger than SAAC-JEPA in raw zero-shot RMSE, and on the source machine ordinary supervised baselines are stronger too (RSSM 0.759 and MLP 0.771 on source validation, against 0.822 for the locked candidate). The claim is narrower: the locked model beats persistence on a machine it has never seen while losing 7 of 17 channels, and its configuration was selected on source data alone. Per horizon it explains variance only at short horizons — target R² is 0.035, 0.055, 0.052, −0.023 and −0.059 at h = 1, 2, 4, 8, 16 s, i.e. below the pooled target-mean predictor at 8 and 16 s.</p>
   </section>
 
   <!-- ================================= FIG 3 ================================= -->
   <section class="sec" id="fig3">
     <hr class="rule">
-    <h2 class="sec__head"><span class="sec__num">05</span>The lock: how the target machine was kept out</h2>
+    <h2 class="sec__head"><span class="sec__num">05</span>The lock: how the target machine was kept out of model selection</h2>
     <p class="body">Twenty candidate architectures were written down before any of them ran. Ranking used a composite source-validation score — 0.30 clean RMSE, 0.25 schema-drop RMSE, 0.15 masked RMSE, 0.10 long-horizon RMSE, 0.10 calibration penalty, 0.10 SSL validation loss — each component z-scored within the candidate pool, lower is better — plus penalties of 3.0 per collapsed seed and 1.0 for weak action usage. When the provisional winner changed under confirmation, locking was <em>refused</em> and more seeds were added. Two candidates collapsed outright — the plain JEPA control without anti-collapse regularization on all four seeds, and the largest model (d = 512, eight layers) on three of four. Moving the regularizers to the right latents raised target-encoder effective rank from roughly 5 % to 58 % of the latent dimensionality.</p>
     <figure class="panel" data-fig="f3">
       <figcaption class="panel__bar">
@@ -509,49 +514,46 @@
     </figure>
   </section>
 
-  <!-- ================================ RESULTS ================================ -->
-  <section class="sec" id="results">
+  <!-- ================================= FIG 2 ================================= -->
+  <section class="sec" id="fig2">
     <hr class="rule">
-    <h2 class="sec__head"><span class="sec__num">06</span>Results at a glance</h2>
-    <div class="tablewrap">
-      <table class="rt">
-        <caption class="rt__caption">RMSE in z units, lower is better. Source column: the official baselines are scored on the source test split (5,189 windows, 17 sensors); SAAC-JEPA is the seven-seed mean ± SD on source validation, and the scratch/pretrained rows are five-seed source validation — the source column therefore does not compare like with like. Target column: the single confirmatory pass on the 10 shared JOANNEUM channels (2,457 windows).</caption>
-        <thead>
-          <tr><th class="rt__th" scope="col">Setting</th><th class="rt__th rt__th--num" scope="col">Source RMSE</th><th class="rt__th rt__th--num" scope="col">Target zero-shot RMSE</th><th class="rt__th" scope="col">Notes</th></tr>
-        </thead>
-        <tbody>
-          <tr class="rt__group"><th class="rt__gh" colspan="4" scope="colgroup">Does pretraining help on the source machine?</th></tr>
-          <tr><th class="rt__rh" scope="row">Scratch</th><td class="rt__num">0.811 ± 0.022</td><td class="rt__num rt__num--none">—</td><td class="rt__note">five matched seeds</td></tr>
-          <tr><th class="rt__rh" scope="row">Pretrained body + fresh head</th><td class="rt__num">0.813 ± 0.022</td><td class="rt__num rt__num--none">—</td><td class="rt__note">p = 0.76 vs scratch</td></tr>
-          <tr><th class="rt__rh" scope="row">Complete pretrained checkpoint</th><td class="rt__num">0.812 ± 0.012</td><td class="rt__num rt__num--none">—</td><td class="rt__note">third matched control</td></tr>
-          <tr class="rt__group"><th class="rt__gh" colspan="4" scope="colgroup">Does it transfer to an unseen machine?</th></tr>
-          <tr><th class="rt__rh" scope="row">Persistence</th><td class="rt__num">1.135</td><td class="rt__num">0.654</td><td class="rt__note">trivial floor; 1.135 on source validation, 1.128 on the source test split</td></tr>
-          <tr><th class="rt__rh" scope="row">Linear drift</th><td class="rt__num">0.928</td><td class="rt__num rt__num--none">—</td><td class="rt__note">trivial reference</td></tr>
-          <tr><th class="rt__rh" scope="row">PatchTST (official, RevIN)</th><td class="rt__num">0.804</td><td class="rt__num rt__num--best">0.503</td><td class="rt__note">deterministic</td></tr>
-          <tr><th class="rt__rh" scope="row">iTransformer (official, RevIN)</th><td class="rt__num">0.822</td><td class="rt__num rt__num--best">0.498</td><td class="rt__note">deterministic</td></tr>
-          <tr class="rt__row--ours"><th class="rt__rh" scope="row">SAAC-JEPA (locked)</th><td class="rt__num">0.822 ± 0.009</td><td class="rt__num">0.546</td><td class="rt__note">probabilistic, action-conditioned</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <p class="body">Ordinary supervised baselines are also stronger than the locked model on the source machine: RSSM reaches 0.759 and MLP 0.771 on source validation, against 0.822 for the locked candidate and 0.809 for the pre-search JEPA reference (source test split). The paper draws no source-forecasting superiority claim.</p>
-    <p class="honest"><strong>Said plainly:</strong> official RevIN-equipped forecasters remain stronger than SAAC-JEPA in raw zero-shot RMSE. The locked model beats persistence on a machine it has never seen while losing 7 of 17 channels, and it does so with an action-conditioned, uncertainty-aware latent — but that is a different claim from state of the art. Per horizon the transferred model explains variance only at short horizons — target R² is 0.035, 0.055, 0.052, −0.023 and −0.059 at h = 1, 2, 4, 8, 16 s, i.e. below the pooled target-mean predictor at 8 and 16 s.</p>
+    <h2 class="sec__head"><span class="sec__num">06</span>What a world model buys you</h2>
+    <p class="body">A forecaster answers “what happens next”. A world model answers “what happens next <em>if I do this</em>”. On highly autocorrelated industrial streams the two are easy to confuse: a model can score well at short horizons while effectively ignoring the control input.</p>
+    <figure class="panel" data-fig="f2">
+      <figcaption class="panel__bar">
+        <span class="panel__id">FIG. 2</span>
+        <span class="panel__name">Action-conditioned simulation of candidate futures</span>
+        <button class="panel__replay" type="button" data-replay="f2" aria-label="Replay the Figure 2 animation">Replay</button>
+      </figcaption>
+      <div class="panel__body">
+        <svg class="f2" viewBox="0 0 1080 474" role="img" focusable="false"
+             aria-labelledby="f2Title" aria-describedby="f2Desc">
+          <title id="f2Title">Action-conditioned simulation of candidate futures</title>
+          <desc id="f2Desc">Animated schematic: a 32-second context window of observed sensor traces is encoded into a latent state; two candidate action sequences, spindle up and spindle down, then produce two diverging multi-horizon predictions with widening uncertainty bands at 1, 2, 4, 8 and 16 seconds. Conceptual, not a closed-loop result.</desc>
+          <g id="f2gen"></g>
+        </svg>
+        <noscript><p class="panel__noscript">This schematic is drawn by script; open the PDF for the static figure.</p></noscript>
+      </div>
+      <p class="panel__hint">Scroll sideways to read the figure</p>
+      <p class="panel__cap"><strong>Conceptual schematic, not a measured result.</strong> The same 32 s context and latent state are predicted forward at each horizon — directly, not autoregressively — under two candidate spindle commands; the head emits a mean and a log-variance per channel. The divergence between the two branches and the width of the bands are drawn to illustrate the mechanism, not taken from data. Action sensitivity under transfer and calibration have not been re-measured on the locked model (see §08).</p>
+    </figure>
   </section>
 
-  <!-- ================================= FIG 5 ================================= -->
+  <!-- ================================= FIG 4 ================================= -->
   <section class="sec" id="fig5">
     <hr class="rule">
-    <h2 class="sec__head"><span class="sec__num">07</span>A little target data goes a long way</h2>
+    <h2 class="sec__head"><span class="sec__num">07</span>Adaptation with 10–20 % target support</h2>
     <figure class="panel" data-fig="f5">
       <figcaption class="panel__bar">
-        <span class="panel__id">FIG. 5</span>
+        <span class="panel__id">FIG. 4(b)</span>
         <span class="panel__name">THWS → JOANNEUM few-shot adaptation (pre-lock model)</span>
-        <button class="panel__replay" type="button" data-replay="f5" aria-label="Replay the Figure 5 animation">Replay</button>
+        <button class="panel__replay" type="button" data-replay="f5" aria-label="Replay the Figure 4(b) animation">Replay</button>
       </figcaption>
       <div class="panel__body">
         <svg class="f5" viewBox="0 0 1080 466" role="img" focusable="false"
              aria-labelledby="f5Title" aria-describedby="f5Desc">
           <title id="f5Title">THWS to JOANNEUM few-shot adaptation curve</title>
-          <desc id="f5Desc">Animated line chart. Horizontal axis: target support fraction of 0, 5, 10 and 20 percent. Vertical axis: RMSE on the JOANNEUM target in z units. The line runs 0.612 at zero support, 0.611 at five percent, 0.540 at ten percent and 0.520 at twenty percent. Two dashed reference lines mark persistence at 0.654 and the locked model's sealed-pass result at 0.546. The curve was measured before the model lock and is diagnostic, not confirmatory.</desc>
+          <desc id="f5Desc">Animated line chart. Horizontal axis: target support fraction of 0, 5, 10 and 20 percent. Vertical axis: RMSE on the JOANNEUM target in z units. The line runs 0.612 at zero support, 0.611 at five percent, 0.540 at ten percent and 0.520 at twenty percent. A dashed reference line marks persistence at 0.654. The curve was measured on the pre-lock model and is diagnostic, not confirmatory.</desc>
 
           <!-- grid -->
           <g class="f5__grid">
@@ -581,8 +583,6 @@
           <!-- reference lines -->
           <path class="f5__ref f5__ref--alert anim-draw" style="--d:.60s" d="M120 99 H 1010"/>
           <text class="f5__reflab f5__reflab--alert anim-in" style="--d:.80s" x="1004" y="121" text-anchor="end">persistence, sealed pass — 0.654</text>
-          <path class="f5__ref f5__ref--lat anim-draw" style="--d:.90s" d="M120 261 H 1010"/>
-          <text class="f5__reflab f5__reflab--lat anim-in" style="--d:1.10s" x="1004" y="248" text-anchor="end">locked model, sealed pass — 0.546</text>
 
           <!-- series -->
           <path class="f5__line anim-draw" style="--d:1.35s" d="M178 162 L 371.5 163.5 L 565 270 L 951.9 300"/>
@@ -601,10 +601,9 @@
           </g>
 
           <g class="anim-in" style="--d:2.85s">
-            <rect class="f5__flag" x="120" y="386" width="890" height="64" rx="3"/>
+            <rect class="f5__flag" x="120" y="386" width="890" height="48" rx="3"/>
             <text class="f5__flagtext" x="132" y="404">Pre-lock model, evaluated on the query windows left after the support fraction is removed.</text>
-            <text class="f5__flagtext" x="132" y="422">Diagnostic, not confirmatory — the dashed references come from the locked model’s separate</text>
-            <text class="f5__flagtext" x="132" y="440">sealed 2,457-window pass and are not a like-for-like comparison.</text>
+            <text class="f5__flagtext" x="132" y="422">Diagnostic, not confirmatory. The persistence reference comes from the separate sealed 2,457-window pass.</text>
           </g>
 
         </svg>
@@ -622,8 +621,8 @@
       <p class="warn__head">What the numbers support today.</p>
       <ul class="warn__list">
         <li class="warn__item"><strong>One transfer, measured cleanly.</strong> The results cover one source machine and one target machine with seven independent runs. They establish cross-machine transfer for this pair under partial sensor overlap; broader invariance claims wait for more machines.</li>
-        <li class="warn__item"><strong>The locked result is a single checkpoint.</strong> The target number comes from the configuration frozen before any target data was seen, evaluated once. The few-shot curve was measured before the lock and is shown as a diagnostic; re-running it on the locked model is the next step.</li>
-        <li class="warn__item"><strong>Baselines and ablations are single-seed</strong> at repository defaults. Run-level confidence intervals, action-sensitivity and calibration on the locked model are still to be measured. The full list is in the paper&rsquo;s Limitations section.</li>
+        <li class="warn__item"><strong>The locked result is a single checkpoint.</strong> The target number comes from the configuration frozen on source data alone, evaluated once. The few-shot curve was measured before the lock and is shown as a diagnostic; re-running it on the locked model is the next step.</li>
+        <li class="warn__item"><strong>Baselines and ablations are single-seed</strong> at repository defaults. On the pre-lock model, shuffling future actions moved target RMSE by less than 0.005 and predictive intervals covered 67 % at a nominal 90 %; neither has been re-measured on the locked model, and run-level confidence intervals are pending. The full list is in the paper&rsquo;s Limitations section.</li>
       </ul>
     </div>
   </section>
@@ -683,7 +682,7 @@
          licence for THIS PAGE and its figures — e.g. CC BY 4.0 — add it to the line
          below. The MIT licence named in the Code column and in the JSON-LD covers the
          software repository only, not the page, the figures or the paper. -->
-    <p class="foot__fine">Page and figures © 2026 the authors. Animated versions of the paper schematics; all reported numbers follow the preprint.</p>
+    <p class="foot__fine">Page and figures © 2026 the authors. Animated versions of the paper schematics; all reported numbers and figure numbers follow the preprint, so figures are not in page order.</p>
   </div>
 </footer>
 

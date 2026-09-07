@@ -85,6 +85,7 @@ body{
   text-wrap:balance;
 }
 @media(max-width:900px){.masthead__title{font-size:clamp(30px,6.4vw,52px);max-width:none}}
+.masthead__deck{font-size:var(--s-lede);line-height:1.5;margin:18px 0 0;max-width:54ch;color:var(--ink-72);text-wrap:pretty}
 
 .masthead__authors{display:flex;flex-wrap:wrap;gap:8px 30px;margin:22px 0 0;padding:0}
 .masthead__author{display:block;font-family:var(--display);font-weight:600;font-size:19px;line-height:1.2}
@@ -298,10 +299,8 @@ body{
 .f5__axlab{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;fill:var(--ink-56)}
 .f5__ref{fill:none;stroke-width:1.3;stroke-dasharray:7 5}
 .f5__ref--alert{stroke:var(--alert)}
-.f5__ref--lat{stroke:var(--violet)}
 .f5__reflab{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.04em}
 .f5__reflab--alert{fill:var(--alert)}
-.f5__reflab--lat{fill:var(--violet)}
 .f5__line{fill:none;stroke:var(--teal);stroke-width:2.6;stroke-linejoin:round;stroke-linecap:round}
 .f5__dot{fill:#fff;stroke:var(--teal);stroke-width:2.6}
 .f5__val{font-family:var(--mono);font-size:13px;font-weight:700;fill:var(--ink)}
@@ -369,10 +368,11 @@ body{
   .masthead .wrap{display:flex;flex-direction:column}
   .masthead__eyebrow{order:1}
   .masthead__title{order:2;margin-top:8px}
-  .masthead__authors{order:3}
-  .btnrow{order:4}
-  .strip{order:5;margin-top:30px}
-  .legend{order:6}
+  .masthead__deck{order:3}
+  .masthead__authors{order:4}
+  .btnrow{order:5}
+  .strip{order:6;margin-top:30px}
+  .legend{order:7}
 
   /* The hint must sit OUTSIDE the scrolling box, or the horizontal scrollbar
      is painted over it. Hence .strip__scroll rather than .strip itself. */
