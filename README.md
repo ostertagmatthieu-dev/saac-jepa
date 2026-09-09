@@ -244,6 +244,30 @@ python scripts/39_statistical_tests_n6.py --jepa outputs/per_channel_run.csv --b
 python scripts/57_sampling_rate_sensitivity_train_eval.py --config configs/base.yaml --device cuda:0
 ```
 
+## Post-lock RevIN ablation (paper App. H)
+
+The locked model (M03) uses a fixed source-train z-score. The official PatchTST and
+iTransformer baselines use RevIN. `scripts/68_revin_ablation.py` runs the paired ablation
+that isolates this difference: `configs/search_v2/M03.yaml` (control, verbatim) against
+`configs/revin/M03_revin.yaml` (identical plus `model.revin.enabled: true`), three seeds
+each through `scripts/41`, then a second, declared read of DS03 on all six runs with no
+selection on the target. `src/cncjepa/models/revin.py` is presence-aware (context-window
+statistics over present entries only, identity for unseen channels, Gaussian head
+de-normalized), and `enabled: false` is bitwise the V1 code path (`tests/test_p3fix.py`,
+section (i)).
+
+```bash
+python scripts/68_revin_ablation.py train --seeds 0,1,2 --device cuda:0
+python scripts/68_revin_ablation.py summarize
+python scripts/68_revin_ablation.py ds03
+```
+
+Result: target zero-shot RMSE 0.495 +/- 0.004 (RevIN) against 0.555 +/- 0.015 (control),
+level with the official baselines, but target NLL 20.6 against 0.9 because stationary
+context windows drive the instance scale to sqrt(eps). M03 stays the locked model; the
+RevIN numbers are diagnostic. The summaries and per-run validation metrics are kept under
+`paper/results/revin_ablation/`. Note that DS03 has now been read twice.
+
 ## Verification
 
 ```bash

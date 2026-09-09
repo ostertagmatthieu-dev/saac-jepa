@@ -1,0 +1,134 @@
+{
+  "declaration": "DS03 (target machine) re-opened on 2026-09-09 for the paired RevIN ablation (V2). V1 lock (outputs/random_search/LOCKED_BEST.json) already consumed the single declared test; this is the second, declared, opening. Both arms are evaluated on every seed with no selection on DS03; the validation verdict (summary.json) was fixed before this stage ran.",
+  "protocol": "scripts/45: evaluate_jepa(finetune/best.pt, target_all), model rebuilt from the run config.yaml, source_train normalizers",
+  "runs": {
+    "M03/seed_0": {
+      "arm": "M03",
+      "seed": 0,
+      "revin_enabled": false,
+      "target_ds03": {
+        "rmse": 0.5455788826782243,
+        "mae": 0.3523577162016647,
+        "r2": 0.011832055396292951,
+        "nll": 0.5156518683862015
+      },
+      "n_windows": 2457,
+      "load_audit": {
+        "weights_changed": true,
+        "missing_keys": [],
+        "unexpected_keys": []
+      }
+    },
+    "M03/seed_1": {
+      "arm": "M03",
+      "seed": 1,
+      "revin_enabled": false,
+      "target_ds03": {
+        "rmse": 0.5716176111602902,
+        "mae": 0.36816730202671366,
+        "r2": -0.08474300637278165,
+        "nll": -0.0015693323603478576
+      },
+      "n_windows": 2457,
+      "load_audit": {
+        "weights_changed": true,
+        "missing_keys": [],
+        "unexpected_keys": []
+      }
+    },
+    "M03/seed_2": {
+      "arm": "M03",
+      "seed": 2,
+      "revin_enabled": false,
+      "target_ds03": {
+        "rmse": 0.5469956226006266,
+        "mae": 0.3496400075174364,
+        "r2": 0.006693312944987095,
+        "nll": 2.147121489621315
+      },
+      "n_windows": 2457,
+      "load_audit": {
+        "weights_changed": true,
+        "missing_keys": [],
+        "unexpected_keys": []
+      }
+    },
+    "M03_revin/seed_0": {
+      "arm": "M03_revin",
+      "seed": 0,
+      "revin_enabled": true,
+      "target_ds03": {
+        "rmse": 0.49942424613551084,
+        "mae": 0.27962707025967476,
+        "r2": 0.17195316226901503,
+        "nll": 22.484411884410054
+      },
+      "n_windows": 2457,
+      "load_audit": {
+        "weights_changed": true,
+        "missing_keys": [],
+        "unexpected_keys": []
+      }
+    },
+    "M03_revin/seed_1": {
+      "arm": "M03_revin",
+      "seed": 1,
+      "revin_enabled": true,
+      "target_ds03": {
+        "rmse": 0.4924135896055575,
+        "mae": 0.2721917713213207,
+        "r2": 0.19503737241732355,
+        "nll": 15.066188441187215
+      },
+      "n_windows": 2457,
+      "load_audit": {
+        "weights_changed": true,
+        "missing_keys": [],
+        "unexpected_keys": []
+      }
+    },
+    "M03_revin/seed_2": {
+      "arm": "M03_revin",
+      "seed": 2,
+      "revin_enabled": true,
+      "target_ds03": {
+        "rmse": 0.49283303886319163,
+        "mae": 0.2752706922825641,
+        "r2": 0.19366541685443728,
+        "nll": 24.353860398858416
+      },
+      "n_windows": 2457,
+      "load_audit": {
+        "weights_changed": true,
+        "missing_keys": [],
+        "unexpected_keys": []
+      }
+    }
+  },
+  "persistence": {
+    "rmse": 0.6540084571862572,
+    "mae": 0.3162477144398028,
+    "r2": -0.4199805188732395
+  },
+  "M03_rmse_mean_std_n": [
+    0.5547307054797136,
+    0.01464163500434453,
+    3
+  ],
+  "M03_revin_rmse_mean_std_n": [
+    0.49489029153475333,
+    0.003932116816834185,
+    3
+  ],
+  "paired_diff_revin_minus_control": [
+    -0.046154636542713456,
+    -0.07920402155473272,
+    -0.05416258373743499
+  ],
+  "reference": {
+    "V1_locked_M03_ds03_rmse": 0.546,
+    "official_patchtst": 0.503,
+    "official_itransformer": 0.498,
+    "note": "see outputs/random_search/locked_ds03_test.json and outputs/official_baselines/*/metrics.json"
+  }
+}

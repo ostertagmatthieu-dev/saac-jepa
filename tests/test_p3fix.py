@@ -242,6 +242,75 @@ ident=(np.ones(len(c3['schema']['sensors'])),np.zeros(len(c3['schema']['sensors'
 mB,_=evaluate_jepa(mm2,ldx['source_val'],torch.device('cpu'),metric_affine=ident)
 check('evaluate_jepa identity affine is bitwise on ranked metrics', all(mA[k]==mB[k] for k in ('rmse','mae','r2','nll')) and mA['per_horizon']==mB['per_horizon'])
 
+# (i) RevIN: JEPA-internal, presence-aware instance normalization (V2). Invariants: off = bitwise
+#     legacy; norm/denorm round-trip; statistics ignore absent entries; absent channel = identity;
+#     shift/scale equivariance of mu (the scientific point); eval contract + checkpoint compat.
+print('(i) revin (instance-wise normalization inside the JEPA)')
+from cncjepa.models.revin import MaskedRevIN
+from cncjepa.checkpoint import BODY_PREFIXES
+torch.manual_seed(0)
+bi=next(iter(ldx['source_val']))
+def _fwd(model,b,**kw):
+    model.eval()
+    with torch.no_grad(): return model(b['x'],b['past_actions'],b['future_actions'],b['present'],b['schema'],b['y'],b.get('target_present'),**kw)
+c_off=copy.deepcopy(c3); c_off['model']['revin']={'enabled':False}
+c_abs=copy.deepcopy(c3); c_abs['model'].pop('revin',None)
+c_on=copy.deepcopy(c3); c_on['model']['revin']={'enabled':True,'affine':False,'subtract_last':False,'eps':1e-5}
+set_seed(1); m_abs=build_jepa(c_abs,True); set_seed(1); m_off=build_jepa(c_off,True); set_seed(1); m_on=build_jepa(c_on,True)
+o_abs=_fwd(m_abs,bi); o_off=_fwd(m_off,bi)
+check('revin key absent and enabled:false build the same module set', m_abs.revin is None and m_off.revin is None and list(m_abs.state_dict())==list(m_off.state_dict()))
+check('revin off is bitwise legacy on mu/logvar/z_pred', all(torch.equal(o_abs[k],o_off[k]) for k in ('mu','logvar','z_pred')) and 'revin_std' not in o_off)
+check('revin on adds no parameters without affine', list(m_on.state_dict())==list(m_abs.state_dict()) and isinstance(m_on.revin,MaskedRevIN))
+# round trip + mask-awareness on a hand-built window
+rv=MaskedRevIN(3,eps=1e-5)
+xw=torch.randn(4,8,3)*torch.tensor([0.5,2.0,1.0])+torch.tensor([1.0,-3.0,0.0]); pw=torch.ones(4,8,3)
+pw[0,:3,0]=0; xw[0,:3,0]=0.          # masked entries written as 0 (data.py convention)
+pw[1,:,2]=0; xw[1,:,2]=0.            # channel 2 fully absent in window 1
+cen,sd=rv.stats(xw,pw)
+ref_m=xw[0,3:,0].mean(); ref_s=torch.sqrt(xw[0,3:,0].var(unbiased=False)+1e-5)
+check('revin statistics ignore absent entries', abs(float(cen[0,0,0]-ref_m))<1e-6 and abs(float(sd[0,0,0]-ref_s))<1e-6, f'{float(cen[0,0,0]):.5f} vs {float(ref_m):.5f}')
+check('revin absent channel falls back to identity', float(cen[1,0,2])==0.0 and float(sd[1,0,2])==1.0)
+zn=rv.normalize(xw,cen,sd,pw)
+check('revin normalize re-zeroes absent entries', bool((zn[0,:3,0]==0).all() and (zn[1,:,2]==0).all()))
+mu_n=torch.randn(4,5,3); lv_n=torch.randn(4,5,3)
+mu_b,lv_b=rv.denormalize(mu_n,lv_n,cen,sd)
+check('revin denormalize inverts normalize', torch.allclose(rv.normalize(mu_b,cen,sd),mu_n,atol=1e-5))
+check('revin logvar shifts by 2*log(std)', torch.allclose(lv_b-lv_n,2*torch.log(sd).expand_as(lv_n),atol=1e-6))
+# shift/scale equivariance of the full model: x'=a*x+c, y'=a*y+c (per channel, a >> sqrt(eps))
+o_on=_fwd(m_on,bi)
+a_=torch.tensor([1.0+0.25*i for i in range(bi['x'].shape[-1])]); c_=torch.tensor([(-1)**i*0.7*i for i in range(bi['x'].shape[-1])])
+b2=dict(bi); b2['x']=(bi['x']*a_+c_)*bi['present']; b2['y']=(bi['y']*a_+c_)*bi['target_present']
+o2=_fwd(m_on,b2)
+pres_ch=(bi['present'].sum(1)>0)[:,None,:].expand_as(o_on['mu'])   # channels with context statistics
+check('revin: z_pred invariant to per-channel affine shift of the input', torch.allclose(o_on['z_pred'],o2['z_pred'],atol=1e-3,rtol=1e-3), f"max|d|={float((o_on['z_pred']-o2['z_pred']).abs().max()):.2e}")
+check('revin: mu equivariant (mu\'=a*mu+c) on observed channels', torch.allclose((o_on['mu']*a_+c_)[pres_ch],o2['mu'][pres_ch],atol=1e-3,rtol=1e-3), f"max|d|={float(((o_on['mu']*a_+c_)-o2['mu'])[pres_ch].abs().max()):.2e}")
+# eps breaks exact scale equivariance on near-constant windows (sqrt(a^2 v+eps) != a sqrt(v+eps)):
+# check the logvar law only where the window variance dominates eps (std>0.2 => error < 3e-4).
+well=pres_ch & (o_on['revin_std'][:,None,:].expand_as(o_on['mu'])>0.2)
+check('revin: logvar shifts by 2*log(a) where var >> eps', torch.allclose((o_on['logvar']+2*torch.log(a_))[well],o2['logvar'][well],atol=1e-3,rtol=1e-3), f"max|d|={float(((o_on['logvar']+2*torch.log(a_))-o2['logvar'])[well].abs().max()):.2e} on {int(well.sum())} entries")
+o_leg=_fwd(m_abs,bi)
+check('revin: legacy model is NOT shift-equivariant (the gap being closed)', not torch.allclose((o_leg['mu']*a_+c_)[pres_ch],_fwd(m_abs,b2)['mu'][pres_ch],atol=1e-2))
+# eval contract: finite metrics, model-independent anchor untouched, outputs in loader z-space
+mR,rawR=evaluate_jepa(m_on,ldx['source_val'],torch.device('cpu'),metric_affine=ident)
+check('revin: evaluate_jepa metrics finite', all(np.isfinite(mR[k]) for k in ('rmse','mae','r2','nll')))
+anchor_on=rmse(np.where(rawR['mask'],rawR['y'],np.nan),np.where(rawR['mask'],0.0,np.nan)); _,rawL=evaluate_jepa(m_abs,ldx['source_val'],torch.device('cpu'))
+anchor_off=rmse(np.where(rawL['mask'],rawL['y'],np.nan),np.where(rawL['mask'],0.0,np.nan))
+check('revin: trivial-predictor anchor unchanged (targets stay in loader z-space)', anchor_on==anchor_off, f'{anchor_on:.6f} vs {anchor_off:.6f}')
+# training step runs with the schema-consistency second pass and produces finite gradients
+m_tr=build_jepa(c_on,True); m_tr.train(); loss,parts,_=jepa_step(m_tr,bi,c_on,train=True,ssl_mode=False); loss.backward()
+check('revin: jepa_step (with schema view) finite loss and grads', torch.isfinite(loss) and all(torch.isfinite(p.grad).all() for p in m_tr.parameters() if p.grad is not None))
+# checkpoint compatibility: a V1 checkpoint (no revin key) loads into a revin model with no key delta
+with tempfile.TemporaryDirectory() as td:
+    ck=Path(td)/'v1.pt'; atomic_torch_save({'model':m_abs.state_dict(),'cfg':c_abs},ck)
+    m_ld,obj=load_jepa_checkpoint(ck,c_on,'cpu'); au=obj['load_audit']
+    check('revin: V1 checkpoint loads into revin model (no missing/unexpected keys)', au['missing_keys']==[] and au['unexpected_keys']==[] and au['weights_changed'])
+    c_aff=copy.deepcopy(c_on); c_aff['model']['revin']['affine']=True
+    m_aff=build_jepa(c_aff,True)
+    with torch.no_grad(): m_aff.revin.weight.fill_(2.0); m_aff.revin.bias.fill_(0.5)
+    ck2=Path(td)/'aff.pt'; atomic_torch_save({'model':m_aff.state_dict(),'cfg':c_aff},ck2)
+    m_body,au2=load_jepa_body_fresh_head(ck2,c_aff,'cpu')
+    check('revin: affine params are body (kept by body-only load)', 'revin.' in BODY_PREFIXES and any(k.startswith('revin.') for k in m_aff.state_dict()) and float(m_body.revin.weight[0])==2.0 and float(m_body.revin.bias[0])==0.5 and au2['missing_keys_are_head_only'])
+
 print()
 if FAIL:
     print(f'P3FIX_TESTS_FAILED ({len(FAIL)}): '+', '.join(FAIL)); sys.exit(1)

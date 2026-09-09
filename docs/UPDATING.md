@@ -79,6 +79,8 @@ count comes back different from the table, the page has drifted and this table i
 | **0.822 ± 0.009** — locked model, source-validation RMSE | 2 | Fig. 3 `7 SEEDS` box (`0.822 ± 0.009 RMSE`) · results table, `SAAC-JEPA (locked)` source cell |
 | **0.503** — PatchTST, target zero-shot RMSE | 2 | §01 Abstract paragraph · results table, `PatchTST (official, RevIN)` target cell |
 | **0.498** — iTransformer, target zero-shot RMSE | 2 | §01 Abstract paragraph · results table, `iTransformer (official, RevIN)` target cell |
+| **0.495 ± 0.004** — SAAC-JEPA + RevIN, target zero-shot RMSE (three seeds, post-lock) | 4 | §01 Abstract paragraph · §04 lede · results table, `SAAC-JEPA + RevIN (post-lock)` target cell · "Said plainly" paragraph |
+| **20.6** — SAAC-JEPA + RevIN, target NLL | 3 | §01 Abstract paragraph · results table, `SAAC-JEPA + RevIN (post-lock)` note cell · "Said plainly" paragraph |
 
 ### Two traps
 
@@ -96,7 +98,7 @@ count comes back different from the table, the page has drifted and this table i
 ### Numbers not in the table
 
 These appear only once or twice and are listed here so they are not forgotten:
-`0.611` and `0.540` (Fig. 5 points, `<desc>` and caption), `0.812 ± 0.012`, `1.135`,
+`0.611` and `0.540` (Fig. 5 points, `<desc>` and caption), `0.766 ± 0.001` (RevIN source cell), `0.812 ± 0.012`, `1.135`,
 `1.128`, `0.928`, `0.804`, `0.759`, `0.771`, `0.809`, the per-horizon R² list in the
 `honest` block, `R² = 0.012`, `NLL 0.52`, `67 %` coverage, effective rank `5 %`/`58 %`,
 and the window/session counts in the footer.

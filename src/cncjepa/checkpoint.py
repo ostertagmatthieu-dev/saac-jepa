@@ -2,7 +2,7 @@ from __future__ import annotations
 import torch
 from .factory import build_jepa, build_forecaster
 
-BODY_PREFIXES=('context_encoder.','target_encoder.','predictor.')
+BODY_PREFIXES=('context_encoder.','target_encoder.','predictor.','revin.')   # revin.* only exists with model.revin.affine=true
 HEAD_PREFIXES=('physical_mu.','physical_logvar.','action_recovery.')
 
 
