@@ -1,0 +1,176 @@
+{
+  "candidate": "M03_revin",
+  "description": "M03 + RevIN (presence-aware instance norm on the JEPA input, no affine, denorm on output)",
+  "config": "configs/revin/M03_revin.yaml",
+  "out": "outputs/revin_ablation/M03_revin/seed_0",
+  "seed": 0,
+  "eval_seed": 20260820,
+  "ft_head": "fresh",
+  "clean_rmse": 0.7670896040239288,
+  "schema_drop_rmse": 0.8882856283585848,
+  "masked_rmse": 0.7876822091917247,
+  "long_horizon_rmse": 0.8462793685447241,
+  "calibration_penalty": 0.0326356309394924,
+  "ssl_latent_val": 1.0854425794686433,
+  "action_sensitivity": 1.1804259579083123,
+  "weak_action": 0,
+  "eff_rank_frac": 0.4673118602760611,
+  "std_min": 0.2797302750675177,
+  "offdiag_corr": 0.25005290768801264,
+  "collapse": 1,
+  "ssl_collapse": 1,
+  "ft_collapse": 0,
+  "eval_space_anchor_rmse": 0.9574577527900242,
+  "metric_space": {
+    "reference": "source_zscore on source_train (fixed across candidates)",
+    "model_normalization": "zscore",
+    "model_rel_floor": 0.05,
+    "affine_is_identity": true,
+    "anchor_bounds": [
+      0.5,
+      2.0
+    ]
+  },
+  "invalid": true,
+  "invalid_reasons": [
+    "ssl_latent_collapse"
+  ],
+  "n_params": 9922598,
+  "pretrain_seconds": 570.4,
+  "finetune_seconds": 3726.0,
+  "total_seconds": 4314.1,
+  "detail": {
+    "clean": {
+      "rmse": 0.7670896040239288,
+      "mae": 0.31317317989150295,
+      "r2": 0.357720673918303,
+      "nll": 0.7458113690261124
+    },
+    "per_horizon": {
+      "1": {
+        "rmse": 0.7111286677534324,
+        "mae": 0.2859403431841785,
+        "r2": 0.43500517870815003
+      },
+      "2": {
+        "rmse": 0.7248454914068962,
+        "mae": 0.2937015470341368,
+        "r2": 0.41378699769947935
+      },
+      "3": {
+        "rmse": 0.7500621128000472,
+        "mae": 0.30612354070151127,
+        "r2": 0.37568406075907124
+      },
+      "4": {
+        "rmse": 0.7951385991207662,
+        "mae": 0.3272066896444766,
+        "r2": 0.3056482784188205
+      },
+      "5": {
+        "rmse": 0.8462793685447241,
+        "mae": 0.35289377889321144,
+        "r2": 0.26750638840529617
+      }
+    },
+    "last_horizon_rmse": 0.8462793685447241,
+    "coverage": {
+      "0.5": 0.5261191593201698,
+      "0.8": 0.7798937980100016,
+      "0.9": 0.8673643690605076,
+      "0.95": 0.913392105308381
+    },
+    "action_rmse": {
+      "true": 0.7670896039401873,
+      "zero": 0.8985862851521533,
+      "shuffle": 0.9054924805326036,
+      "time_shuffle": 0.872386441171423
+    },
+    "schema_drop": {
+      "kept_sensors": [
+        "spindle_current",
+        "spindle_torque",
+        "spindle_power",
+        "x_current",
+        "x_torque",
+        "y_current",
+        "y_torque",
+        "z_current",
+        "z_torque",
+        "z_power"
+      ],
+      "dropped_sensors": [
+        "spindle_motor_temp",
+        "x_motor_temp",
+        "y_motor_temp",
+        "z_motor_temp",
+        "spindle_dc_voltage",
+        "spindle_mod_depth",
+        "ambient_temp"
+      ],
+      "mechanism": "sensor_subset -> value 0, presence 0, schema 0 for dropped channels; all 17 target channels still scored"
+    },
+    "ssl_best_epoch": 0,
+    "ssl_latent_health": {
+      "epoch": 0.0,
+      "zpred_std_mean": 0.06720021190043568,
+      "zpred_std_min": 0.039502431603920675,
+      "zpred_offdiag_corr": 0.23225991687170258,
+      "zpred_eff_rank": 124.80601875028697,
+      "zpred_eff_rank_frac": 0.48752351074330846,
+      "zpred_collapse": 1.0,
+      "ztgt_std_mean": 0.32305803019981144,
+      "ztgt_std_min": 0.12904536874406808,
+      "ztgt_offdiag_corr": 0.35423097292529354,
+      "ztgt_eff_rank": 47.81268471951582,
+      "ztgt_eff_rank_frac": 0.18676829968560868,
+      "ztgt_collapse": 0.0,
+      "collapse": 1.0
+    },
+    "ft_latent_health": {
+      "zpred_std_mean": 0.529589076293687,
+      "zpred_std_min": 0.2797302750675177,
+      "zpred_offdiag_corr": 0.25005290768801264,
+      "zpred_eff_rank": 119.63183623067164,
+      "zpred_eff_rank_frac": 0.4673118602760611,
+      "zpred_collapse": 0,
+      "ztgt_std_mean": 1.0732284125878016,
+      "ztgt_std_min": 0.8396017313769275,
+      "ztgt_offdiag_corr": 0.1298343379949004,
+      "ztgt_eff_rank": 180.5226232206652,
+      "ztgt_eff_rank_frac": 0.7051664969557234,
+      "ztgt_collapse": 0
+    },
+    "ft_val_ssl": 1.4640607242231016,
+    "determinism": {
+      "mask_stable": true,
+      "replay_rmse": [
+        0.6787325427802618,
+        0.6787325427802618
+      ],
+      "ok": true
+    },
+    "load_audit": {
+      "weights_changed": true,
+      "missing_keys": [
+        "physical_mu.weight",
+        "physical_mu.bias",
+        "physical_logvar.weight",
+        "physical_logvar.bias",
+        "action_recovery.0.weight",
+        "action_recovery.0.bias",
+        "action_recovery.2.weight",
+        "action_recovery.2.bias"
+      ],
+      "unexpected_keys": [],
+      "missing_keys_are_head_only": true,
+      "load_ok": true,
+      "ft_head": "fresh"
+    },
+    "epochs": {
+      "pretrain": 100,
+      "finetune": 100
+    }
+  },
+  "note": "DS01 source_val only. The target machine is not read anywhere in this script."
+}

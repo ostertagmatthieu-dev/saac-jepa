@@ -10,7 +10,7 @@ SERIAL_PHASES = {'p2_audits', 'p3fix_gate', 'p6_evals', 'p7_search', 'p9_reports
 # gates the corrected JEPA protocol. The taskbook forbids running the architecture search (p7)
 # or any target evaluation before the P3-FIX gate passes.
 GATE_PHASES = {'p2_audits', 'p3fix_gate'}
-PHASE_ORDER = ['p2_audits', 'p3_core', 'p3fix_gate', 'p4_ablations', 'p5_baselines', 'p6_evals', 'p7_search', 'p8_adapt', 'p9_reports']
+PHASE_ORDER = ['p2_audits', 'p3_core', 'p3fix_gate', 'p4_ablations', 'p5_baselines', 'p6_evals', 'p7_search', 'p8_adapt', 'p10_revin', 'p9_reports']
 
 
 def sc(py, script, *args):
@@ -102,6 +102,14 @@ def build_jobs(cfg, py):
     ]
     # 48_predict_any_input / 49_predict_variable_sensor_schema require --input with no default and no
     # upstream artifact produces one -- they are ad-hoc single-inference demos, not batch jobs. Excluded.
+
+    # Post-lock declared ablation (paper App. H): M03 vs M03+RevIN, three paired seeds, then the
+    # second, declared DS03 read. Runs after the lock and the single target test; never gates them.
+    jobs['p10_revin'] = [
+        J('68', sc(py, '68_revin_ablation.py', 'train', '--seeds', '0,1,2', '--device', 'cuda:0')),
+        J('68s', sc(py, '68_revin_ablation.py', 'summarize'), deps=['68']),
+        J('68d', sc(py, '68_revin_ablation.py', 'ds03'), deps=['68s']),
+    ]
 
     jobs['p9_reports'] = [
         J('51', sc(py, '51_build_main_result_tables.py')),

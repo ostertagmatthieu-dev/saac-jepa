@@ -3,6 +3,7 @@ import copy, math
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from .revin import MaskedRevIN
 
 class FlexibleSensorEncoder(nn.Module):
     """Order-aware-by-ID but subset-flexible encoder for a fixed global sensor vocabulary.
@@ -75,6 +76,10 @@ class ActionConditionedJEPA(nn.Module):
         self.physical_mu=nn.Linear(d,n_sensors)
         self.physical_logvar=nn.Linear(d,n_sensors)
         self.action_recovery=nn.Sequential(nn.Linear(2*d,d),nn.GELU(),nn.Linear(d,action_dim))
+        # Instance-wise (RevIN) normalization, JEPA-internal. Off by default: with the key absent
+        # or enabled=false no code touches the tensors, so V1 configs/checkpoints stay bitwise.
+        rv=m.get('revin') or {}
+        self.revin=MaskedRevIN(n_sensors,eps=float(rv.get('eps',1e-5)),affine=bool(rv.get('affine',False)),subtract_last=bool(rv.get('subtract_last',False))) if rv.get('enabled',False) else None
     @torch.no_grad()
     def update_target(self):
         for pt,po in zip(self.target_encoder.parameters(),self.context_encoder.parameters()): pt.data.mul_(self.ema).add_(po.data,alpha=1-self.ema)
@@ -90,12 +95,27 @@ class ActionConditionedJEPA(nn.Module):
         B,T,C=x.shape
         if present is None: present=torch.isfinite(x).float()
         if schema is None: schema=torch.ones(B,C,device=x.device,dtype=x.dtype)
+        if self.revin is not None:
+            # Statistics from the CONTEXT window only (causal), over present entries only. The
+            # schema-consistency second pass (trainers.jepa_step) re-enters here with its own
+            # `present`: kept channels get identical statistics, dropped channels the identity.
+            rv_center,rv_std=self.revin.stats(x,present)
+            x=self.revin.normalize(x,rv_center,rv_std,present)
         zc,zseq=self.encode_context(x,present,schema,past_actions)
         zp=self.predictor(zc,future_actions)
         mu=self.physical_mu(zp); logvar=self.physical_logvar(zp)
         # z_context_pool: per-window pooled encoder output, the 'context' latent for VICReg placement.
         out={'z_context':zc,'z_context_seq':zseq,'z_context_pool':zseq.mean(1),'z_pred':zp,'mu':mu,'logvar':logvar}
+        if self.revin is not None:
+            # Physical head lives in instance space; hand back global z-space so every consumer
+            # (NLL, RMSE, metric_affine, anchor, planner, adaptation) keeps its contract.
+            out['mu_instance']=mu; out['logvar_instance']=logvar
+            out['mu'],out['logvar']=self.revin.denormalize(mu,logvar,rv_center,rv_std)
+            out['revin_center']=rv_center[:,0]; out['revin_std']=rv_std[:,0]
         if y is not None:
+            if self.revin is not None:
+                tp=(torch.isfinite(y).float() if target_present is None else target_present.float())
+                y=self.revin.normalize(y,rv_center,rv_std,tp)   # context stats, never fitted on y
             zt=self.encode_target(y,schema,target_present); out['z_target']=zt
             act_hat=self.action_recovery(torch.cat([zc[:,None,:].expand_as(zt),zt],dim=-1))
             out['action_hat']=act_hat

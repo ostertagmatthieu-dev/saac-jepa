@@ -71,6 +71,14 @@ model:
   layernorm: pre
   sensor_flexible: true
   probabilistic_head: true
+  # Instance-wise normalization inside the JEPA (RevIN, presence-aware; models/revin.py).
+  # Off = legacy V1 behaviour. Defaults mirror the official baselines in scripts/66
+  # (PatchTST revin=1 affine=0 subtract_last=0; iTransformer use_norm=1).
+  revin:
+    enabled: false
+    affine: false
+    subtract_last: false
+    eps: 1.0e-5
 jepa:
   ema: 0.996
   latent_loss: smooth_l1
