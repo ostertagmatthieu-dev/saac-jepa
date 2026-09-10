@@ -113,7 +113,16 @@ done
 grep -c -o -- '0.822 ± 0.009' index.html
 ```
 
-Expected: `6 4 3 4 2 2 2 2`, then `2`.
+Expected: `5 5 3 4 2 2 3 3`, then `2`. (Re-baselined 2026-09-10 after the RevIN port: 0.503 and 0.498 gained a mention in the paragraph under the results table; the per-number rows above list the intended places.)
+
+### FIG. 1 RevIN block
+
+Fig. 1 carries two dashed green `RevIN` pills, on the SENSORS and FUTURE WINDOW input
+wires. They denote the post-lock RevIN variant (paper App. H) — never the locked model.
+Four places have to stay in sync: the `<desc id="f1Desc">` sentence, the figure's
+`panel__cap`, the legend entry (`legend__swatch--norm`), and the §03 paragraph after
+`</figure>` that spells out the per-window statistics and the inverse on the physical
+head. The hero strip and `og.png` are unchanged by this.
 
 ---
 

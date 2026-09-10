@@ -14,6 +14,7 @@
 \definecolor{myell}{HTML}{FFE699}   \definecolor{myellL}{HTML}{BF9000}  % actions / conditioning
 \definecolor{mgray}{HTML}{F2F2F2}   \definecolor{mgrayL}{HTML}{7F7F7F}  % latents / neutral
 \definecolor{mred}{HTML}{F4B8B8}    \definecolor{mredL}{HTML}{C00000}   % loss / dead controls
+\definecolor{mnorm}{HTML}{CDEFD9}  \definecolor{mnormL}{HTML}{1E8C50} % RevIN variant (dashed)
 \definecolor{ink}{HTML}{3B3B3B}
 
 \tikzset{
@@ -25,6 +26,7 @@
   prd/.style ={blk, fill=mgreen, draw=mgreenL},
   act/.style ={blk, fill=myell,  draw=myellL},
   lat/.style ={blk, fill=mgray,  draw=mgrayL},
+  nrm/.style ={blk, fill=mnorm, draw=mnormL, dashed, font=\sffamily\scriptsize, minimum height=7mm, inner xsep=2mm},
   los/.style ={circle, fill=mred, draw=mredL, line width=0.7pt, minimum size=7.5mm,
                font=\sffamily\small, inner sep=0pt},
   lbl/.style ={font=\sffamily\footnotesize, text=ink},

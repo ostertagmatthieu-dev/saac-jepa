@@ -24,20 +24,21 @@
 \node[act, minimum width=26mm] (pact) at (1.26,-3.3) {past actions $a_{1:T}$};
 
 % ---------------- context encoder -------------------------------------------
-\node[enc, minimum width=24mm, minimum height=16mm] (ctx) at (4.6,-1.2)
+\node[enc, minimum width=24mm, minimum height=16mm] (ctx) at (5.6,-1.2)
   {context\\encoder $f_\theta$};
 \node[sub, below=0.5mm of ctx] {flexible sensor tokens};
+\node[nrm] (n1) at (3.45,-1.2) {RevIN\\(variant)};
 
 % latent
-\node[lat] (z) at (7.6,-1.2) {$z_{1:T}$};
+\node[lat] (z) at (8.6,-1.2) {$z_{1:T}$};
 
 % ---------------- predictor ---------------------------------------------------
-\node[prd, minimum width=24mm, minimum height=14mm] (pred) at (10.6,-0.3)
+\node[prd, minimum width=24mm, minimum height=14mm] (pred) at (11.6,-0.3)
   {causal\\predictor $g_\phi$};
-\node[act, minimum width=24mm] (fact) at (10.6,-2.6) {future actions $a_{T:T+h}$};
+\node[act, minimum width=24mm] (fact) at (11.6,-2.6) {future actions $a_{T:T+h}$};
 
 % predicted latents
-\node[lat] (zhat) at (13.7,-0.3) {$\hat z_{T+h}$};
+\node[lat] (zhat) at (14.7,-0.3) {$\hat z_{T+h}$};
 
 % ---------------- target branch (EMA) ----------------------------------------
 \begin{scope}[shift={(0,-5.4)}]
@@ -49,27 +50,34 @@
   \node[lbl, anchor=north] at (0.54,-1.85) {future states $x_{T+h}$};
 \end{scope}
 
-\node[tgt, minimum width=24mm, minimum height=14mm] (te) at (4.6,-6.1)
+\node[tgt, minimum width=24mm, minimum height=14mm] (te) at (5.6,-6.1)
   {target encoder\\$f_{\bar\theta}$ (EMA)};
-\node[lat] (zt) at (7.6,-6.1) {$z_{T+h}$};
+\node[nrm] (n2) at (3.45,-6.1) {RevIN\\(variant)};
+\node[lat] (zt) at (8.6,-6.1) {$z_{T+h}$};
 
 % ---------------- loss --------------------------------------------------------
-\node[los] (loss) at (13.7,-3.6) {$\mathcal{L}$};
+\node[los] (loss) at (14.7,-3.6) {$\mathcal{L}$};
 \node[sub, right=1mm of loss, align=left]
   {latent + VICReg\\ + schema + actions};
+\node[sub, text=mnormL, align=left, below=6mm of loss, anchor=north]
+  {dashed green: post-lock RevIN variant (App.~H) ---\\
+   context-window stats on both inputs,\\
+   inverse on the physical head; not in the locked model};
 
 % ---------------- arrows ------------------------------------------------------
-\draw[ar] (2.75,-0.9) -- (ctx.west |- ctx.center) node[midway, above, sub] {};
+\draw[ar] (2.75,-0.9) -- (n1.west) node[midway, above, sub] {};
+\draw[ar] (n1) -- (ctx.west |- ctx.center);
 \draw[ar] (pact.east) -- ($(ctx.west)+(0,-0.55)$);
 \draw[ar] (ctx) -- (z);
 \draw[ar] (z) -- ($(pred.west)+(0,-0.15)$);
 \draw[ar] (fact.north) -- ($(pred.south)+(0,0)$);
 \draw[ar] (pred) -- (zhat);
-\draw[ar] (1.6,-6.1) -- (te.west);
+\draw[ar] (1.6,-6.1) -- (n2.west);
+\draw[ar] (n2) -- (te);
 \draw[ar] (te) -- (zt);
 \draw[ar] (zhat) -- (loss);
 \draw[ar] (zt.east) -| (loss.south);
-\sgmark{11.4,-6.1}
+\sgmark{12.4,-6.1}
 
 % EMA dashed link
 \draw[ema] (ctx.south) to[out=-90,in=90] node[midway, right=1mm, sub, text=mpinkL]
