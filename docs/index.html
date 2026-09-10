@@ -191,6 +191,7 @@
       <li class="legend__item"><span class="legend__swatch legend__swatch--obs"></span>observed sensors</li>
       <li class="legend__item"><span class="legend__swatch legend__swatch--lat"></span>latent states and latent-derived predictions</li>
       <li class="legend__item"><span class="legend__swatch legend__swatch--abs"></span>sensors absent on the target machine</li>
+      <li class="legend__item"><span class="legend__swatch legend__swatch--norm"></span>RevIN variant — post-lock ablation, not in the locked model</li>
     </ul>
 
   </div>
@@ -237,13 +238,13 @@
         <svg class="f1" viewBox="0 0 1080 512" role="img" focusable="false"
              aria-labelledby="f1Title" aria-describedby="f1Desc">
           <title id="f1Title">SAAC-JEPA training graph</title>
-          <desc id="f1Desc">Animated schematic of the SAAC-JEPA training graph. Sensors pass through a schema mask and enter the context encoder together with the presence mask and past actions, producing a context latent. Future actions and that latent enter the predictor, which emits predicted latents at horizons of 1, 2, 4, 8 and 16 seconds. The future observation window passes through an EMA target encoder to give target latents, compared to the predictions through a stop-gradient by the latent loss. Two partial schema views drive the schema-consistency loss, a variance-covariance term regularises both latent sets, and an action-recovery head reconstructs the applied action.</desc>
+          <desc id="f1Desc">Animated schematic of the SAAC-JEPA training graph. Sensors pass through a schema mask and enter the context encoder together with the presence mask and past actions, producing a context latent. Future actions and that latent enter the predictor, which emits predicted latents at horizons of 1, 2, 4, 8 and 16 seconds. The future observation window passes through an EMA target encoder to give target latents, compared to the predictions through a stop-gradient by the latent loss. Two partial schema views drive the schema-consistency loss, a variance-covariance term regularises both latent sets, and an action-recovery head reconstructs the applied action. In the post-lock RevIN variant, shown as dashed green blocks, both windows are first normalised with per-channel statistics of the context window and the physical head output is de-normalised before any loss or metric; the locked model does not include this step.</desc>
 
           <!-- links (drawn first, under nodes) -->
           <g class="f1__wires">
             <path class="f1__link anim-draw" style="--d:.30s" d="M172 110 H 200"/>
             <path class="f1__link anim-draw f1__link--act" style="--d:.34s" d="M172 158 H 310 V 140 H 328"/>
-            <path class="f1__link anim-draw" style="--d:.70s" d="M296 122 H 328"/>
+            <path class="f1__link anim-draw" style="--d:.70s" d="M272 122 H 328"/>
             <path class="f1__link anim-draw" style="--d:1.02s" d="M466 120 H 498"/>
             <path class="f1__link anim-draw" style="--d:1.30s" d="M546 146 V 246"/>
             <path class="f1__link anim-draw f1__link--act" style="--d:1.62s" d="M600 334 V 314"/>
@@ -277,10 +278,15 @@
           </g>
 
           <g class="f1__node anim-in" style="--d:.46s">
-            <rect class="f1__box f1__box--mask" x="200" y="90" width="96" height="64" rx="3"/>
-            <text class="f1__lab" x="248" y="112" text-anchor="middle">SCHEMA</text>
-            <text class="f1__lab" x="248" y="128" text-anchor="middle">MASK m</text>
-            <text class="f1__sub" x="248" y="144" text-anchor="middle">presence bits</text>
+            <rect class="f1__box f1__box--mask" x="196" y="90" width="76" height="64" rx="3"/>
+            <text class="f1__lab" x="234" y="112" text-anchor="middle">SCHEMA</text>
+            <text class="f1__lab" x="234" y="128" text-anchor="middle">MASK m</text>
+            <text class="f1__sub" x="234" y="144" text-anchor="middle">presence bits</text>
+          </g>
+          <g class="f1__node anim-in" style="--d:.60s">
+            <rect class="f1__box f1__box--norm" x="280" y="113" width="42" height="18" rx="3"/>
+            <text class="f1__lab f1__lab--norm" x="301" y="126" text-anchor="middle">RevIN</text>
+            <text class="f1__sub f1__sub--norm" x="301" y="108" text-anchor="middle">variant</text>
           </g>
 
           <!-- two partial views: 17 cells each -->
@@ -330,6 +336,11 @@
             <text class="f1__lab" x="104" y="425" text-anchor="middle">FUTURE WINDOW</text>
             <text class="f1__sub" x="104" y="441" text-anchor="middle">x t+1:t+H</text>
           </g>
+          <g class="f1__node anim-in" style="--d:2.50s">
+            <rect class="f1__box f1__box--norm" x="230" y="421" width="42" height="18" rx="3"/>
+            <text class="f1__lab f1__lab--norm" x="251" y="434" text-anchor="middle">RevIN</text>
+            <text class="f1__sub f1__sub--norm" x="251" y="452" text-anchor="middle">same (c, s)</text>
+          </g>
           <g class="f1__node anim-in" style="--d:2.58s">
             <rect class="f1__box f1__box--mdl" x="328" y="396" width="138" height="68" rx="3"/>
             <text class="f1__lab" x="397" y="422" text-anchor="middle">TARGET ENCODER</text>
@@ -360,8 +371,9 @@
         </svg>
       </div>
       <p class="panel__hint">Scroll sideways to read the figure</p>
-      <p class="panel__cap">Sensors are masked to a partial schema and encoded together with the presence mask and past actions into a context latent; future actions condition a direct multi-horizon predictor whose five predicted latents are matched, through a stop-gradient, to an EMA target encoder — with variance–covariance, schema-consistency and action-recovery terms holding the representation in place.</p>
+      <p class="panel__cap">Sensors are masked to a partial schema and encoded together with the presence mask and past actions into a context latent; future actions condition a direct multi-horizon predictor whose five predicted latents are matched, through a stop-gradient, to an EMA target encoder — with variance–covariance, schema-consistency and action-recovery terms holding the representation in place. Dashed green: the post-lock RevIN variant (paper App. H) — per-window normalisation of both inputs with context-window statistics, inverted on the physical head; not part of the locked model.</p>
     </figure>
+    <p class="body">The dashed green RevIN blocks mark the post-lock variant of the paper’s Sec. 4.4 / App. H: a per-channel centre and scale (c, s) computed from the context rows only, held at the identity for channels never observed, applied to both windows before encoding and inverted on the physical head before any loss or metric. The locked model uses a fixed source-train z-score instead; the RevIN numbers in §04 are diagnostic, not the locked result.</p>
   </section>
 
   <!-- ================================ RESULTS ================================ -->

@@ -21,31 +21,38 @@
 \end{scope}
 
 % ------- shared encoder ------------------------------------------------------
-\node[enc, minimum width=26mm, minimum height=13mm] (e1) at (4.9,-0.8) {encodeur $f_\theta$};
-\node[enc, minimum width=26mm, minimum height=13mm] (e2) at (4.9,-4.4) {encodeur $f_\theta$};
-\node[sub] at (4.9,-2.6) {poids partag\'es};
+\node[enc, minimum width=26mm, minimum height=13mm] (e1) at (5.6,-0.8) {encodeur $f_\theta$};
+\node[enc, minimum width=26mm, minimum height=13mm] (e2) at (5.6,-4.4) {encodeur $f_\theta$};
+\node[sub] at (5.6,-2.6) {poids partag\'es};
 \draw[ema, draw=mgrayL] (e1.south) -- (e2.north);
+\node[nrm] (n1) at (3.3,-0.8) {RevIN\\(variante)};
+\node[nrm] (n2) at (3.3,-4.4) {RevIN\\(variante)};
 
 % ------- latents -------------------------------------------------------------
-\node[lat] (z1) at (8.0,-0.8) {$z$};
-\node[lat] (z2) at (8.0,-4.4) {$z'$};
+\node[lat] (z1) at (8.7,-0.8) {$z$};
+\node[lat] (z2) at (8.7,-4.4) {$z'$};
 
 % ------- schema loss ---------------------------------------------------------
-\node[los] (ls) at (10.4,-2.6) {$\mathcal{L}_{\text{sch}}$};
+\node[los] (ls) at (11.1,-2.6) {$\mathcal{L}_{\text{sch}}$};
 \node[sub, align=left, right=1mm of ls] {$\lVert z - z' \rVert$ sur les latents\\(poids 0{,}10)};
 \draw[ar] (z1.east) -| (ls.north);
 \draw[ar] (z2.east) -| (ls.south);
-\sgmark{9.55,-0.8}
+\sgmark{10.25,-0.8}
 
-\draw[ar] (2.35,-0.8) -- (e1.west);
-\draw[ar] (2.35,-4.4) -- (e2.west);
+\draw[ar] (2.35,-0.8) -- (n1.west);
+\draw[ar] (n1) -- (e1.west);
+\draw[ar] (2.35,-4.4) -- (n2.west);
+\draw[ar] (n2) -- (e2.west);
 \draw[ar] (e1) -- (z1);
 \draw[ar] (e2) -- (z2);
 
 % ------- action recovery -----------------------------------------------------
-\node[prd, minimum width=24mm] (ar1) at (8.0,-6.6) {t\^ete auxiliaire};
-\node[los] (la) at (10.4,-6.6) {$\mathcal{L}_{\text{act}}$};
+\node[prd, minimum width=24mm] (ar1) at (8.7,-6.6) {t\^ete auxiliaire};
+\node[los] (la) at (11.1,-6.6) {$\mathcal{L}_{\text{act}}$};
 \node[sub, align=left, right=1mm of la] {le latent doit encoder\\la commande (poids 0{,}05)};
+\node[sub, text=mnormL, align=left, below=6mm of la, anchor=north]
+  {pointill\'e vert : variante RevIN post-lock (App.~H),\\
+   absente du mod\`ele verrouill\'e};
 \draw[ar] (z2.south) -- (ar1.north);
 \draw[ar] (ar1) -- (la);
 

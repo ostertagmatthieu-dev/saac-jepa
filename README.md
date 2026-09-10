@@ -27,6 +27,10 @@ The original CNC proposal is action-conditioned: current machine state and candi
 
 `future states -> EMA target encoder -> target latent sequence`
 
+`[RevIN variant, App. H] context-window (c, s) -> normalise both windows -> same pipeline -> de-normalise the physical head`
+
+The RevIN variant is a post-lock ablation and is not part of the locked M03.
+
 Training combines latent prediction, optional per-horizon VICReg, physical probabilistic forecasting, action recovery and schema-consistency losses.
 
 Missing or absent sensors use separate value, presence and schema indicators. A target machine may expose 10 of the 17 known sensors without changing tensor dimensionality or retraining the input layer.
