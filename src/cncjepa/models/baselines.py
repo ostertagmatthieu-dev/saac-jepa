@@ -1,7 +1,6 @@
 from __future__ import annotations
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 
 class PersistenceForecaster(nn.Module):
     """No-learn baseline: predict the last observed value of each channel for every horizon.
