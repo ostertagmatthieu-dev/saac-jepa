@@ -1,0 +1,49 @@
+name: Bug report
+description: Report a problem reproducing a result or running a script
+labels: [bug]
+body:
+  - type: textarea
+    id: command
+    attributes:
+      label: Exact command run
+      description: The exact command line you ran, including flags
+      render: shell
+    validations:
+      required: true
+  - type: dropdown
+    id: config
+    attributes:
+      label: Config used
+      options:
+        - configs/smoke.yaml
+        - configs/base.yaml
+        - configs/real.yaml
+        - configs/search_v2/Mxx.yaml
+        - configs/revin/M03_revin.yaml
+        - other
+    validations:
+      required: true
+  - type: input
+    id: python-torch-device
+    attributes:
+      label: Python / torch / device
+      description: e.g. Python 3.12, torch 2.3.1, CPU
+    validations:
+      required: true
+  - type: textarea
+    id: triple-review
+    attributes:
+      label: Output of `python scripts/55_triple_review.py`
+      render: shell
+  - type: textarea
+    id: traceback
+    attributes:
+      label: Traceback
+      render: shell
+  - type: checkboxes
+    id: from-root
+    attributes:
+      label: Confirmation
+      options:
+        - label: I ran the command from the repository root
+          required: true

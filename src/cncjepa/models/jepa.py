@@ -1,8 +1,7 @@
 from __future__ import annotations
-import copy, math
+import copy
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 from .revin import MaskedRevIN
 
 class FlexibleSensorEncoder(nn.Module):

@@ -1,0 +1,46 @@
+name: Reproduction question
+description: Ask about reproducing a specific paper table, number, or pipeline stage
+labels: [reproduction]
+body:
+  - type: input
+    id: table-number
+    attributes:
+      label: Which paper table or number
+      description: e.g. Table 3, row "SAAC-JEPA", RMSE column
+    validations:
+      required: true
+  - type: input
+    id: script-or-phase
+    attributes:
+      label: Which script or phase of scripts/61_run_all_spark.py
+      description: e.g. Phase 4 (confirmation), or a specific script such as scripts/44_lock_best_method.py
+    validations:
+      required: true
+  - type: dropdown
+    id: dataset-versions
+    attributes:
+      label: Dataset versions
+      options:
+        - Zenodo 10.5281/zenodo.14094887
+        - Mendeley 10.17632/gtvvwmz7r7.2
+        - Both
+        - Other / unsure
+    validations:
+      required: true
+  - type: dropdown
+    id: ingest-audit
+    attributes:
+      label: Did the scripts/60_ingest_real_data.py audit pass?
+      options:
+        - "Yes"
+        - "No"
+        - Did not run it
+    validations:
+      required: true
+  - type: textarea
+    id: differs
+    attributes:
+      label: What differs
+      description: What you observe versus what the paper reports
+    validations:
+      required: true

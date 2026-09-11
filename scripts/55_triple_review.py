@@ -2,7 +2,7 @@ from _common import *
 import ast,compileall,json,subprocess,sys
 root=ROOT; report={}
 # Pass 1: compile every Python file
-report['pass1_compileall']=bool(compileall.compile_dir(str(root),quiet=1))
+report['pass1_compileall']=all(compileall.compile_dir(str(root/d),quiet=1) for d in ['src','scripts','examples','tests','third_party/cnc_adapter'])
 # Pass 2: AST/import hygiene and forbidden obvious target-search leakage in random selection scripts
 issues=[]
 for f in list((root/'scripts').glob('*.py'))+list((root/'src').rglob('*.py')):
