@@ -1,4 +1,4 @@
-"""Run-level uncertainty for the small n=6 DS03 target set.
+"""Run-level uncertainty for the small DS03 target set (7 independent runs on the real data).
 Consumes per-run metrics produced by script 32 or 56 and reports bootstrap CIs.
 """
 from _common import *

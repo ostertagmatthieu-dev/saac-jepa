@@ -1,7 +1,19 @@
 cff-version: 1.2.0
-message: "If you use this software, please cite it as below."
+message: "If you use this software, please cite the paper below."
 type: software
 title: "SAAC-JEPA: Schema-Adaptive Action-Conditioned JEPA for Cross-Machine CNC Transfer"
+version: 0.1.0
+date-released: "2026-09-11"
+license: MIT
+repository-code: "https://github.com/ostertagmatthieu-dev/saac-jepa"
+url: "https://ostertagmatthieu-dev.github.io/saac-jepa/"
+keywords:
+  - jepa
+  - world-models
+  - pytorch
+  - time-series
+  - cnc
+  - transfer-learning
 authors:
   - given-names: Ayoub Louaye
     family-names: Bouaziz
@@ -12,9 +24,6 @@ authors:
   - given-names: Anton
     family-names: Demasles
     affiliation: "Mines Nancy, Universite de Lorraine"
-repository-code: "https://github.com/ostertagmatthieu-dev/saac-jepa"
-license: MIT
-year: 2026
 preferred-citation:
   type: article
   title: "Schema-Adaptive Action-Conditioned JEPA for Cross-Machine CNC Transfer under Partial Sensor Overlap"
