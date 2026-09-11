@@ -173,6 +173,10 @@ Or use GitHub's "Cite this repository" button, which reads [CITATION.cff](CITATI
 
 The results cover one source machine and one target machine with seven independent runs: they establish cross-machine transfer for this pair under partial sensor overlap, and nothing broader. No amount of architecture search fixes that — more machines or an external dataset would. The locked target number is a single checkpoint evaluated once; the three-seed control arm of the post-lock ablation gives 0.555 ± 0.015 on the same windows, which is the spread to keep in mind around it. On the source machine, plain supervised baselines are ahead as well (RSSM 0.759 and MLP 0.771 on source validation against 0.822). The model does not beat the official RevIN-equipped forecasters on raw zero-shot RMSE, and the post-lock ablation attributes that gap to normalization rather than architecture — at the cost of target calibration, which collapses. Per horizon the locked model explains variance only at 1–4 s and falls below the pooled target-mean predictor at 8 and 16 s. Several diagnostics were measured before the lock and have not been re-measured on the locked model: the few-shot curve, the action-shuffle sensitivity (which moved target RMSE by less than 0.005), and interval coverage (67 % empirical at a nominal 90 %). Baselines and ablations are single-seed at repository defaults unless a seed count is stated. The paper makes no SOTA claim.
 
+## Acknowledgments
+
+This work was made possible by compute provided by Atos IT Services UK Limited. Every experiment reported here ran on hardware they made available; without it the project would not have been feasible.
+
 ## Data and license
 
 - THWS five-axis CNC milling dataset (source, DS01): [10.5281/zenodo.14094887](https://doi.org/10.5281/zenodo.14094887), CC BY 4.0.
