@@ -1,3 +1,5 @@
+*Moved from the repository root on 2026-09-11. Historical working document kept for auditability; see [docs/protocol.md](../protocol.md) for the current summary.*
+
 # Verification status
 
 The project was checked in three independent passes.
@@ -23,7 +25,7 @@ Executed on synthetic DS01/DS03 data:
 - variable sensor schema 17/10/8/6/4
 - uncertainty calibration
 - action-conditioning ablation
-- n=6 run-level report and bootstrap
+- run-level report and bootstrap (n=6 synthetic runs)
 - CEM planning
 
 Status: PASS.

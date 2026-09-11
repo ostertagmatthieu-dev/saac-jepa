@@ -40,3 +40,19 @@ env/
 
 # Environment variables / secrets
 .env
+
+# LaTeX build artifacts and regenerable archives (see `make figures-zip`)
+*.aux
+*.fdb_latexmk
+*.fls
+*.synctex.gz
+/paper/*.zip
+
+# Local agent state and tool caches
+/.remember/
+.claude-flow/
+.ruff_cache/
+.pytest_cache/
+
+# Scratch page used to render docs/og.png (see docs/UPDATING.md)
+/docs/og-source.html

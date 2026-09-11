@@ -5,7 +5,7 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 from .losses import jepa_latent_loss, vicreg, gaussian_nll
-from .metrics import rmse,mae,r2,per_channel_metrics,per_horizon_metrics
+from .metrics import rmse,mae,r2,per_horizon_metrics
 from .models.jepa import vicreg_latents
 from .pipeline import batch_to
 from .utils import atomic_torch_save
