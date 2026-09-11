@@ -6,7 +6,7 @@ what GitHub Pages serves.
 
 Two things make it easy to leave the page half-edited, and both are covered below:
 
-1. **The arXiv identifier lives in five places.** Section 1.
+1. **The arXiv identifier lives in every file listed in Section 1** (nine edits across `main.js`, `index.html`, `CITATION.cff`, `README.md` and `CHANGELOG.md`).
 2. **Every headline number appears more than once**, because the same figure is stated
    in the abstract, in a fact cell, inside an SVG, in the results table, in a caption and
    in an SVG `<desc>` for screen readers. Section 2.
@@ -15,7 +15,7 @@ Two things make it easy to leave the page half-edited, and both are covered belo
 
 ## 1. Post-arXiv checklist
 
-Do all six, in any order, then re-read §2 before you touch a number.
+Do all nine, in any order, then re-read §2 before you touch a number.
 
 | # | File | What to change |
 |---|------|----------------|
@@ -25,6 +25,9 @@ Do all six, in any order, then re-read §2 before you touch a number.
 | 4 | `docs/index.html` | `<head>`: uncomment / add `<meta name="citation_arxiv_id" content="XXXX.XXXXX">` at the marked TODO, next to the other `citation_*` tags. Google Scholar reads this one. |
 | 5 | `docs/index.html` | `<head>`: add the `identifier` entry to the JSON-LD `ScholarlyArticle`, at the marked TODO: `"identifier": { "@type": "PropertyValue", "propertyID": "arXiv", "value": "arXiv:XXXX.XXXXX" }` |
 | 6 | `CITATION.cff` (repo root, **not** in `docs/`) | Add the identifier to `preferred-citation` and drop the `notes:` line that says it is pending. |
+| 7 | `README.md` (repo root) | Badge row: replace the static `arXiv — coming soon` shield with a real one, `https://img.shields.io/badge/arXiv-XXXX.XXXXX-b31b1b?logo=arxiv&logoColor=white`, and wrap it in a link to the abs URL. |
+| 8 | `README.md` (repo root) | The BibTeX block in `## Citation` is a **third** verbatim copy of the same entry. Apply change 2 here as well, character for character. |
+| 9 | `CHANGELOG.md` (repo root) | Add an entry recording the arXiv identifier and the README/page updates that went with it. |
 
 Also:
 
@@ -41,6 +44,8 @@ Also:
       .map(l=>JSON.parse(l.replace(/,$/,""))).join("\n");
     console.log(m===b ? "BibTeX in sync" : "BibTeX DRIFTED");'
   ```
+
+  `README.md` carries a third copy of the same BibTeX entry; the check above does not see it, so compare it by eye after every edit.
 
 ### Re-rendering `og.png`
 
@@ -68,17 +73,22 @@ The icons come from `favicon.svg` the same way (32×32 and 180×180).
 Each row lists every location. Counts are `grep -o` counts against `index.html`; if a
 count comes back different from the table, the page has drifted and this table is stale.
 
+**Copies outside the page.** Since 2026-09-11 the same headline numbers are restated in
+`README.md` (results table, footnote, limitations), `docs/results.md` and `docs/protocol.md`.
+When a number changes, grep those three files as well as `index.html`; the location lists
+below cover the page only.
+
 | Number | Occurrences | Every location |
 |---|---|---|
-| **0.546** — locked model, zero-shot target RMSE | 6 | §01 Abstract paragraph · §02 fact cell "Zero-shot (target)" · Fig. 3 `<text class="f3__big">` (the big sealed-pass number) · results table, `SAAC-JEPA (locked)` target cell · Fig. 5 `<desc>` (screen-reader text) · Fig. 5 reference-line label `locked model, sealed pass — 0.546` |
-| **0.654** — persistence, target RMSE | 4 | §02 fact cell "Persistence (target)" · results table, `Persistence` target cell · Fig. 5 `<desc>` · Fig. 5 reference-line label `persistence, sealed pass — 0.654` |
+| **0.546** — locked model, zero-shot target RMSE | 5 | §01 Abstract paragraph · §02 fact cell "Zero-shot (target)" · Fig. 3 `<text class="f3__big">` (the big sealed-pass number) · results table, `SAAC-JEPA (locked)` target cell · Fig. 5 `<desc>` (screen-reader text) · Fig. 5 reference-line label `locked model, sealed pass — 0.546` |
+| **0.654** — persistence, target RMSE | 5 | §02 fact cell "Persistence (target)" · results table, `Persistence` target cell · Fig. 5 `<desc>` · Fig. 5 reference-line label `persistence, sealed pass — 0.654` |
 | **0.612** — pre-lock model, zero-shot target RMSE | 3 | Fig. 5 `<desc>` · Fig. 5 data-point label at 0 % support · Fig. 5 caption (`panel__cap`) |
 | **0.520** — pre-lock model at 20 % target support | 4 | §01 Abstract paragraph · Fig. 5 `<desc>` · Fig. 5 data-point label at 20 % support · Fig. 5 caption |
 | **0.811 ± 0.022** — scratch, source RMSE | 2 | §01 Abstract paragraph · results table, `Scratch` source cell |
 | **0.813 ± 0.022** — pretrained body, source RMSE | 2 | §01 Abstract paragraph · results table, `Pretrained body + fresh head` source cell |
 | **0.822 ± 0.009** — locked model, source-validation RMSE | 2 | Fig. 3 `7 SEEDS` box (`0.822 ± 0.009 RMSE`) · results table, `SAAC-JEPA (locked)` source cell |
-| **0.503** — PatchTST, target zero-shot RMSE | 2 | §01 Abstract paragraph · results table, `PatchTST (official, RevIN)` target cell |
-| **0.498** — iTransformer, target zero-shot RMSE | 2 | §01 Abstract paragraph · results table, `iTransformer (official, RevIN)` target cell |
+| **0.503** — PatchTST, target zero-shot RMSE | 3 | §01 Abstract paragraph · results table, `PatchTST (official, RevIN)` target cell |
+| **0.498** — iTransformer, target zero-shot RMSE | 3 | §01 Abstract paragraph · results table, `iTransformer (official, RevIN)` target cell |
 | **0.495 ± 0.004** — SAAC-JEPA + RevIN, target zero-shot RMSE (three seeds, post-lock) | 4 | §01 Abstract paragraph · §04 lede · results table, `SAAC-JEPA + RevIN (post-lock)` target cell · "Said plainly" paragraph |
 | **20.6** — SAAC-JEPA + RevIN, target NLL | 3 | §01 Abstract paragraph · results table, `SAAC-JEPA + RevIN (post-lock)` note cell · "Said plainly" paragraph |
 

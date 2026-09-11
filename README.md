@@ -1,294 +1,182 @@
-# SAAC-JEPA: Schema-Adaptive Action-Conditioned JEPA for Cross-Machine CNC Transfer
+# SAAC-JEPA
 
-## Paper
+**Schema-Adaptive Action-Conditioned JEPA for cross-machine CNC transfer under partial sensor overlap.**
 
-**Schema-Adaptive Action-Conditioned JEPA for Cross-Machine CNC Transfer under Partial Sensor Overlap**
+A from-scratch PyTorch world model trained on one CNC machine (17 sensors) whose locked checkpoint was evaluated once on a second machine that shares only 10 of them, under a leakage-audited protocol.
 
-Ayoub Louaye Bouaziz (Universite de Bretagne Occidentale), Matthieu Ostertag (Mines Nancy, Universite de Lorraine), Anton Demasles (Mines Nancy, Universite de Lorraine)
+<p align="center">
+  <img src="https://img.shields.io/badge/arXiv-coming%20soon-b31b1b?logo=arxiv&logoColor=white" alt="arXiv: coming soon">
+  <a href="https://ostertagmatthieu-dev.github.io/saac-jepa/"><img src="https://img.shields.io/badge/project-page-0F1B2D" alt="Project page"></a>
+  <a href="https://ostertagmatthieu-dev.github.io/saac-jepa/paper.pdf"><img src="https://img.shields.io/badge/paper-PDF-b31b1b" alt="Paper PDF"></a>
+  <a href="https://github.com/ostertagmatthieu-dev/saac-jepa/actions/workflows/ci.yml"><img src="https://github.com/ostertagmatthieu-dev/saac-jepa/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <img src="https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-3776AB?logo=python&logoColor=white" alt="Python 3.10 | 3.11 | 3.12">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green" alt="MIT licence"></a>
+</p>
 
-arXiv: link to be added after announcement
+<p align="center">
+  <img src="paper/figures/fig1_saacjepa_architecture_en.png" width="720" alt="SAAC-JEPA training graph: masked sensors and past actions encode to a context latent; future actions condition a direct multi-horizon predictor whose latents are matched through a stop-gradient to an EMA target encoder, with variance-covariance, schema-consistency and action-recovery terms."><br>
+  <sub>Figure 1. Dashed green RevIN blocks mark the post-lock variant (paper App. H), not the locked model.</sub>
+</p>
 
-Project page with animated schematics: https://ostertagmatthieu-dev.github.io/saac-jepa/
+## What is this
 
-This repository accompanies the arXiv preprint; the pipeline, configuration files, the twenty candidate specifications and the audit scripts are those used for the paper.
+- **Problem.** A CNC world model trained on one machine has to keep working on another whose sensing interface is not the one it was trained on. Source: THWS Spinner U5-620, 17 canonical channels, 62 NC-program sessions at 1 Hz. Target: the FH JOANNEUM repository, 7 independent runs, 10 of those channels.
+- **Method.** An action-conditioned JEPA with a flexible sensor encoder: value, presence and schema indicators let one model accept any subset of a known sensor vocabulary. Context `K = 32 s`, direct prediction at `{1, 2, 4, 8, 16} s`, actions are spindle speed and the commanded X/Y/Z feeds.
+- **Protocol.** Group-disjoint session splits, train-only normalizers, leakage audits, deterministic validation masks, a 20-candidate architecture search scored on source validation alone, a lock that was refused once for instability, a SHA-256 lock, and a single sealed pass on the target machine.
+- **Framing.** An audited transfer case study, not a SOTA claim. Official RevIN-equipped PatchTST and iTransformer still win on raw zero-shot RMSE, and a post-lock ablation shows why.
 
+## Results at a glance
 
-From-scratch PyTorch pipeline for action-conditioned JEPA world modeling of CNC sensor dynamics, cross-machine transfer, missing sensors, anomalies, adaptation, and planning.
+| Model | Source RMSE | Target zero-shot RMSE | Target NLL | Note |
+|---|---|---|---|---|
+| Persistence | 1.135 | 0.654 | — | trivial floor; source = validation split (1.128 on the source test split) |
+| PatchTST (official, RevIN) | 0.804 | 0.503 | — | deterministic, single run; source = test split |
+| iTransformer (official, RevIN) | 0.822 | 0.498 | — | deterministic, single run; source = test split |
+| **SAAC-JEPA (locked, M03)** | **0.822 ± 0.009** (7 seeds) | **0.546** | 0.52 | single sealed pass; R² 0.012; source = validation mean |
+| SAAC-JEPA + RevIN (post-lock) | 0.766 ± 0.001 (3 seeds) | 0.495 ± 0.004 (3 seeds) | 20.6 | second declared read; calibration collapses |
 
-The code is designed around the reviewer protocol: source DS01 (THWS five-axis CNC milling dataset, 62 NC-program sessions), target DS03 (FH JOANNEUM CNC machining repository, 7 independent runs), evaluation around 1 Hz, 17 source channels and 10 overlapping transfer channels. `configs/base.yaml` ships with explicit placeholder sensor/action names; map them to the real dataset columns (see 'Real database mapping') before scientific runs.
+<sub>RMSE in z units of the source-train normalizer, lower is better. Target = the 10 shared JOANNEUM channels over 7 runs, 2,457 windows. <b>The source column is not like-for-like</b>: the official baselines are scored on the source test split (5,189 windows, 17 sensors), the SAAC-JEPA rows are source-validation means over seeds. Pre-lock few-shot curve: 0.612 / 0.611 / 0.540 / 0.520 at 0 / 5 / 10 / 20 % target support. DS03 has been read exactly twice — the sealed locked pass and the declared post-lock ablation. Full definitions, per-horizon R², calibration and the RevIN ablation: <a href="docs/results.md">docs/results.md</a>.</sub>
 
-The original CNC proposal is action-conditioned: current machine state and candidate actions predict future production, energy, temperature and wear. This implementation extends that idea into a schema-adaptive JEPA and an audited transfer benchmark.
+## Method in five lines
 
-## Core architecture
-
-`history sensors + past actions -> flexible sensor encoder -> temporal context latent`
-
-`future actions + context latent -> causal JEPA predictor -> future latent sequence`
-
-`future states -> EMA target encoder -> target latent sequence`
-
-`[RevIN variant, App. H] context-window (c, s) -> normalise both windows -> same pipeline -> de-normalise the physical head`
-
-The RevIN variant is a post-lock ablation and is not part of the locked M03.
-
-Training combines latent prediction, optional per-horizon VICReg, physical probabilistic forecasting, action recovery and schema-consistency losses.
-
-Missing or absent sensors use separate value, presence and schema indicators. A target machine may expose 10 of the 17 known sensors without changing tensor dimensionality or retraining the input layer.
-
-## Numbered scripts
-
-### 00 to 09: protocol and leakage audit
-
-00 validate dataset
-01 audit machines, sessions, runs and channel coverage
-02 create group-disjoint protocol splits
-03 inspect resampling rates
-04 fit train-only normalizers
-05 audit window leakage
-06 define corruption suite
-07 audit 17 to 10 schema overlap
-08 audit target-statistic leakage
-09 quantify the weak statistical power of n=7
-
-### 10 to 19: JEPA from scratch and ablations
-
-10 pretrain action-conditioned JEPA from random initialization
-11 fine-tune physical probabilistic forecast head
-12 train schema-adaptive action-conditioned JEPA
-13 action-conditioning ablation
-14 masking-policy ablation
-15 latent-loss-weight ablation
-16 VICReg none vs pooled vs per-horizon
-17 latent LayerNorm on/off plus encoder pre/post norm
-18 per-horizon vs pooled latent target
-19 EMA target-encoder ablation
-
-### 20 to 29: non-JEPA and reconstruction baselines
-
-20 DLinear, MLP, GRU, LSTM, TCN, Transformer, TSMixer, PatchTST-like, iTransformer-like and RSSM
-21 masked autoencoding baseline
-22 SimMTM-inspired reconstruction baseline
-23 PatchFormer-inspired hierarchical/block masked baseline
-24 EMIT-inspired event-masked baseline
-25 MMR-inspired multiscale/wavelet masked baseline
-26 LoMaR-inspired local reconstruction baseline adapted to time series
-27 RSSM world-model baseline
-28 forecasting capacity sweep
-29 export identical splits/windows for official external baseline implementations
-
-Important: scripts 22 to 26 are controlled in-house approximations for ablation and engineering comparisons. They must be called `-style` or `-inspired` in the paper unless the official implementation is reproduced exactly. Script 29 exists for the official-repository comparison.
-
-### 30 to 39: audited evaluation
-
-30 source and target multi-horizon evaluation
-31 zero/few-shot DS01 to DS03 transfer
-32 per-channel/per-run metrics in z and physical units
-33 source-normalizer sensitivity
-34 missing sensor/schema stress 17/10/8/6/4
-35 random masks, noise, spikes, drift, step shifts, missing blocks and bias
-36 probabilistic calibration
-37 true vs zero vs shuffled future actions
-38 CEM planning with physical-unit temperature/wear constraints
-39 n=7 run-level paired statistical tests
-
-### 40 to 45: 20-method search without test leakage
-
-40 generate 20 unique random JEPA designs
-41 train one candidate on DS01 only
-42 run 20 methods x 3 seeds = 60 jobs across DGX GPUs
-43 rank methods by mean source-validation score across seeds
-44 lock the winning method and checkpoint using SHA-256
-45 evaluate the locked model on DS03 for the first time
-
-The random search varies mask type/ratio, action injection, encoder norm, latent LayerNorm, VICReg, latent weight, horizon aggregation, schema consistency, action recovery, EMA, model scale and source normalizer.
-
-This procedure is intended for model discovery. It does not prove SOTA. SOTA requires fair official/reproduced baselines under the same audited protocol.
-
-### 46 to 50: adaptation and proposed novelty
-
-46 few-shot target adaptation
-47 causal online adaptation
-48 predict a new input with optional support set
-49 inference with a variable known sensor subset
-50 component-factorial experiment for SAAC-JEPA
-
-### 51 to 59: paper/reviewer outputs
-
-51 main tables
-52 reviewer-response matrix
-53 DGX reproduction launcher
-54 core smoke test
-55 automated three-pass review
-56 baseline per-channel/per-run export
-57 full sampling-rate retrain/evaluation sensitivity
-58 grouped DS01 session CV manifest
-59 target-run bootstrap uncertainty
-
-## Proposed novelty to test
-
-SAAC-JEPA: Schema-Adaptive Action-Conditioned JEPA for cross-machine CNC dynamics.
-
-The novelty should not be phrased as `JEPA for time series`. Existing work already covers that territory. The paper should test whether action-conditioned latent prediction plus explicit sensor-schema modeling improves cross-machine transfer when source and target expose different sensor subsets, especially with few target runs, anomalies and planning.
-
-See `NOVELTY_GAP.md`.
-
-## Reviewer mapping
-
-Run:
-
-```bash
-python scripts/52_build_reviewer_response_matrix.py
+```
+history sensors + past actions   -> flexible sensor encoder -> temporal context latent
+future actions + context latent  -> causal JEPA predictor   -> future latent sequence
+future states                    -> EMA target encoder      -> target latent sequence
+[RevIN variant, App. H] context-window (c, s) -> normalise both windows -> same pipeline -> de-normalise the physical head
 ```
 
-The matrix includes every reviewer concern and the scripts that answer it.
+Training combines latent prediction against a stop-gradient EMA target, optional per-horizon VICReg, physical probabilistic forecasting (mean and log-variance), action recovery and schema consistency.
 
-## Data
+Missing or absent sensors carry separate value, presence and schema indicators, so a target machine exposing 10 of the 17 known sensors needs no re-dimensioning and no new input layer. The audit, the selection score and the lock are described in [docs/protocol.md](docs/protocol.md).
 
-- THWS five-axis CNC milling dataset: https://doi.org/10.5281/zenodo.14094887 (CC BY 4.0)
-- FH JOANNEUM CNC machining repository: https://doi.org/10.17632/gtvvwmz7r7.2 (CC BY 4.0)
+<details>
+<summary>Masking modes and action injection</summary>
 
-## Setup
+<p align="center"><img src="paper/figures/fig4_masking_actions_en.png" width="640" alt="The five masking modes with the winning channel mode boxed, and the three action-injection mechanisms: token, FiLM and cross-attention, with their measured RMSE."></p>
 
-```bash
-pip install -r requirements.txt
-```
+</details>
 
-For a DGX, use the installed CUDA/PyTorch stack if it is newer and compatible.
+## Quickstart
 
-## Real database mapping
-
-Place the DB at `data/cnc.csv` or change `paths.data` in `configs/base.yaml`.
-
-Map:
-
-- timestamp
-- machine ID
-- session ID
-- run ID
-- 17 source sensor columns
-- 10 target-overlap sensor columns
-- action columns
-
-Do not silently substitute sensor names. The placeholders in the config are not claims about the real dataset.
-
-## First audited run
+With [uv](https://docs.astral.sh/uv/) — this is what `make setup` does for you:
 
 ```bash
-python scripts/00_validate_dataset.py --config configs/base.yaml
-python scripts/01_audit_sessions_channels.py --config configs/base.yaml
-python scripts/05_window_leakage_audit.py --config configs/base.yaml
-python scripts/08_normalization_leakage_audit.py --config configs/base.yaml
+git clone https://github.com/ostertagmatthieu-dev/saac-jepa.git && cd saac-jepa
+uv venv --python 3.12 && source .venv/bin/activate
+uv pip install --index-url https://download.pytorch.org/whl/cpu "torch>=2.3"
+uv pip install -e ".[dev]"
 ```
 
-Inspect these outputs before any model training.
-
-## JEPA from scratch
+With pip, after the same clone:
 
 ```bash
-python scripts/10_pretrain_jepa_from_scratch.py --config configs/base.yaml --out outputs/jepa_pretrain --device cuda:0
-python scripts/11_finetune_jepa_forecaster.py --config configs/base.yaml --pretrained outputs/jepa_pretrain/best.pt --out outputs/jepa_finetune --device cuda:0
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt && pip install -e ".[dev]"
 ```
 
-## Main reviewer ablations
+Then, either way:
 
 ```bash
-python scripts/15_train_latent_weight_ablation.py --config configs/base.yaml --device cuda:0
-python scripts/16_train_vicreg_ablation.py --config configs/base.yaml --device cuda:1
-python scripts/17_train_layernorm_ablation.py --config configs/base.yaml --device cuda:2
-python scripts/18_train_horizon_aggregation_ablation.py --config configs/base.yaml --device cuda:3
-python scripts/19_train_ema_ablation.py --config configs/base.yaml --device cuda:4
+make smoke    # synthetic data -> validate -> pretrain -> fine-tune -> evaluate on CPU
+              # prints SMOKE_CORE_OK, a few minutes, no download needed
+make test     # the pytest suite
 ```
 
-## Reconstruction and dynamics baselines
+<details>
+<summary>GPU note</summary>
 
-```bash
-python scripts/20_train_supervised_dynamics_baselines.py --config configs/base.yaml --device cuda:0
-python scripts/21_train_masked_mae_baseline.py --config configs/base.yaml --device cuda:1
-python scripts/22_train_simmtm_style_baseline.py --config configs/base.yaml --device cuda:2
-python scripts/23_train_patchformer_style_baseline.py --config configs/base.yaml --device cuda:3
-python scripts/24_train_emit_style_baseline.py --config configs/base.yaml --device cuda:4
-python scripts/25_train_mmr_wavelet_style_baseline.py --config configs/base.yaml --device cuda:5
-python scripts/26_train_lomar_ts_style_baseline.py --config configs/base.yaml --device cuda:6
-python scripts/29_export_official_baseline_inputs.py --config configs/base.yaml
+Skip the CPU index line and install the CUDA build of PyTorch appropriate to your machine, then `uv pip install -e ".[dev]"`. On a DGX, use the installed CUDA/PyTorch stack if it is newer and compatible.
+
+</details>
+
+## Reproduce the paper
+
+1. Download both datasets and lay them out as [docs/data.md](docs/data.md) describes.
+2. Ingest and audit:
+   ```bash
+   python scripts/60_ingest_real_data.py --config configs/real.yaml
+   ```
+3. Run the pipeline:
+   ```bash
+   python scripts/61_run_all_spark.py --config configs/real.yaml --dry-run
+   python scripts/61_run_all_spark.py --config configs/real.yaml
+   ```
+
+Phases run in order:
+
+```
+p2_audits -> p3_core -> p3fix_gate -> p4_ablations -> p5_baselines -> p6_evals -> p7_search -> p8_adapt -> p10_revin -> p9_reports
 ```
 
-## 20 random methods on DGX
+`p2_audits` and `p3fix_gate` are gates: a failure inside either aborts the whole run. The full set took about six GPU-days on one NVIDIA DGX Spark (a single GB10 GPU). Phase table, flags, log locations and every per-command recipe: [docs/reproduce.md](docs/reproduce.md).
 
-The 20 candidate configs are already included in `configs/random_methods`.
+## Repository map
 
-Preview 60 jobs:
-
-```bash
-python scripts/42_run_20_random_methods_dgx.py --manifest configs/random_methods/manifest.json --gpus 0,1,2,3,4,5,6,7 --dry-run
+```
+src/cncjepa/
+  models/jepa.py       FlexibleSensorEncoder, ActionConditionedPredictor,
+                       ActionConditionedJEPA, SchemaAdaptiveJEPA
+  models/revin.py      MaskedRevIN — presence-aware instance normalization (post-lock)
+  models/baselines.py  12 forecasters incl. RSSM, PatchTST-like, iTransformer-like; MODEL_REGISTRY
+  pipeline.py prepare(), loaders_from_ds()   trainers.py training loops   planner.py cem_plan()
+  checkpoint.py audited load, body-only / full state   data.py  masking.py  normalization.py
+  losses.py  metrics.py  corruptions.py  adaptation.py  ssl_baselines.py
+scripts/               73 files: 00..68 plus _common.py, _search_common.py, _ssl_common.py,
+                       _val_bundle.py. Run from the repository root -> docs/scripts.md
+configs/               base.yaml placeholder template · smoke.yaml tiny CPU config ·
+                       real.yaml DS01/DS03 incl. the etl: section · search_v2/ the paper's 20
+                       candidates M00..M19 with M03 locked · revin/ the post-lock arm ·
+                       random_methods/ abandoned V1 sample, kept but unused by the paper
+tests/                 protocol invariants, smoke, version
+examples/              make_synthetic_ds01_ds03.py
+third_party/           pinned official baseline repos (gitignored clones) + cnc_adapter/
+paper/                 figures/ (TikZ sources, PDF and PNG), results/revin_ablation/
+docs/                  the project page served by GitHub Pages, the Markdown docs, internal/
 ```
 
-Run:
+## Documentation
 
-```bash
-python scripts/42_run_20_random_methods_dgx.py --manifest configs/random_methods/manifest.json --gpus 0,1,2,3,4,5,6,7
-python scripts/43_rank_methods_validation_only.py
-python scripts/44_lock_best_method.py
-```
-
-Only after the lock file exists:
-
-```bash
-python scripts/45_test_locked_method_ds03.py --device cuda:0
-```
-
-## Main transfer reporting
-
-```bash
-python scripts/31_eval_transfer_ds01_to_ds03.py --ckpt outputs/jepa_finetune/best.pt --device cuda:0
-python scripts/32_eval_per_channel_per_run.py --ckpt outputs/jepa_finetune/best.pt --device cuda:0
-python scripts/33_eval_normalization_sensitivity.py --ckpt outputs/jepa_finetune/best.pt --device cuda:0
-python scripts/34_eval_missing_sensor_schema.py --ckpt outputs/jepa_finetune/best.pt --device cuda:0
-python scripts/37_eval_action_conditioning.py --ckpt outputs/jepa_finetune/best.pt --device cuda:0
-python scripts/39_statistical_tests_n6.py --jepa outputs/per_channel_run.csv --baseline <baseline_per_channel_run.csv>
-python scripts/57_sampling_rate_sensitivity_train_eval.py --config configs/base.yaml --device cuda:0
-```
-
-## Post-lock RevIN ablation (paper App. H)
-
-The locked model (M03) uses a fixed source-train z-score. The official PatchTST and
-iTransformer baselines use RevIN. `scripts/68_revin_ablation.py` runs the paired ablation
-that isolates this difference: `configs/search_v2/M03.yaml` (control, verbatim) against
-`configs/revin/M03_revin.yaml` (identical plus `model.revin.enabled: true`), three seeds
-each through `scripts/41`, then a second, declared read of DS03 on all six runs with no
-selection on the target. `src/cncjepa/models/revin.py` is presence-aware (context-window
-statistics over present entries only, identity for unseen channels, Gaussian head
-de-normalized), and `enabled: false` is bitwise the V1 code path (`tests/test_p3fix.py`,
-section (i)).
-
-```bash
-python scripts/68_revin_ablation.py train --seeds 0,1,2 --device cuda:0
-python scripts/68_revin_ablation.py summarize
-python scripts/68_revin_ablation.py ds03
-```
-
-Result: target zero-shot RMSE 0.495 +/- 0.004 (RevIN) against 0.555 +/- 0.015 (control),
-level with the official baselines, but target NLL 20.6 against 0.9 because stationary
-context windows drive the instance scale to sqrt(eps). M03 stays the locked model; the
-RevIN numbers are diagnostic. The summaries and per-run validation metrics are kept under
-`paper/results/revin_ablation/`. Note that DS03 has now been read twice.
-
-## Verification
-
-```bash
-python scripts/54_smoke_test_core.py
-python scripts/55_triple_review.py
-```
-
-`REVIEW_STATUS.md` records the checks already executed while building this package.
-
-## Critical scientific limitation
-
-No amount of random architecture search fixes having only one source and one target machine. The 62 source sessions and seven target runs permit a useful audited case study, but broad cross-machine generalization requires more machines or an external dataset. Keep that limitation explicit in the paper.
-
-## License
-
-MIT, see LICENSE.
+| Page | Contents |
+|---|---|
+| [docs/protocol.md](docs/protocol.md) | Splits, normalizers, leakage audits, the P3-FIX gate, the selection score, the lock, and what the evidence does not show |
+| [docs/data.md](docs/data.md) | Both datasets, on-disk layout, the ETL and its audits, unit corrections, channel names, the synthetic path |
+| [docs/reproduce.md](docs/reproduce.md) | Hardware, environment, the phase table, flags, logs, every per-command recipe |
+| [docs/scripts.md](docs/scripts.md) | Catalogue of all 73 scripts with purposes and main flags |
+| [docs/results.md](docs/results.md) | Full result tables, per-horizon R², few-shot curve, calibration, the post-lock RevIN ablation |
+| [docs/internal/README.md](docs/internal/README.md) | Historical working documents, kept for auditability |
+| [docs/UPDATING.md](docs/UPDATING.md) | How to update the project page, and where every headline number lives |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | Setup, the rules inherited from the protocol, pull-request expectations |
+| [CHANGELOG.md](CHANGELOG.md) | Release history |
 
 ## Citation
 
-See CITATION.cff.
+```bibtex
+@article{bouaziz2026saacjepa,
+  title   = {Schema-Adaptive Action-Conditioned JEPA for Cross-Machine CNC
+             Transfer under Partial Sensor Overlap},
+  author  = {Bouaziz, Ayoub Louaye and Ostertag, Matthieu
+             and Demasles, Anton},
+  journal = {arXiv preprint},
+  year    = {2026},
+  eprint  = {ARXIV-ID},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG},
+  note    = {arXiv identifier to be added after announcement},
+  url     = {https://ostertagmatthieu-dev.github.io/saac-jepa/}
+}
+```
+
+Or use GitHub's "Cite this repository" button, which reads [CITATION.cff](CITATION.cff).
+
+## Limitations
+
+The results cover one source machine and one target machine with seven independent runs: they establish cross-machine transfer for this pair under partial sensor overlap, and nothing broader. No amount of architecture search fixes that — more machines or an external dataset would. The locked target number is a single checkpoint evaluated once; the three-seed control arm of the post-lock ablation gives 0.555 ± 0.015 on the same windows, which is the spread to keep in mind around it. On the source machine, plain supervised baselines are ahead as well (RSSM 0.759 and MLP 0.771 on source validation against 0.822). The model does not beat the official RevIN-equipped forecasters on raw zero-shot RMSE, and the post-lock ablation attributes that gap to normalization rather than architecture — at the cost of target calibration, which collapses. Per horizon the locked model explains variance only at 1–4 s and falls below the pooled target-mean predictor at 8 and 16 s. Several diagnostics were measured before the lock and have not been re-measured on the locked model: the few-shot curve, the action-shuffle sensitivity (which moved target RMSE by less than 0.005), and interval coverage (67 % empirical at a nominal 90 %). Baselines and ablations are single-seed at repository defaults unless a seed count is stated. The paper makes no SOTA claim.
+
+## Data and license
+
+- THWS five-axis CNC milling dataset (source, DS01): [10.5281/zenodo.14094887](https://doi.org/10.5281/zenodo.14094887), CC BY 4.0.
+- FH JOANNEUM CNC machining repository (target, DS03): [10.17632/gtvvwmz7r7.2](https://doi.org/10.17632/gtvvwmz7r7.2), CC BY 4.0.
+- Official baseline repositories are pinned to specific commits in [third_party/README.md](third_party/README.md); the clones themselves are not redistributed here.
+
+Code released under the MIT license, see [LICENSE](LICENSE).
