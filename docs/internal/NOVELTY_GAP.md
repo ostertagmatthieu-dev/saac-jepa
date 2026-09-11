@@ -1,3 +1,5 @@
+*Moved from the repository root on 2026-09-11. Historical working document kept for auditability; see [docs/protocol.md](../protocol.md) for the current summary.*
+
 # Candidate novelty and research gap
 
 Provisional method name: SAAC-JEPA, Schema-Adaptive Action-Conditioned JEPA.

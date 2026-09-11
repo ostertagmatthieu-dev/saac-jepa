@@ -1,7 +1,7 @@
 from _common import *
 import pandas as pd,argparse
 p=argparse.ArgumentParser(); p.add_argument('--out',default='outputs/reviewer_response_matrix.csv'); a=p.parse_args(); rows=[
-['Limited scale DS01/DS03, 30 sessions/6 runs','01,02,09,31,32,39,58,59','Group-level source splits, run-level target reporting, grouped CV, exact paired tests and bootstrap uncertainty. This cannot create new machines, so the scale limitation remains explicit.'],
+['Limited scale DS01/DS03, 62 sessions/7 runs','01,02,09,31,32,39,58,59','Group-level source splits, run-level target reporting, grouped CV, exact paired tests and bootstrap uncertainty. This cannot create new machines, so the scale limitation remains explicit.'],
 ['1 Hz evaluation','03,57','Data audit plus full retrain/evaluate sampling-rate sensitivity at 0.5/1/2/5 Hz while preserving physical context/horizon durations.'],
 ['10/17 transfer channels','07,12,34,49,50','Flexible global sensor vocabulary, schema masks/dropout/consistency, 17→10 and more severe leave-sensor-out tests.'],
 ['JEPA latent loss weight','15','Audited latent-loss weight sweep.'],
@@ -10,7 +10,7 @@ p=argparse.ArgumentParser(); p.add_argument('--out',default='outputs/reviewer_re
 ['Target aggregation / EMA choices','18,19','Per-horizon vs pooled target objective and EMA sweeps.'],
 ['No masked reconstruction baseline','21-26,29','MAE plus SimMTM/PatchFormer/EMIT/MMR/LoMaR-inspired implementations, and identical split export for official repositories. Style baselines are not mislabeled as official reproductions.'],
 ['Limited non-JEPA dynamics baselines','20,27,28','DLinear, MLP, GRU, LSTM, TCN, Transformer, TSMixer, PatchTST-like, iTransformer-like, RSSM and capacity sweeps.'],
-['n=6 statistical power','09,32,39,59','Runs are independent units. Exact sign-flip, Wilcoxon, bootstrap CI and per-run effects. No window-level pseudo-replication.'],
+['n=7 statistical power','09,32,39,59','Runs are independent units. Exact sign-flip, Wilcoxon, bootstrap CI and per-run effects. No window-level pseudo-replication.'],
 ['Aggregate z-RMSE obscures channels','32,51,56','Per-channel, per-horizon and per-run tables in z-units and physical units.'],
 ['Source normalizer implications','04,08,33','Train-only normalizer audit plus source-zscore/source-robust/target-support/target-oracle diagnostic sensitivity.'],
 ['Variable sensor configurations / SLIP connection','07,12,34,49,50','Sensor-ID flexible encoder with presence/schema tokens and schema-consistency objective.'],

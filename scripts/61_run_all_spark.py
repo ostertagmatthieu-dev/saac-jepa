@@ -98,7 +98,7 @@ def build_jobs(cfg, py):
         J('58', sc(py, '58_source_group_cv.py', '--config', cfg)),
         J('59', sc(py, '59_target_run_bootstrap.py', '--csv', 'outputs/per_channel_run.csv')),
         J('57', sc(py, '57_sampling_rate_sensitivity_train_eval.py', '--config', cfg, '--device', 'cuda:0')),
-        J('39', sc(py, '39_statistical_tests_n6.py', '--jepa', 'outputs/per_channel_run.csv', '--baseline', 'outputs/baseline_per_channel_run.csv'), deps=['56']),
+        J('39', sc(py, '39_statistical_tests_run_level.py', '--jepa', 'outputs/per_channel_run.csv', '--baseline', 'outputs/baseline_per_channel_run.csv'), deps=['56']),
     ]
     # 48_predict_any_input / 49_predict_variable_sensor_schema require --input with no default and no
     # upstream artifact produces one -- they are ad-hoc single-inference demos, not batch jobs. Excluded.
