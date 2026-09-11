@@ -1,3 +1,6 @@
+*Moved from the repository root on 2026-09-11. Historical working document kept for auditability; see [docs/protocol.md](../protocol.md) for the current summary.*
+*Note: "n=6" and "DS01 ≈ 30 sessions" in this specification refer to the synthetic smoke split (30 DS01 sessions, 6 DS03 sessions); the real datasets have 62 DS01 sessions and 7 DS03 runs.*
+
 # V1 RoboPAD — 60-script implementation and architecture-search taskbook
 
 ## Purpose
@@ -231,7 +234,7 @@ The local LLM should modify or regenerate code to satisfy this specification. Do
 - Inputs: Checkpoint + normalizers
 - Required output: Planning metrics: energy, wear, violations, deadline success, regret.
 
-### 39 — `39_statistical_tests_n6.py`
+### 39 — `39_statistical_tests_run_level.py`
 - Goal: Perform target-run-level paired tests: exact sign-flip/permutation, Wilcoxon when meaningful, bootstrap CI. No window-level p-values.
 - Inputs: Per-run results
 - Required output: Statistical report for n=6.
