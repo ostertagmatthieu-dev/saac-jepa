@@ -33,7 +33,7 @@ A from-scratch PyTorch world model trained on one CNC machine (17 sensors) whose
 | PatchTST (official, RevIN) | 0.804 | 0.503 | — | deterministic, single run; source = test split |
 | iTransformer (official, RevIN) | 0.822 | 0.498 | — | deterministic, single run; source = test split |
 | **SAAC-JEPA (locked, M03)** | **0.822 ± 0.009** (7 seeds) | **0.546** | 0.52 | single sealed pass; R² 0.012; source = validation mean |
-| **SAAC-JEPA + RevIN (post-lock)** | **0.766 ± 0.001 (3 seeds)** | **0.495 ± 0.004 (3 seeds)** | 20.6 | second declared read; calibration collapses |
+| **SAAC-JEPA + RevIN (post-lock)** | **0.766 ± 0.001** (3 seeds) | **0.495 ± 0.004 (3 seeds)** | 20.6 | second declared read; calibration collapses |
 
 <sub>RMSE in z units of the source-train normalizer, lower is better. Target = the 10 shared JOANNEUM channels over 7 runs, 2,457 windows. <b>The source column is not like-for-like</b>: the official baselines are scored on the source test split (5,189 windows, 17 sensors), the SAAC-JEPA rows are source-validation means over seeds. Pre-lock few-shot curve: 0.612 / 0.611 / 0.540 / 0.520 at 0 / 5 / 10 / 20 % target support. DS03 has been read exactly twice — the sealed locked pass and the declared post-lock ablation. Full definitions, per-horizon R², calibration and the RevIN ablation: <a href="docs/results.md">docs/results.md</a>.</sub>
 
