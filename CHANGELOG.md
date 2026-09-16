@@ -19,6 +19,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Author ORCID iDs on all three authors, in both author blocks of `CITATION.cff` and as the
   schema.org `@id` of each author on the project page, so harvesters attach the work to the right
   person rather than to a name string.
+- An `Attribution` workflow (`.github/workflows/attribution.yml`) that fails when a pull request,
+  or a push to `main`, contains a commit authored by a bot or carrying a `Co-authored-by`,
+  `Signed-off-by` or `Claude-Session` line that names Claude, Anthropic or a bot account. Such lines
+  put extra accounts in the GitHub Contributors graph, and removing them afterwards means
+  rewriting `main`.
 
 ### Changed
 

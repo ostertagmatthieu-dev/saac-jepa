@@ -1,0 +1,41 @@
+name: Attribution
+
+# Keeps bots and AI assistants out of the Contributors graph: every commit
+# in a pull request, and every commit pushed to main, must be free of bot
+# authors and Claude / bot co-author trailers.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  attribution:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Check commit authors and trailers
+        env:
+          EVENT: ${{ github.event_name }}
+          PR_BASE: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD: ${{ github.event.pull_request.head.sha }}
+          BEFORE: ${{ github.event.before }}
+        run: |
+          if [ "$EVENT" = pull_request ]; then
+            range="$PR_BASE..$PR_HEAD"
+          elif [ "$EVENT" = push ] && [ -n "$BEFORE" ] \
+               && git merge-base --is-ancestor "$BEFORE" HEAD 2>/dev/null; then
+            range="$BEFORE..HEAD"
+          else
+            # Manual run, first push or force-push: audit the whole branch.
+            range="HEAD"
+          fi
+          echo "Checking $range"
+          sh .github/scripts/check_attribution.sh "$range"
