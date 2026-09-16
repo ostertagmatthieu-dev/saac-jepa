@@ -5,7 +5,7 @@
 A from-scratch PyTorch world model trained on one CNC machine (17 sensors) whose locked checkpoint was evaluated once on a second machine that shares only 10 of them, under a leakage-audited protocol.
 
 <p align="center">
-  <img src="https://img.shields.io/badge/arXiv-coming%20soon-b31b1b?logo=arxiv&logoColor=white" alt="arXiv: coming soon">
+  <a href="https://arxiv.org/abs/2609.16071"><img src="https://img.shields.io/badge/arXiv-2609.16071-b31b1b?logo=arxiv&logoColor=white" alt="arXiv:2609.16071"></a>
   <a href="https://ostertagmatthieu-dev.github.io/saac-jepa/"><img src="https://img.shields.io/badge/project-page-0F1B2D" alt="Project page"></a>
   <a href="https://ostertagmatthieu-dev.github.io/saac-jepa/paper.pdf"><img src="https://img.shields.io/badge/paper-PDF-b31b1b" alt="Paper PDF"></a>
   <a href="https://github.com/ostertagmatthieu-dev/saac-jepa/actions/workflows/ci.yml"><img src="https://github.com/ostertagmatthieu-dev/saac-jepa/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
@@ -159,11 +159,10 @@ docs/                  the project page served by GitHub Pages, the Markdown doc
              and Demasles, Anton},
   journal = {arXiv preprint},
   year    = {2026},
-  eprint  = {ARXIV-ID},
+  eprint  = {2609.16071},
   archivePrefix = {arXiv},
   primaryClass  = {cs.LG},
-  note    = {arXiv identifier to be added after announcement},
-  url     = {https://ostertagmatthieu-dev.github.io/saac-jepa/}
+  url     = {https://arxiv.org/abs/2609.16071}
 }
 ```
 

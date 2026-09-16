@@ -4,10 +4,10 @@
    ========================================================================== */
 
 const CONFIG = {
-  // Set to the arXiv abs URL once announced, e.g. "https://arxiv.org/abs/2609.01234".
-  // While null, the arXiv button renders as "coming soon" and stays inert.
+  // arXiv abs URL, announced 2026-09-13. index.html carries the same link on the
+  // arXiv button and in #arxivNote, so the page still points at arXiv with JS off.
   // The PDF button is a plain relative link to paper.pdf and is not driven by CONFIG.
-  arxivUrl: null,
+  arxivUrl: "https://arxiv.org/abs/2609.16071",
   arxivPlaceholder: "arXiv: coming soon",
   codeUrl: "https://github.com/ostertagmatthieu-dev/saac-jepa",
   // index.html carries the SAME BibTeX as static text inside #bibtex, so the page
@@ -20,11 +20,10 @@ const CONFIG = {
     "             and Demasles, Anton},",
     "  journal = {arXiv preprint},",
     "  year    = {2026},",
-    "  eprint  = {ARXIV-ID},",
+    "  eprint  = {2609.16071},",
     "  archivePrefix = {arXiv},",
     "  primaryClass  = {cs.LG},",
-    "  note    = {arXiv identifier to be added after announcement},",
-    "  url     = {https://ostertagmatthieu-dev.github.io/saac-jepa/}",
+    "  url     = {https://arxiv.org/abs/2609.16071}",
     "}"
   ].join("\n")
 };

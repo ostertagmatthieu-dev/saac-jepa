@@ -39,4 +39,8 @@ preferred-citation:
       affiliation: "Mines Nancy, Universite de Lorraine"
   journal: "arXiv preprint"
   year: 2026
-  notes: "arXiv identifier to be added after announcement"
+  url: "https://arxiv.org/abs/2609.16071"
+  identifiers:
+    - type: other
+      value: "arXiv:2609.16071"
+      description: "arXiv identifier"
