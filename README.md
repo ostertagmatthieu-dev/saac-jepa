@@ -145,6 +145,7 @@ docs/                  the project page served by GitHub Pages, the Markdown doc
 | [docs/scripts.md](docs/scripts.md) | Catalogue of all 73 scripts with purposes and main flags |
 | [docs/results.md](docs/results.md) | Full result tables, per-horizon R², few-shot curve, calibration, the post-lock RevIN ablation |
 | [docs/internal/README.md](docs/internal/README.md) | Historical working documents, kept for auditability |
+| [docs/licensing.md](docs/licensing.md) | What MIT covers, the two dataset licences and the DS03 non-commercial restriction, baseline and dependency licences |
 | [docs/UPDATING.md](docs/UPDATING.md) | How to update the project page, and where every headline number lives |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | Setup, the rules inherited from the protocol, pull-request expectations |
 | [CHANGELOG.md](CHANGELOG.md) | Release history |
@@ -176,8 +177,13 @@ This work was made possible by compute provided by Atos IT Services UK Limited. 
 
 ## Data and license
 
-- THWS five-axis CNC milling dataset (source, DS01): [10.5281/zenodo.14094887](https://doi.org/10.5281/zenodo.14094887), CC BY 4.0.
-- FH JOANNEUM CNC machining repository (target, DS03): [10.17632/gtvvwmz7r7.2](https://doi.org/10.17632/gtvvwmz7r7.2), CC BY 4.0.
-- Official baseline repositories are pinned to specific commits in [third_party/README.md](third_party/README.md); the clones themselves are not redistributed here.
+Code and everything else tracked in this repository are released under the MIT license, see
+[LICENSE](LICENSE). The datasets are not ours and MIT does not reach them:
 
-Code released under the MIT license, see [LICENSE](LICENSE).
+- THWS five-axis CNC milling dataset (source, DS01): [10.5281/zenodo.14094887](https://doi.org/10.5281/zenodo.14094887), CC BY 4.0 — commercial use permitted with attribution.
+- FH JOANNEUM CNC machining repository (target, DS03): [10.17632/gtvvwmz7r7.2](https://doi.org/10.17632/gtvvwmz7r7.2), **CC BY-NC — non-commercial use only**. Running this pipeline on DS03 commercially, or shipping a checkpoint trained on it, is not permitted by that license; the MIT license on the code does not override it.
+- Neither dataset is redistributed here: `data/` is gitignored and `paper/results/` holds aggregate metrics, not rows. Both are used with the unit, resampling and segmentation changes listed in [docs/licensing.md](docs/licensing.md).
+- Official baseline repositories are pinned to specific commits in [third_party/README.md](third_party/README.md); the clones themselves are not redistributed here. PatchTST is Apache-2.0, iTransformer MIT, and SimMTM declares no license at all.
+
+Full map of what each license covers, the attribution obligations and what is still to confirm:
+[docs/licensing.md](docs/licensing.md).
