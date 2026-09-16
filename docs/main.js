@@ -23,6 +23,7 @@ const CONFIG = {
     "  eprint  = {2609.16071},",
     "  archivePrefix = {arXiv},",
     "  primaryClass  = {cs.LG},",
+    "  doi     = {10.48550/arXiv.2609.16071},",
     "  url     = {https://arxiv.org/abs/2609.16071}",
     "}"
   ].join("\n")
