@@ -29,6 +29,21 @@ Three things outside the table went with the same sweep:
   project page, which stays reachable through the Code button, the README and `CITATION.cff`.
 - `CITATION.cff` gained `url` alongside the `identifiers` entry in `preferred-citation`.
 
+A later sweep added the DOI and the ORCID iDs. Both follow the identifier, so **treat them as
+rows of the table above** when the identifier changes again:
+
+- The DOI is `10.48550/arXiv.2609.16071` — arXiv mints it as `10.48550/arXiv.<identifier>`, so a
+  v2 under a new number means a new DOI. It lives in five places: the `doi` field of all three
+  BibTeX copies, `preferred-citation.doi` **and** the second `identifiers` entry in
+  `CITATION.cff`, `<meta name="citation_doi">` in `docs/index.html`, and the JSON-LD
+  `identifier` array in the same file. If a journal reference ever replaces the preprint one,
+  the journal DOI replaces this one; the arXiv DOI stays valid and should be kept as a second
+  identifier rather than deleted.
+- ORCID iDs are on all three authors, in both author blocks of `CITATION.cff` and as the
+  schema.org `@id` of each author in the JSON-LD. They do not change with the identifier. The
+  CFF schema requires the full `https://orcid.org/…` URI — a bare iD fails
+  `cffconvert --validate`, which CI runs on every push.
+
 | # | File | What to change |
 |---|------|----------------|
 | 1 | `docs/main.js` | `CONFIG.arxivUrl` — replace `null` with the abs URL, e.g. `"https://arxiv.org/abs/2609.01234"`. This alone un-mutes the arXiv button and swaps the `#arxivNote` placeholder for the real URL. |

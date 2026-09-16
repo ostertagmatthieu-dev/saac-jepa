@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- The DataCite DOI arXiv minted on announcement, `10.48550/arXiv.2609.16071`, now sits beside the
+  bare identifier everywhere the paper is cited: all three BibTeX copies (`README.md`,
+  `docs/main.js`, `docs/index.html`) carry a `doi` field, `CITATION.cff` carries it as
+  `preferred-citation.doi` and as a second `identifiers` entry, and the project page exposes it
+  through the Google Scholar `citation_doi` tag and the JSON-LD `identifier` array. A DOI is what
+  ORCID, DataCite and HAL resolve against, so it is the field that lets the preprint be claimed
+  without retyping its metadata.
+- Author ORCID iDs on all three authors, in both author blocks of `CITATION.cff` and as the
+  schema.org `@id` of each author on the project page, so harvesters attach the work to the right
+  person rather than to a name string.
+
 ### Changed
 
 - arXiv v1 was announced on 2026-09-13 as [arXiv:2609.16071](https://arxiv.org/abs/2609.16071). The identifier now

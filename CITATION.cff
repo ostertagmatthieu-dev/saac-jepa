@@ -18,12 +18,15 @@ authors:
   - given-names: Ayoub Louaye
     family-names: Bouaziz
     affiliation: "Universite de Bretagne Occidentale"
+    orcid: "https://orcid.org/0009-0008-9074-0374"
   - given-names: Matthieu
     family-names: Ostertag
     affiliation: "Mines Nancy, Universite de Lorraine"
+    orcid: "https://orcid.org/0009-0002-3829-0536"
   - given-names: Anton
     family-names: Demasles
     affiliation: "Mines Nancy, Universite de Lorraine"
+    orcid: "https://orcid.org/0009-0008-0640-6622"
 preferred-citation:
   type: article
   title: "Schema-Adaptive Action-Conditioned JEPA for Cross-Machine CNC Transfer under Partial Sensor Overlap"
@@ -31,16 +34,23 @@ preferred-citation:
     - given-names: Ayoub Louaye
       family-names: Bouaziz
       affiliation: "Universite de Bretagne Occidentale"
+      orcid: "https://orcid.org/0009-0008-9074-0374"
     - given-names: Matthieu
       family-names: Ostertag
       affiliation: "Mines Nancy, Universite de Lorraine"
+      orcid: "https://orcid.org/0009-0002-3829-0536"
     - given-names: Anton
       family-names: Demasles
       affiliation: "Mines Nancy, Universite de Lorraine"
+      orcid: "https://orcid.org/0009-0008-0640-6622"
   journal: "arXiv preprint"
   year: 2026
+  doi: "10.48550/arXiv.2609.16071"
   url: "https://arxiv.org/abs/2609.16071"
   identifiers:
     - type: other
       value: "arXiv:2609.16071"
       description: "arXiv identifier"
+    - type: doi
+      value: "10.48550/arXiv.2609.16071"
+      description: "DataCite DOI minted by arXiv on announcement"
