@@ -14,7 +14,7 @@ authors:
     affiliation: "Mines Nancy, Universite de Lorraine"
 repository-code: "https://github.com/ostertagmatthieu-dev/saac-jepa"
 license: MIT
-year: 2026
+date-released: "2026-09-13"
 preferred-citation:
   type: article
   title: "Schema-Adaptive Action-Conditioned JEPA for Cross-Machine CNC Transfer under Partial Sensor Overlap"
@@ -30,4 +30,8 @@ preferred-citation:
       affiliation: "Mines Nancy, Universite de Lorraine"
   journal: "arXiv preprint"
   year: 2026
-  notes: "arXiv identifier to be added after announcement"
+  url: "https://arxiv.org/abs/2609.16071"
+  identifiers:
+    - type: other
+      value: "arXiv:2609.16071"
+      description: "arXiv identifier"

@@ -6,7 +6,7 @@
 
 Ayoub Louaye Bouaziz (Universite de Bretagne Occidentale), Matthieu Ostertag (Mines Nancy, Universite de Lorraine), Anton Demasles (Mines Nancy, Universite de Lorraine)
 
-arXiv: link to be added after announcement
+arXiv: [arXiv:2609.16071](https://arxiv.org/abs/2609.16071)
 
 Project page with animated schematics: https://ostertagmatthieu-dev.github.io/saac-jepa/
 

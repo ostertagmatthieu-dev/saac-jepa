@@ -6,16 +6,26 @@ what GitHub Pages serves.
 
 Two things make it easy to leave the page half-edited, and both are covered below:
 
-1. **The arXiv identifier lives in five places.** Section 1.
+1. **The arXiv identifier lives in five places.** Section 1 — applied, see the note there.
 2. **Every headline number appears more than once**, because the same figure is stated
    in the abstract, in a fact cell, inside an SVG, in the results table, in a caption and
    in an SVG `<desc>` for screen readers. Section 2.
 
 ---
 
-## 1. Post-arXiv checklist
+## 1. Post-arXiv checklist — applied 2026-09-16, `arXiv:2609.16071`
 
-Do all six, in any order, then re-read §2 before you touch a number.
+**Done.** The identifier is `2609.16071` (announced 2026-09-13,
+<https://arxiv.org/abs/2609.16071>) and all rows below are applied. The table is kept
+as the map of where the identifier lives: use it when the identifier changes again — a
+v2 announcement under a new number, or a journal reference replacing the preprint one.
+
+Two places outside the table also carry the link now, and are part of the same sweep:
+
+- `docs/index.html` — the arXiv button (`#btnArxiv`) is a live link with the label
+  `arXiv`; it no longer ships the muted `aria-disabled` "soon" state, so the page points
+  at arXiv with JavaScript off. `#arxivNote` in §09 Cite is an `<a>` to the abs URL.
+- `README.md` — the `arXiv:` line under the title.
 
 | # | File | What to change |
 |---|------|----------------|
@@ -136,6 +146,7 @@ python3 -m http.server 8767 --directory docs
 #  - each figure animates once on scroll-in, and Replay re-runs it
 #  - Copy on the BibTeX block works (a screen reader hears "Copied")
 #  - at 375 px wide, the figures scroll sideways and the title sits above the strip
-#  - with JavaScript disabled, the BibTeX block and the arXiv "soon" button still read correctly
+#  - with JavaScript disabled, the BibTeX block and the arXiv button still read correctly
+#    (both carry arXiv:2609.16071 as static markup)
 #  - print preview: no dark bars, no buttons, link URLs printed after the links
 ```
