@@ -53,7 +53,7 @@ jobs:
       - name: Print environment
         run: python -c "import torch, cncjepa; print(torch.__version__, torch.cuda.is_available(), cncjepa.__version__)"
       - run: python -m pytest --durations=10
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: outputs-py${{ matrix.python-version }}
