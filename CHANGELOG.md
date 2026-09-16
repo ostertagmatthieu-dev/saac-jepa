@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- arXiv v1 was announced on 2026-09-13 as [arXiv:2609.16071](https://arxiv.org/abs/2609.16071). The identifier now
+  replaces the pending-announcement placeholders everywhere it appears: the README badge
+  and its BibTeX block, `CITATION.cff`, and the project page (`docs/main.js`,
+  `docs/index.html` — Google Scholar `citation_arxiv_id`, the JSON-LD `identifier`, the
+  static BibTeX copy, the arXiv button and the cite note). The three BibTeX copies now
+  cite `url = {https://arxiv.org/abs/2609.16071}` instead of the project page.
+
 ## [0.1.0] - 2026-09-11
 
 First public release, accompanying arXiv v1 of *Schema-Adaptive Action-Conditioned JEPA for
