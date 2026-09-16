@@ -89,6 +89,9 @@ If a change makes a headline number move, the number has to move everywhere at o
 - Fill in the pull-request template. If the change is scientific, link the issue where the
   approach was agreed.
 - Describe what you ran, on what hardware, and what you did not run.
+- Keep commits free of bot and AI-assistant attribution: no `Co-authored-by`, `Signed-off-by` or
+  `Claude-Session` lines naming Claude, Anthropic or a `[bot]` account. The `Attribution` check
+  enforces this. When squash-merging, delete any `Co-authored-by` line GitHub pre-fills.
 
 ## Reporting a bug
 
