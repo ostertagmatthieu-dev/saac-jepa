@@ -13,18 +13,15 @@ const CONFIG = {
   // index.html carries the SAME BibTeX as static text inside #bibtex, so the page
   // works with JavaScript off. Edit BOTH, or the two will drift. See UPDATING.md.
   bibtex: [
-    "@article{bouaziz2026saacjepa,",
-    "  title   = {Schema-Adaptive Action-Conditioned JEPA for Cross-Machine CNC",
-    "             Transfer under Partial Sensor Overlap},",
-    "  author  = {Bouaziz, Ayoub Louaye and Ostertag, Matthieu",
-    "             and Demasles, Anton},",
-    "  journal = {arXiv preprint},",
-    "  year    = {2026},",
-    "  eprint  = {2609.16071},",
+    "@misc{bouaziz2026schemaadaptiveactionconditionedjepacrossmachine,",
+    "  title         = {Schema-Adaptive Action-Conditioned JEPA for Cross-Machine CNC Transfer under Partial Sensor Overlap},",
+    "  author        = {Ayoub Louaye Bouaziz and Matthieu Ostertag and Anton Demasles},",
+    "  year          = {2026},",
+    "  eprint        = {2609.16071},",
     "  archivePrefix = {arXiv},",
     "  primaryClass  = {cs.LG},",
-    "  doi     = {10.48550/arXiv.2609.16071},",
-    "  url     = {https://arxiv.org/abs/2609.16071}",
+    "  doi           = {10.48550/arXiv.2609.16071},",
+    "  url           = {https://arxiv.org/abs/2609.16071}",
     "}"
   ].join("\n")
 };
