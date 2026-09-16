@@ -28,6 +28,14 @@ Three things outside the table went with the same sweep:
 - All three BibTeX copies now carry `url = {https://arxiv.org/abs/2609.16071}` instead of the
   project page, which stays reachable through the Code button, the README and `CITATION.cff`.
 - `CITATION.cff` gained `url` alongside the `identifiers` entry in `preferred-citation`.
+- The three BibTeX copies were then realigned on arXiv's own export (the "Export BibTeX
+  Citation" link on the abs page): `@misc`, arXiv's citation key
+  `bouaziz2026schemaadaptiveactionconditionedjepacrossmachine`, no `journal` field, plus our
+  `doi`. Keep the key when the identifier changes, since papers that already cite it depend on
+  it; only `eprint`, `doi` and `url` move. If a journal version replaces the preprint, switch
+  the entry to `@article` with the real `journal` and keep the same key.
+- `CITATION.cff` matches: `preferred-citation.type: generic` (GitHub renders it as `@misc`) and
+  no `journal`. For a journal version, set `type: article` and add the real `journal`.
 
 A later sweep added the DOI and the ORCID iDs. Both follow the identifier, so **treat them as
 rows of the table above** when the identifier changes again:

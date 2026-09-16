@@ -28,7 +28,7 @@ authors:
     affiliation: "Mines Nancy, Universite de Lorraine"
     orcid: "https://orcid.org/0009-0008-0640-6622"
 preferred-citation:
-  type: article
+  type: generic
   title: "Schema-Adaptive Action-Conditioned JEPA for Cross-Machine CNC Transfer under Partial Sensor Overlap"
   authors:
     - given-names: Ayoub Louaye
@@ -43,7 +43,6 @@ preferred-citation:
       family-names: Demasles
       affiliation: "Mines Nancy, Universite de Lorraine"
       orcid: "https://orcid.org/0009-0008-0640-6622"
-  journal: "arXiv preprint"
   year: 2026
   doi: "10.48550/arXiv.2609.16071"
   url: "https://arxiv.org/abs/2609.16071"

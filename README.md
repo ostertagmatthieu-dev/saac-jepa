@@ -152,18 +152,15 @@ docs/                  the project page served by GitHub Pages, the Markdown doc
 ## Citation
 
 ```bibtex
-@article{bouaziz2026saacjepa,
-  title   = {Schema-Adaptive Action-Conditioned JEPA for Cross-Machine CNC
-             Transfer under Partial Sensor Overlap},
-  author  = {Bouaziz, Ayoub Louaye and Ostertag, Matthieu
-             and Demasles, Anton},
-  journal = {arXiv preprint},
-  year    = {2026},
-  eprint  = {2609.16071},
+@misc{bouaziz2026schemaadaptiveactionconditionedjepacrossmachine,
+  title         = {Schema-Adaptive Action-Conditioned JEPA for Cross-Machine CNC Transfer under Partial Sensor Overlap},
+  author        = {Ayoub Louaye Bouaziz and Matthieu Ostertag and Anton Demasles},
+  year          = {2026},
+  eprint        = {2609.16071},
   archivePrefix = {arXiv},
   primaryClass  = {cs.LG},
-  doi     = {10.48550/arXiv.2609.16071},
-  url     = {https://arxiv.org/abs/2609.16071}
+  doi           = {10.48550/arXiv.2609.16071},
+  url           = {https://arxiv.org/abs/2609.16071}
 }
 ```
 

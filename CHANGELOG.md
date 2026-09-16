@@ -22,6 +22,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- The three BibTeX copies (`README.md`, `docs/main.js`, `docs/index.html`) now follow the entry
+  arXiv exports for 2609.16071: `@misc` instead of `@article`, arXiv's citation key
+  `bouaziz2026schemaadaptiveactionconditionedjepacrossmachine` instead of `bouaziz2026saacjepa`,
+  authors in arXiv's order and form, and no `journal = {arXiv preprint}` field, which is not a
+  journal and which `@misc` does not define. The `doi` field is kept on top of arXiv's export.
+  Anyone who copies the entry from arXiv or from this repository now gets the same key, so
+  merged bibliographies do not carry the paper twice.
+- `CITATION.cff` follows suit: `preferred-citation.type` is `generic` instead of `article` and the
+  `journal: "arXiv preprint"` line is gone, so GitHub's "Cite this repository" button now emits
+  `@misc` as well. CFF has no field for a citation key, so that button still generates its own.
 - arXiv v1 was announced on 2026-09-13 as [arXiv:2609.16071](https://arxiv.org/abs/2609.16071). The identifier now
   replaces the pending-announcement placeholders everywhere it appears: the README badge
   and its BibTeX block, `CITATION.cff`, and the project page (`docs/main.js`,
