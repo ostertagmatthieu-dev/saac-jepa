@@ -14,17 +14,17 @@ bottom needs no download at all and is what `make smoke` uses.
 | Machine | Spinner U5-620 five-axis machining centre | FH JOANNEUM CNC |
 | DOI | [10.5281/zenodo.14094887](https://doi.org/10.5281/zenodo.14094887) | [10.17632/gtvvwmz7r7.2](https://doi.org/10.17632/gtvvwmz7r7.2) |
 | Host | Zenodo | Mendeley Data |
-| Licence | CC BY 4.0 | CC BY-NC — **non-commercial only** |
+| Licence | CC BY 4.0 | CC BY 4.0 |
 | Extent | 62 NC-program sessions | 7 independent runs |
 | Channels | 17 canonical sensors | 10 of those 17 |
 | Native rate | 1 Hz process log | Sinumerik IPO-cycle traces |
 
-Both are published open by their hosts; this repository ships neither, and the `data/` directory
-is gitignored. **The two licences differ where it matters**: DS01 (CC BY 4.0) allows commercial
-use with attribution, DS03 does not — its Mendeley record is non-commercial, so a commercial
-model trained or evaluated on DS03 is outside its terms whatever the MIT licence on this code
-says. Both require attribution and both require that the changes made below (unit rescaling,
-resampling, session segmentation) be indicated. Full map: [licensing.md](licensing.md).
+Both are published under CC BY 4.0 by their hosts; this repository ships neither, and the `data/`
+directory is gitignored. Both require attribution and both require that the changes made below
+(unit rescaling, resampling, session segmentation) be indicated. Note that the DS03 *Data in
+Brief* article is non-commercial while the deposit is not — the article's licence does not travel
+to the data, and at least one published paper has mixed the two up. Full map:
+[licensing.md](licensing.md).
 
 ## 2. Expected on-disk layout
 

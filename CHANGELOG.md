@@ -10,11 +10,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - `docs/licensing.md`, a single map of what each licence covers: MIT over the repository contents,
-  CC BY 4.0 over DS01, the non-commercial restriction on DS03, the changes both CC licences
-  require us to declare, the upstream licences of the three baseline repositories (PatchTST
-  Apache-2.0, iTransformer MIT, SimMTM none declared) and of the runtime dependencies. It ends
-  with a verification table naming what is confirmed and what is still to confirm against the
-  publishers' records.
+  CC BY 4.0 over both datasets, the changes that licence requires us to declare, the upstream
+  licences of the three baseline repositories (PatchTST Apache-2.0, iTransformer MIT, SimMTM none
+  declared) and of the runtime dependencies. It ends with a verification table recording what was
+  checked, against which record, and when. It also names the trap that prompted the audit: on
+  Mendeley Data the deposit and its *Data in Brief* article carry separate licences, the DS03
+  article is non-commercial while the deposit is CC BY 4.0, and at least one published paper has
+  propagated the article's restriction onto the dataset.
 - The DataCite DOI arXiv minted on announcement, `10.48550/arXiv.2609.16071`, now sits beside the
   bare identifier everywhere the paper is cited: all three BibTeX copies (`README.md`,
   `docs/main.js`, `docs/index.html`) carry a `doi` field, `CITATION.cff` carries it as
@@ -33,14 +35,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- **DS03 is recorded as non-commercial, not CC BY 4.0.** `README.md`, `docs/data.md` and the
-  project-page footer previously stated CC BY 4.0 for the FH JOANNEUM repository
-  ([10.17632/gtvvwmz7r7.2](https://doi.org/10.17632/gtvvwmz7r7.2)) alongside DS01. The Mendeley
-  record is non-commercial, so those surfaces now say CC BY-NC and spell out what it forbids: a
-  commercial model trained or evaluated on DS03, or a checkpoint from one being distributed for
-  commercial use. The MIT licence on the code is unchanged and does not override the dataset's
-  terms. The same sentence appears in arXiv v1 ("Both datasets are public under CC BY 4.0") and
-  has to be corrected there in the next version; this repository cannot do that.
+- `README.md`, `docs/data.md` and the project-page footer now state explicitly that the MIT licence
+  covers the repository contents and reaches neither dataset, that neither dataset is
+  redistributed here, and that both CC BY 4.0 licences oblige us to declare the ETL changes we
+  make. The licences themselves are unchanged: DS01 and DS03 are both CC BY 4.0, as
+  [10.17632/gtvvwmz7r7.2](https://doi.org/10.17632/gtvvwmz7r7.2) states on its Mendeley record.
 - `third_party/README.md` gains an upstream-licence column, which records that SimMTM ships no
   licence file at all.
 - The three BibTeX copies (`README.md`, `docs/main.js`, `docs/index.html`) now follow the entry

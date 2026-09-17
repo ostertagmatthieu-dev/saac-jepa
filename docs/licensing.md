@@ -2,7 +2,8 @@
 
 What this repository grants, what it does not, and which obligations follow the two external
 datasets. The short version: **the MIT licence covers everything in this repository; it covers
-neither dataset, and the target dataset (DS03) is restricted to non-commercial use.**
+neither dataset; both datasets are CC BY 4.0, which requires attribution and a statement of the
+changes made.**
 
 ---
 
@@ -33,25 +34,20 @@ calibration, per-seed metrics), which are measurements about the data, not the d
 | Dataset | THWS five-axis CNC milling | FH JOANNEUM CNC machining data repository |
 | DOI | [10.5281/zenodo.14094887](https://doi.org/10.5281/zenodo.14094887) | [10.17632/gtvvwmz7r7.2](https://doi.org/10.17632/gtvvwmz7r7.2) |
 | Host | Zenodo | Mendeley Data |
-| Licence | CC BY 4.0 | **CC BY-NC — non-commercial use only** |
-| Commercial use | permitted, with attribution | **not permitted** |
+| Licence | CC BY 4.0 | CC BY 4.0 |
+| Commercial use | permitted, with attribution | permitted, with attribution |
 | Attribution | required | required |
 | Indicate changes | required | required |
 
-**What the DS03 restriction means in practice.** Every use of DS03 in this project — the ETL, the
-sealed locked evaluation, the post-lock RevIN ablation, the numbers in the paper and on the project
-page — is academic research and is within the licence. What is *outside* it, for anyone reusing
-this work:
+**A licence trap worth naming, because it has already caught a published paper.** On Mendeley Data
+the deposited files and the *Data in Brief* article describing them carry separate licences. The
+DS03 article is non-commercial; the dataset is not. The record itself reads "The files associated
+with this dataset are licensed under a Creative Commons Attribution 4.0 International licence."
+At least one paper has propagated the article's restriction onto the dataset
+([10.1007/s00170-026-18713-2](https://doi.org/10.1007/s00170-026-18713-2)). An article's licence
+says nothing about the data it describes: read the repository record, not the paper citing it.
 
-- training, fine-tuning or evaluating on DS03 as part of a commercial product or service;
-- distributing a checkpoint trained or fine-tuned on DS03 for commercial use;
-- selling, or bundling into a paid offering, any derivative of the DS03 files.
-
-The MIT licence on the code does not change this. The code is not a derivative of the data, so it
-stays MIT and can be used commercially — **on your own data**. Point it at DS03 commercially and
-the DS03 licence, not MIT, decides.
-
-**Changes we make to both datasets** (CC BY and CC BY-NC both require that adaptations be flagged;
+**Changes we make to both datasets** (CC BY 4.0 requires that adaptations be flagged;
 all of them are performed at ETL time by `scripts/60_ingest_real_data.py` and are declared in
 `configs/real.yaml`, full detail in [data.md](data.md)):
 
@@ -100,9 +96,8 @@ None is copyleft. No dependency is vendored.
 | No dataset content is committed | verified — `data/` gitignored, `paper/results/` holds metrics only |
 | No upstream baseline code is committed | verified — `third_party/` clones gitignored, `cnc_adapter/` is original |
 | Baseline upstream licences | verified 2026-09-16 against the GitHub repository metadata |
-| DS03 is non-commercial | **to confirm against the Mendeley record**: the exact CC BY-NC version (3.0 vs 4.0) is not yet recorded here. Fill it in above once checked. |
-| DS01 is CC BY 4.0 | as published on the Zenodo record; re-confirm at the same time |
+| DS03 is CC BY 4.0 | verified 2026-09-16 against the Mendeley record, which states the files are under CC BY 4.0. The non-commercial terms belong to the *Data in Brief* article, not to the deposit. |
+| DS01 is CC BY 4.0 | as published on the Zenodo record |
 
-**Known inconsistency to fix outside this repository.** The preprint's data-availability sentence
-reads "Both datasets are public under CC BY 4.0" and names both DOIs. If DS03 is non-commercial,
-that sentence is wrong in arXiv v1 and needs correcting in the next version.
+The preprint's data-availability sentence — "Both datasets are public under CC BY 4.0" — is
+therefore correct and needs no correction.
