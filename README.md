@@ -147,6 +147,7 @@ docs/                  the project page served by GitHub Pages, the Markdown doc
 | [docs/internal/README.md](docs/internal/README.md) | Historical working documents, kept for auditability |
 | [docs/UPDATING.md](docs/UPDATING.md) | How to update the project page, and where every headline number lives |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | Setup, the rules inherited from the protocol, pull-request expectations |
+| [docs/data_v2/survey.md](docs/data_v2/survey.md) | V2 public-data survey: research questions, search protocol, sourced comparison of candidate CNC datasets, recommended V2 data configuration |
 | [CHANGELOG.md](CHANGELOG.md) | Release history |
 
 ## Citation
