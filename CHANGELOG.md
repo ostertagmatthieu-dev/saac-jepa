@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- A `SECURITY.md` that describes what a security report means for research code: only `main` is
+  supported (the project is pre-release at `0.1.0` with no tags), reports go through GitHub's
+  private advisory form rather than a public issue, and the scope section names the real hazard,
+  which is that `torch.load(..., weights_only=False)` in `src/cncjepa/checkpoint.py` and several
+  scripts unpickles arbitrary Python from any checkpoint it is handed.
+
 - `docs/licensing.md`, a single map of what each licence covers: MIT over the repository contents,
   CC BY 4.0 over both datasets, the changes that licence requires us to declare, the upstream
   licences of the three baseline repositories (PatchTST Apache-2.0, iTransformer MIT, SimMTM none
