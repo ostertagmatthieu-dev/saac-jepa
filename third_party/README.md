@@ -4,11 +4,17 @@ Pinned upstream clones used for the SOTA comparison. **These working trees are
 modified.** Run `git -C <repo> diff` for the authoritative record; every hunk is
 comment-tagged `ADDED` or `PATCHED`.
 
-| Dir | Upstream | Commit |
-|---|---|---|
-| `PatchTST/` | github.com/yuqinie98/PatchTST | `204c21efe0b39603ad6e2ca640ef5896646ab1a9` |
-| `iTransformer/` | github.com/thuml/iTransformer | `c2426e68ca13f74aaec08045c5c724d8ad328124` |
-| `SimMTM/` | github.com/thuml/SimMTM | `169513bef74fb676e48d98a0e30f8823793f691c` |
+| Dir | Upstream | Commit | Upstream licence |
+|---|---|---|---|
+| `PatchTST/` | github.com/yuqinie98/PatchTST | `204c21efe0b39603ad6e2ca640ef5896646ab1a9` | Apache-2.0 |
+| `iTransformer/` | github.com/thuml/iTransformer | `c2426e68ca13f74aaec08045c5c724d8ad328124` | MIT |
+| `SimMTM/` | github.com/thuml/SimMTM | `169513bef74fb676e48d98a0e30f8823793f691c` | none declared (default copyright) |
+
+Licences checked 2026-09-16. These clones are gitignored and redistributed nowhere in this
+repository — the licence column governs *your* clone, not ours. SimMTM shipping no `LICENSE`
+file means default copyright: fine for cloning and benchmarking, a problem for anyone wanting to
+redistribute or build on it. Our own shims are MIT and contain no upstream code; see
+[docs/licensing.md](../docs/licensing.md).
 
 `cnc_adapter/` is ours, not upstream:
 

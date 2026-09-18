@@ -19,8 +19,12 @@ bottom needs no download at all and is what `make smoke` uses.
 | Channels | 17 canonical sensors | 10 of those 17 |
 | Native rate | 1 Hz process log | Sinumerik IPO-cycle traces |
 
-Both are redistributed under CC BY 4.0 by their publishers; this repository ships neither. The
-`data/` directory is gitignored.
+Both are published under CC BY 4.0 by their hosts; this repository ships neither, and the `data/`
+directory is gitignored. Both require attribution and both require that the changes made below
+(unit rescaling, resampling, session segmentation) be indicated. Note that the DS03 *Data in
+Brief* article is non-commercial while the deposit is not — the article's licence does not travel
+to the data, and at least one published paper has mixed the two up. Full map:
+[licensing.md](licensing.md).
 
 ## 2. Expected on-disk layout
 
