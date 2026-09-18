@@ -9,7 +9,7 @@ Two things make it easy to leave the page half-edited, and both are covered belo
 1. **The arXiv identifier lives in every file listed in Section 1** (nine edits across `main.js`, `index.html`, `CITATION.cff`, `README.md` and `CHANGELOG.md`) — applied, see the note there.
 2. **Every headline number appears more than once**, because the same figure is stated
    in the abstract, in a fact cell, inside an SVG, in the results table, in a caption and
-   in an SVG `<desc>` for screen readers. Section 2.
+   in an SVG `<desc>` for screen readers. Section 3.
 
 ---
 
@@ -80,14 +80,19 @@ Also:
     console.log(m===b ? "BibTeX in sync" : "BibTeX DRIFTED");'
   ```
 
-  `README.md` carries a third copy of the same BibTeX entry; the check above does not see it, so compare it by eye after every edit.
+  `README.md` carries a third copy of the same BibTeX entry; the check above does not see it. Use
+  the three-way check in [Section 2](#2-changing-the-paper-title) instead, which includes `README.md`.
 
 ### Re-rendering `og.png`
 
 `og-source.html` is a scratch file and is deliberately **not** committed. To regenerate
-the social card, recreate a 1200×630 page that pulls in `styles.css`, the hero `<figure
-class="strip" id="strip">` markup copied verbatim from `index.html`, and `main.js`
-(which draws the traces), then:
+the social card, recreate a 1200×630 page that pulls in `styles.css`, the masthead
+`<p class="masthead__eyebrow">` and `<h1 class="masthead__title">` markup copied
+verbatim from `index.html` (the card renders the title as text — a page built from the
+hero strip alone drops it), the hero `<figure class="strip" id="strip">` markup also
+copied verbatim, and `main.js` (which draws the traces). The page needs network access
+for the Google Fonts `<link>` tags in `index.html`'s `<head>`, or the card renders in
+fallback fonts. Then:
 
 ```sh
 "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new \
@@ -102,7 +107,80 @@ The icons come from `favicon.svg` the same way (32×32 and 180×180).
 
 ---
 
-## 2. Where every headline number lives
+## 2. Changing the paper title
+
+The title is two strings. The **full title** is one casing, verbatim as it appears on
+arXiv — every surface that quotes the whole title (BibTeX, `citation_title`, the JSON-LD
+`headline`/`name`, the masthead `<h1>`) uses it unchanged. The **short title** is a
+≤ 60-character form for surfaces that truncate — the `<title>` tag, Open Graph and
+Twitter cards — prefixed per surface, `SAAC-JEPA — ` for those three. The bare code name
+**SAAC-JEPA** names the repository and does not change with the title: it stays wherever
+it is used alone (the README `# SAAC-JEPA` h1, `og:site_name`, the favicon, the `404.html`
+`<title>`, the masthead eyebrow).
+
+A retitle keeps the arXiv identifier, the DOI and the abs URL exactly as they are — arXiv
+mints one DOI per identifier, not per version, so a v2 of the same submission does not
+change any of `eprint`, `doi` or `url` anywhere in the repository.
+
+| # | File | What to change |
+|---|------|----------------|
+| 1 | `CITATION.cff` | Top-level `title:` — `"SAAC-JEPA: <short title>"` (double-quoted; CFF's `": "` needs it). |
+| 2 | `CITATION.cff` | `preferred-citation.title:` — the full title. |
+| 3 | `pyproject.toml` | `[project] description` — the full title, verbatim. |
+| 4 | `src/cncjepa/__init__.py` | Module docstring, first line — `"""SAAC-JEPA: <full title>.` Keep the rest of the docstring intact; wrap the line if it would exceed `[tool.ruff] line-length` (`E501` is currently ignored for `src/cncjepa/**`, but keep it reasonable anyway). |
+| 5 | `README.md` | Bold subtitle under the `# SAAC-JEPA` h1 — the full title. |
+| 6 | `README.md` | BibTeX block in `## Citation`, the `title = {...}` line — the full title. Copy 1 of 3. |
+| 7 | `docs/main.js` | `CONFIG.bibtex`, the `title         = {...}` line — the full title, character for character. Copy 2 of 3. |
+| 8 | `docs/index.html` | `<pre id="bibtex">` in §09 Cite, the `title         = {...}` line — the full title, character for character. Copy 3 of 3. |
+| 9 | `docs/index.html` | `<title>` in `<head>` — `SAAC-JEPA — <short title>`. |
+| 10 | `docs/index.html` | `<meta property="og:title">` — `SAAC-JEPA — <short title>`. |
+| 11 | `docs/index.html` | `<meta name="twitter:title">` — `SAAC-JEPA — <short title>`. |
+| 12 | `docs/index.html` | `<meta name="citation_title">` — the full title. Google Scholar reads this one. |
+| 13 | `docs/index.html` | JSON-LD `ScholarlyArticle.headline` — the full title. |
+| 14 | `docs/index.html` | JSON-LD `ScholarlyArticle.name` — the full title. |
+| 15 | `docs/index.html` | Masthead `<h1 class="masthead__title">` — the full title. Keep whatever inner markup pattern (line breaks, spans) the current title already uses. |
+| 16 | `docs/404.html` | The prose sentence naming the paper — the full title. |
+| 17 | The BibTeX **key** (`bouaziz2026...` in all three copies) | Unchanged until arXiv v2 is announced — arXiv derives the key from the title, so it will change too. Once v2 is live, copy the new key verbatim from the abs page's "Export BibTeX Citation" link into all three copies (rows 6–8 above), and record the retired key in `CHANGELOG.md`, following the precedent already there for the `eprint`/`doi`/`url` swap. |
+| 18 | `docs/paper.pdf` | Unchanged until arXiv v2 is announced. Then replace it in place with the v2 PDF — keep it under 1024 KB, since the `check-added-large-files` pre-commit hook rejects anything larger. `citation_pdf_url` and the PDF button both point at this file and do not need editing. |
+| 19 | `docs/og.png` | The card renders the title as text, so it must be re-rendered after any title change (see "Re-rendering `og.png`" under Section 1). |
+| 20 | `CHANGELOG.md` | `[Unreleased]` entry recording the retitle. |
+| 21 | Section 3, "Where every headline number lives" | Only if the abstract itself changes as part of the retitle — a title-only change does not touch it. |
+
+**Do not change**, in this task or any retitle: the repository slug `saac-jepa`, the
+distribution name `saac-jepa` in `pyproject.toml`, the import package `cncjepa`, any URL,
+any badge, `eprint`, `doi` and `url` wherever they appear, `CITATION.cff`'s top-level
+`version` and `date-released`, the `CHANGELOG.md` `[0.1.0]` section (history), and the
+bare code name `SAAC-JEPA` wherever it stands alone (README h1, `og:site_name`, favicon,
+`404.html` `<title>`, masthead eyebrow).
+
+**Order of operations.** Edit the strings above on a branch first. Submit the arXiv v2
+revision. Only after arXiv announces it: update the BibTeX key (row 17), `docs/paper.pdf`
+(row 18), `docs/og.png` (row 19) and `CHANGELOG.md` (row 20). Merge last. GitHub Pages
+publishes `main` immediately on merge, so merging with the strings changed but before v2
+is announced puts a `citation_title` on the live page that does not match arXiv yet —
+Google Scholar can cluster that as a second, duplicate record of the paper.
+
+**Three-way BibTeX consistency check.** The check under Section 1 compares only
+`docs/index.html` and `docs/main.js`, and its note says to compare `README.md` "by eye".
+Use this one instead — it includes all three copies and must print `in sync` before you
+move on:
+
+```sh
+node -e '
+const fs=require("fs"),rd=p=>fs.readFileSync(p,"utf8");
+const html=rd("docs/index.html").match(/<pre[^>]*id="bibtex"[^>]*>([\s\S]*?)<\/pre>/)[1];
+const js=rd("docs/main.js").match(/bibtex: \[([\s\S]*?)\]\.join/)[1].split("\n").map(l=>l.trim()).filter(l=>l.startsWith("\"")).map(l=>JSON.parse(l.replace(/,$/,""))).join("\n");
+const md=rd("README.md").match(/```bibtex\n([\s\S]*?)\n```/)[1];
+if(html===js&&js===md){console.log("BibTeX in sync (index.html, main.js, README.md)");process.exit(0);}
+console.log("BibTeX DRIFTED");for(const[n,s]of[["docs/index.html",html],["docs/main.js",js],["README.md",md]])console.log("--- "+n+"\n"+s);process.exit(1);'
+```
+
+If HTML entities creep into `docs/index.html` (e.g. `&amp;`), decode them before comparing
+— the regexes above assume plain text.
+
+---
+
+## 3. Where every headline number lives
 
 **Change a number in one place and you have changed the page's claim in one place only.**
 Each row lists every location. Counts are `grep -o` counts against `index.html`; if a
@@ -115,19 +193,23 @@ below cover the page only.
 
 | Number | Occurrences | Every location |
 |---|---|---|
-| **0.546** — locked model, zero-shot target RMSE | 5 | §01 Abstract paragraph · §02 fact cell "Zero-shot (target)" · Fig. 3 `<text class="f3__big">` (the big sealed-pass number) · results table, `SAAC-JEPA (locked)` target cell · Fig. 5 `<desc>` (screen-reader text) · Fig. 5 reference-line label `locked model, sealed pass — 0.546` |
-| **0.654** — persistence, target RMSE | 5 | §02 fact cell "Persistence (target)" · results table, `Persistence` target cell · Fig. 5 `<desc>` · Fig. 5 reference-line label `persistence, sealed pass — 0.654` |
+| **0.546** — locked model, zero-shot target RMSE | 4 | §02 fact cell "Zero-shot (target)" · §04 lede · results table, `World model (locked, M03)` target cell · Fig. 3 `<text class="f3__big">` (the big sealed-pass number) |
+| **0.654** — persistence, target RMSE | 5 | §04 lede · §02 fact cell "Persistence (target)" · results table, `Persistence` target cell · Fig. 5 `<desc>` · Fig. 5 reference-line label `persistence, sealed pass — 0.654` |
 | **0.612** — pre-lock model, zero-shot target RMSE | 3 | Fig. 5 `<desc>` · Fig. 5 data-point label at 0 % support · Fig. 5 caption (`panel__cap`) |
-| **0.520** — pre-lock model at 20 % target support | 4 | §01 Abstract paragraph · Fig. 5 `<desc>` · Fig. 5 data-point label at 20 % support · Fig. 5 caption |
-| **0.811 ± 0.022** — scratch, source RMSE | 2 | §01 Abstract paragraph · results table, `Scratch` source cell |
-| **0.813 ± 0.022** — pretrained body, source RMSE | 2 | §01 Abstract paragraph · results table, `Pretrained body + fresh head` source cell |
-| **0.822 ± 0.009** — locked model, source-validation RMSE | 2 | Fig. 3 `7 SEEDS` box (`0.822 ± 0.009 RMSE`) · results table, `SAAC-JEPA (locked)` source cell |
-| **0.503** — PatchTST, target zero-shot RMSE | 3 | §01 Abstract paragraph · results table, `PatchTST (official, RevIN)` target cell |
-| **0.498** — iTransformer, target zero-shot RMSE | 3 | §01 Abstract paragraph · results table, `iTransformer (official, RevIN)` target cell |
-| **0.495 ± 0.004** — SAAC-JEPA + RevIN, target zero-shot RMSE (three seeds, post-lock) | 4 | §01 Abstract paragraph · §04 lede · results table, `SAAC-JEPA + RevIN (post-lock)` target cell · "Said plainly" paragraph |
-| **20.6** — SAAC-JEPA + RevIN, target NLL | 3 | §01 Abstract paragraph · results table, `SAAC-JEPA + RevIN (post-lock)` note cell · "Said plainly" paragraph |
+| **0.520** — pre-lock model at 20 % target support | 3 | Fig. 5 `<desc>` · Fig. 5 data-point label at 20 % support · Fig. 5 caption |
+| **0.811 ± 0.022** — scratch, source RMSE | 1 | results table, `Scratch` source cell |
+| **0.813 ± 0.022** — pretrained body, source RMSE | 1 | results table, `Pretrained body + fresh head` source cell |
+| **0.822 ± 0.009** — locked model, source-validation RMSE | 2 | Fig. 3 `7 SEEDS` box (`0.822 ± 0.009 RMSE`) · results table, `World model (locked, M03)` source cell |
+| **0.503** — PatchTST, target zero-shot RMSE | 2 | §04 lede · results table, `PatchTST (official, RevIN)` target cell |
+| **0.498** — iTransformer, target zero-shot RMSE | 2 | §04 lede · results table, `iTransformer (official, RevIN)` target cell |
+| **0.495 ± 0.004** — World model + RevIN, target zero-shot RMSE (three seeds, post-lock) | 3 | §04 lede · results table, `World model + RevIN (post-lock)` target cell · "Said plainly" paragraph |
+| **20.6** — World model + RevIN, target NLL | 2 | results table, `World model + RevIN (post-lock)` note cell · "Said plainly" paragraph |
 
-### Two traps
+The abstract (§01) no longer restates any headline number — the current text is qualitative
+only — so it does not appear as a location for any row above. If a future abstract edit
+reintroduces a number, add "§01 Abstract paragraph" back to that row and bump its count.
+
+### Three traps
 
 - **`0.822` matches four times, not two.** Two of those are the locked model
   (`0.822 ± 0.009`); the other two are *different quantities*: the iTransformer source
@@ -135,16 +217,22 @@ below cover the page only.
   table ("against 0.822 for the locked candidate" — that one **is** the locked model,
   written without its SD). Never `sed` on the bare string `0.822`; grep for
   `0.822 ± 0.009` when you mean the locked model.
-- **Fig. 5's `<desc>` restates the whole curve in prose** — 0.612, 0.611, 0.540, 0.520,
-  0.654 and 0.546 all appear there. It is the accessible description of the chart, so a
-  number changed in the chart and not in the `<desc>` makes the page say two different
-  things to two different readers.
+- **Fig. 5's `<desc>` restates the curve in prose** — 0.612, 0.611, 0.540, 0.520 and
+  0.654 appear there, but 0.546 does not: the locked model's number is never mentioned in
+  Fig. 5, only in Fig. 3 and the results table. It is the accessible description of the
+  chart, so a number changed in the chart and not in the `<desc>` makes the page say two
+  different things to two different readers.
+- **`20.6` as a bare `grep -o` pattern also matches `2026`** (the footer copyright year,
+  the JSON-LD `datePublished`, the BibTeX `year` field, the masthead eyebrow's "preprint
+  2026", …) because the unescaped `.` is a regex wildcard and `202` + any character + `6`
+  matches. Use `grep -o -F -- "20.6"` (fixed string) or escape the dot, or the count comes
+  back inflated.
 
 ### Numbers not in the table
 
 These appear only once or twice and are listed here so they are not forgotten:
 `0.611` and `0.540` (Fig. 5 points, `<desc>` and caption), `0.766 ± 0.001` (RevIN source cell), `0.812 ± 0.012`, `1.135`,
-`1.128`, `0.928`, `0.804`, `0.759`, `0.771`, `0.809`, the per-horizon R² list in the
+`1.128`, `0.928`, `0.804`, `0.759`, `0.771`, the per-horizon R² list in the
 `honest` block, `R² = 0.012`, `NLL 0.52`, `67 %` coverage, effective rank `5 %`/`58 %`,
 and the window/session counts in the footer.
 
@@ -158,7 +246,10 @@ done
 grep -c -o -- '0.822 ± 0.009' index.html
 ```
 
-Expected: `5 5 3 4 2 2 3 3`, then `2`. (Re-baselined 2026-09-10 after the RevIN port: 0.503 and 0.498 gained a mention in the paragraph under the results table; the per-number rows above list the intended places.)
+Expected: `4 5 3 3 1 1 2 2`, then `2`. (Re-baselined 2026-09-19 after the abstract was
+rewritten to drop every headline number: 0.546, 0.520, 0.811 ± 0.022, 0.813 ± 0.022, 0.503,
+0.498, 0.495 ± 0.004 and 20.6 each lost the one mention the old abstract gave them; the
+per-number rows above list the intended places.)
 
 ### FIG. 1 RevIN block
 
@@ -171,7 +262,7 @@ head. The hero strip and `og.png` are unchanged by this.
 
 ---
 
-## 3. Smoke test before pushing
+## 4. Smoke test before pushing
 
 ```sh
 node --check docs/main.js
