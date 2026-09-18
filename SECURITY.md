@@ -9,11 +9,13 @@ apply to this repository.
 
 What does apply:
 
-- **Checkpoints are executable code.** `src/cncjepa/checkpoint.py` and several
-  scripts under `scripts/` call `torch.load(..., weights_only=False)`, which
-  unpickles arbitrary Python objects. Load only checkpoints you produced
-  yourself or otherwise trust: opening an untrusted `.pt` file is equivalent
-  to running an untrusted script.
+- **Checkpoints are pickles.** A `.pt` file loaded unrestricted runs whatever
+  code it contains, so opening an untrusted one is equivalent to running an
+  untrusted script. Every load in this repository goes through
+  `cncjepa.utils.torch_load_checkpoint`, which passes `weights_only=True` and
+  refuses a file that needs more than tensors and plain Python. Setting
+  `CNCJEPA_TRUST_CHECKPOINT=1` disables that check for the whole process; use
+  it only on a file you produced yourself.
 - **Configs are executed as configuration, not sandboxed.** Files under
   `configs/` select code paths and file system locations. Treat a config from
   an untrusted source the same way you would treat a shell script.
@@ -44,5 +46,5 @@ What to expect:
   `Security` heading in `CHANGELOG.md`. You are credited in that entry unless
   you ask not to be.
 - If the report is declined — most often because it describes intended
-  behaviour of local research code, such as the checkpoint unpickling noted
-  above — you get the reasoning in the same thread.
+  behaviour of local research code, or a path that is only reachable with
+  `CNCJEPA_TRUST_CHECKPOINT=1` set — you get the reasoning in the same thread.

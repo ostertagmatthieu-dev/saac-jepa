@@ -9,11 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `cncjepa.utils.torch_load_checkpoint`, the single door every checkpoint now enters through.
+  It loads with `weights_only=True` and refuses a file that needs more, with a test
+  (`tests/test_checkpoint_loading.py`) asserting that each payload the trainers write stays
+  inside what the restricted unpickler accepts, so a numpy scalar smuggled into a metrics row
+  fails in CI rather than at somebody's `--ckpt` argument.
+
 - A `SECURITY.md` that describes what a security report means for research code: only `main` is
   supported (the project is pre-release at `0.1.0` with no tags), reports go through GitHub's
-  private advisory form rather than a public issue, and the scope section names the real hazard,
-  which is that `torch.load(..., weights_only=False)` in `src/cncjepa/checkpoint.py` and several
-  scripts unpickles arbitrary Python from any checkpoint it is handed.
+  private advisory form rather than a public issue, and the scope section names the hazards that
+  survive in a repository with no network surface.
 
 - `docs/licensing.md`, a single map of what each licence covers: MIT over the repository contents,
   CC BY 4.0 over both datasets, the changes that licence requires us to declare, the upstream
@@ -40,6 +45,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   rewriting `main`.
 
 ### Changed
+
+- All 19 `torch.load` call sites (3 in `src/cncjepa/checkpoint.py`, 16 under `scripts/`) now call
+  `torch_load_checkpoint` instead. Five passed `weights_only=False` explicitly; the other
+  fourteen passed nothing and so inherited a default that is `False` on the `torch>=2.3`
+  floor and `True` from 2.6 on, which meant whether a checkpoint was executed depended on
+  which torch happened to be installed. `CNCJEPA_TRUST_CHECKPOINT=1` restores the old
+  unrestricted behaviour for a checkpoint you produced yourself.
 
 - `README.md`, `docs/data.md` and the project-page footer now state explicitly that the MIT licence
   covers the repository contents and reaches neither dataset, that neither dataset is
