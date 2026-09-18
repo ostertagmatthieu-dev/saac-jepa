@@ -3,15 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>SAAC-JEPA — Schema-Adaptive Action-Conditioned JEPA for Cross-Machine CNC Transfer</title>
-<meta name="description" content="Project page for SAAC-JEPA: a schema-adaptive, action-conditioned JEPA world model for CNC milling, transferred from a 17-channel source machine to a target machine sharing only 10 of those channels, under a leakage-audited protocol.">
+<title>SAAC-JEPA — World Models for Cross-Machine CNC Transfer</title>
+<meta name="description" content="Project page for an action-conditioned latent world model for CNC milling, evaluated zero-shot on a machine sharing only 10 of the source's 17 sensor channels.">
 <meta name="robots" content="index,follow">
 <meta name="theme-color" content="#0F1B2D">
 <link rel="canonical" href="https://ostertagmatthieu-dev.github.io/saac-jepa/">
 
 <!-- ------------------------------ Open Graph ------------------------------ -->
-<meta property="og:title" content="SAAC-JEPA — Cross-Machine CNC Transfer under Partial Sensor Overlap">
-<meta property="og:description" content="Same process, different machine, fewer sensors. An audited cross-machine CNC world-model benchmark.">
+<meta property="og:title" content="SAAC-JEPA — World Models for Cross-Machine CNC Transfer">
+<meta property="og:description" content="An action-conditioned world model trained on one CNC machine, evaluated zero-shot on another machine with only partial sensor overlap.">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://ostertagmatthieu-dev.github.io/saac-jepa/">
 <meta property="og:site_name" content="SAAC-JEPA">
@@ -19,18 +19,18 @@
 <meta property="og:image" content="https://ostertagmatthieu-dev.github.io/saac-jepa/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="SAAC-JEPA project page card: a two-panel machine strip showing a 17-channel THWS source machine, a latent state, and a JOANNEUM target machine where 7 of the channels are absent.">
+<meta property="og:image:alt" content="Project page card: a two-panel machine strip showing a 17-channel THWS source machine, a latent state, and a JOANNEUM target machine where 7 of the channels are absent.">
 
 <!-- -------------------------------- Twitter ------------------------------- -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="SAAC-JEPA — Cross-Machine CNC Transfer under Partial Sensor Overlap">
-<meta name="twitter:description" content="Same process, different machine, fewer sensors. An audited cross-machine CNC world-model benchmark.">
+<meta name="twitter:title" content="SAAC-JEPA — World Models for Cross-Machine CNC Transfer">
+<meta name="twitter:description" content="An action-conditioned world model trained on one CNC machine, evaluated zero-shot on another machine with only partial sensor overlap.">
 <meta name="twitter:image" content="https://ostertagmatthieu-dev.github.io/saac-jepa/og.png">
 
 <!-- --------------------------- Google Scholar ----------------------------- -->
 <meta name="citation_arxiv_id" content="2609.16071">
 <meta name="citation_doi" content="10.48550/arXiv.2609.16071">
-<meta name="citation_title" content="Schema-Adaptive Action-Conditioned JEPA for Cross-Machine CNC Transfer under Partial Sensor Overlap">
+<meta name="citation_title" content="World Models for Cross-Machine CNC Transfer under Partial Sensor Overlap">
 <meta name="citation_author" content="Bouaziz, Ayoub Louaye">
 <meta name="citation_author_institution" content="Université de Bretagne Occidentale">
 <meta name="citation_author" content="Ostertag, Matthieu">
@@ -46,8 +46,8 @@
 {
   "@context": "https://schema.org",
   "@type": "ScholarlyArticle",
-  "headline": "Schema-Adaptive Action-Conditioned JEPA for Cross-Machine CNC Transfer under Partial Sensor Overlap",
-  "name": "Schema-Adaptive Action-Conditioned JEPA for Cross-Machine CNC Transfer under Partial Sensor Overlap",
+  "headline": "World Models for Cross-Machine CNC Transfer under Partial Sensor Overlap",
+  "name": "World Models for Cross-Machine CNC Transfer under Partial Sensor Overlap",
   "author": [
     {
       "@type": "Person",
@@ -173,9 +173,9 @@
       <p class="panel__hint">Scroll sideways to read the figure</p>
     </figure>
 
-    <h1 class="masthead__title">Schema-Adaptive Action-Conditioned JEPA for Cross-Machine CNC Transfer under Partial Sensor Overlap</h1>
+    <h1 class="masthead__title">World Models for Cross-Machine CNC Transfer under Partial Sensor Overlap</h1>
 
-    <p class="masthead__deck">A CNC world model trained on 17 sensors, locked on source data alone, then evaluated in a single sealed pass on a machine it was never trained on, with 7 of them missing.</p>
+    <p class="masthead__deck">An action-conditioned world model trained on 17 sensors, locked on source data alone, then evaluated in a single sealed pass on a machine it has never seen, missing 7 of them.</p>
 
     <p class="masthead__authors">
       <span class="masthead__author"><a class="masthead__mail" href="mailto:abouaziz@univ-brest.fr">Ayoub Louaye Bouaziz</a><span class="masthead__aff">Université de Bretagne Occidentale</span></span>
@@ -208,7 +208,7 @@
   <section class="sec" id="abstract">
     <hr class="rule">
     <h2 class="sec__head"><span class="sec__num">01</span>Abstract</h2>
-    <p class="body">Cross-machine deployment of industrial world models requires transfer across changes in machine dynamics, sensing interfaces, sampling regimes, and control units. This study investigates a schema-adaptive action-conditioned Joint-Embedding Predictive Architecture (SAAC-JEPA) for CNC dynamics when a source machine provides 17 canonical sensor channels and a target machine shares only 10. The evaluation protocol contains group-disjoint source splits, source-only normalization, deterministic held-out self-supervised validation, explicit unit audits, and a sealed target-machine test used only after model locking. A matched five-seed comparison shows no clean-source forecasting gain from JEPA pretraining: scratch and pretrained-body models obtain RMSE 0.811 ± 0.022 and 0.813 ± 0.022, respectively. A source-only architecture search over 20 candidates then selects a schema-consistent action-conditioned JEPA variant after stability checks across seven seeds. On the single confirmatory target-machine pass, the locked model reaches zero-shot RMSE 0.546, R² = 0.012, and NLL 0.52, improving over persistence but not over official RevIN-equipped PatchTST and iTransformer zero-shot baselines (0.503 and 0.498). A post-lock, pre-declared paired ablation attributes this gap to normalization: RevIN inside the same architecture yields 0.495 ± 0.004 over three seeds, level with the baselines, but collapses target calibration (NLL 20.6) on stationary context windows. A pre-lock adaptation sweep further suggests that small target support can reduce RMSE to 0.520. The evidence supports a narrow conclusion: source-domain forecasting accuracy alone is insufficient for evaluating industrial predictive representations, and cross-machine adaptation under partial sensor overlap is a distinct evaluation axis for action-conditioned world models.</p>
+    <p class="body">Industrial world models must move between machines whose dynamics, sensing interfaces and command units all differ. This study asks whether an action-conditioned latent world model—trained to predict future representations of the process rather than to reconstruct future samples—keeps its value on a machine it has never seen: a source CNC machine exposes 17 sensor channels, the target sharing 10 of those. Every design decision is taken on source data alone, and the target machine is evaluated only after the configuration is frozen. Two findings follow. First, latent-predictive pretraining brings no in-domain forecasting gain over matched training from scratch, so source accuracy alone cannot show what such a representation is worth. Second, the transferred model beats persistence on the unseen machine but trails official forecasters that normalize each input window by its own statistics; a pre-declared ablation attributes that gap to input normalization rather than to the latent objective, and closing it costs predictive calibration. Cross-machine transfer under partial sensor overlap is therefore a distinct evaluation axis for action-conditioned world models.</p>
   </section>
 
   <!-- ================================ OVERVIEW =============================== -->
@@ -235,14 +235,14 @@
     <figure class="panel" data-fig="f1">
       <figcaption class="panel__bar">
         <span class="panel__id">FIG. 1</span>
-        <span class="panel__name">SAAC-JEPA training graph</span>
+        <span class="panel__name">Action-conditioned latent dynamics</span>
         <button class="panel__replay" type="button" data-replay="f1" aria-label="Replay the Figure 1 animation">Replay</button>
       </figcaption>
       <div class="panel__body">
         <svg class="f1" viewBox="0 0 1080 512" role="img" focusable="false"
              aria-labelledby="f1Title" aria-describedby="f1Desc">
-          <title id="f1Title">SAAC-JEPA training graph</title>
-          <desc id="f1Desc">Animated schematic of the SAAC-JEPA training graph. Sensors pass through a schema mask and enter the context encoder together with the presence mask and past actions, producing a context latent. Future actions and that latent enter the predictor, which emits predicted latents at horizons of 1, 2, 4, 8 and 16 seconds. The future observation window passes through an EMA target encoder to give target latents, compared to the predictions through a stop-gradient by the latent loss. Two partial schema views drive the schema-consistency loss, a variance-covariance term regularises both latent sets, and an action-recovery head reconstructs the applied action. In the post-lock RevIN variant, shown as dashed green blocks, both windows are first normalised with per-channel statistics of the context window and the physical head output is de-normalised before any loss or metric; the locked model does not include this step.</desc>
+          <title id="f1Title">Action-conditioned latent dynamics</title>
+          <desc id="f1Desc">Animated schematic of the world model's training graph. Sensors pass through a schema mask and enter the context encoder together with the presence mask and past actions, producing a context latent. Future actions and that latent enter the predictor, which emits predicted latents at horizons of 1, 2, 4, 8 and 16 seconds. The future observation window passes through an EMA target encoder to give target latents, compared to the predictions through a stop-gradient by the latent loss. Two partial schema views drive the schema-consistency loss, a variance-covariance term regularises both latent sets, and an action-recovery head reconstructs the applied action. In the post-lock RevIN variant, shown as dashed green blocks, both windows are first normalised with per-channel statistics of the context window and the physical head output is de-normalised before any loss or metric; the locked model does not include this step.</desc>
 
           <!-- links (drawn first, under nodes) -->
           <g class="f1__wires">
@@ -387,7 +387,7 @@
     <p class="lede"><strong>One sealed pass on a machine never seen in training, 7 of 17 sensors missing: RMSE 0.546 against 0.654 for persistence.</strong> Two official baselines still do better: PatchTST 0.503 and iTransformer 0.498 (lower is better). A post-lock ablation shows why: give the same model their instance normalization (RevIN) and it reaches 0.495 ± 0.004 over three seeds, at the price of its calibration.</p>
     <div class="tablewrap">
       <table class="rt">
-        <caption class="rt__caption">RMSE in z units, lower is better. Source column: the official baselines are scored on the source test split (5,189 windows, 17 sensors); SAAC-JEPA is the seven-seed mean ± SD on source validation, and the scratch/pretrained rows are five-seed source validation — the source column therefore does not compare like with like. Target column: the 10 shared JOANNEUM channels (2,457 windows); the locked row is the single confirmatory pass, the RevIN row a second, declared read of three seeds with no selection on the target.</caption>
+        <caption class="rt__caption">RMSE in z units, lower is better. Source column: the official baselines are scored on the source test split (5,189 windows, 17 sensors); the world model is the seven-seed mean ± SD on source validation, and the scratch/pretrained rows are five-seed source validation — the source column therefore does not compare like with like. Target column: the 10 shared JOANNEUM channels (2,457 windows); the locked row is the single confirmatory pass, the RevIN row a second, declared read of three seeds with no selection on the target.</caption>
         <thead>
           <tr><th class="rt__th" scope="col">Setting</th><th class="rt__th rt__th--num" scope="col">Source RMSE</th><th class="rt__th rt__th--num" scope="col">Target zero-shot RMSE</th><th class="rt__th" scope="col">Notes</th></tr>
         </thead>
@@ -401,12 +401,12 @@
           <tr><th class="rt__rh" scope="row">Linear drift</th><td class="rt__num">0.928</td><td class="rt__num rt__num--none">—</td><td class="rt__note">trivial reference</td></tr>
           <tr><th class="rt__rh" scope="row">PatchTST (official, RevIN)</th><td class="rt__num">0.804</td><td class="rt__num">0.503</td><td class="rt__note">deterministic</td></tr>
           <tr><th class="rt__rh" scope="row">iTransformer (official, RevIN)</th><td class="rt__num">0.822</td><td class="rt__num">0.498</td><td class="rt__note">deterministic</td></tr>
-          <tr class="rt__row--ours"><th class="rt__rh" scope="row">SAAC-JEPA (locked)</th><td class="rt__num">0.822 ± 0.009</td><td class="rt__num">0.546</td><td class="rt__note">probabilistic (mean and log-variance head); NLL 0.52; single declared pass</td></tr>
-          <tr class="rt__row--ours"><th class="rt__rh" scope="row">SAAC-JEPA + RevIN (post-lock)</th><td class="rt__num">0.766 ± 0.001</td><td class="rt__num rt__num--best">0.495 ± 0.004</td><td class="rt__note">same model, instance normalization on; NLL 20.6; three seeds, diagnostic</td></tr>
+          <tr class="rt__row--ours"><th class="rt__rh" scope="row">World model (locked, M03)</th><td class="rt__num">0.822 ± 0.009</td><td class="rt__num">0.546</td><td class="rt__note">probabilistic (mean and log-variance head); NLL 0.52; single declared pass</td></tr>
+          <tr class="rt__row--ours"><th class="rt__rh" scope="row">World model + RevIN (post-lock)</th><td class="rt__num">0.766 ± 0.001</td><td class="rt__num rt__num--best">0.495 ± 0.004</td><td class="rt__note">same model, instance normalization on; NLL 20.6; three seeds, diagnostic</td></tr>
         </tbody>
       </table>
     </div>
-    <p class="honest"><strong>Said plainly:</strong> official RevIN-equipped forecasters remain stronger than the locked SAAC-JEPA in raw zero-shot RMSE. That margin is a normalization effect: a post-lock paired ablation that adds presence-aware RevIN inside the same architecture reaches 0.495 ± 0.004 on three seeds, level with PatchTST and iTransformer, but its target NLL rises from 0.9 to 20.6 because a stationary context window shrinks the instance scale to √ε and crushes the predicted variance. The locked model stays the reference result, and the target windows have now been read twice (locked pass, then this declared ablation). On the source machine ordinary supervised baselines are stronger too (RSSM 0.759 and MLP 0.771 on source validation, against 0.822 for the locked candidate). The claim is narrower: the locked model beats persistence on a machine it has never seen while losing 7 of 17 channels, and its configuration was selected on source data alone. Per horizon it explains variance only at short horizons — target R² is 0.035, 0.055, 0.052, −0.023 and −0.059 at h = 1, 2, 4, 8, 16 s, i.e. below the pooled target-mean predictor at 8 and 16 s.</p>
+    <p class="honest"><strong>Said plainly:</strong> official RevIN-equipped forecasters remain stronger than the locked world model in raw zero-shot RMSE. That margin is a normalization effect: a post-lock paired ablation that adds presence-aware RevIN inside the same architecture reaches 0.495 ± 0.004 on three seeds, level with PatchTST and iTransformer, but its target NLL rises from 0.9 to 20.6 because a stationary context window shrinks the instance scale to √ε and crushes the predicted variance. The locked model stays the reference result, and the target windows have now been read twice (locked pass, then this declared ablation). On the source machine ordinary supervised baselines are stronger too (RSSM 0.759 and MLP 0.771 on source validation, against 0.822 for the locked candidate). The claim is narrower: the locked model beats persistence on a machine it has never seen while losing 7 of 17 channels, and its configuration was selected on source data alone. Per horizon it explains variance only at short horizons — target R² is 0.035, 0.055, 0.052, −0.023 and −0.059 at h = 1, 2, 4, 8, 16 s, i.e. below the pooled target-mean predictor at 8 and 16 s.</p>
   </section>
 
   <!-- ================================= FIG 3 ================================= -->
@@ -657,7 +657,7 @@
       <!-- This block is the source of truth with JavaScript off. It must stay
            byte-identical to CONFIG.bibtex in main.js — see UPDATING.md. -->
       <pre class="cite__block" id="bibtex" tabindex="0">@misc{bouaziz2026schemaadaptiveactionconditionedjepacrossmachine,
-  title         = {Schema-Adaptive Action-Conditioned JEPA for Cross-Machine CNC Transfer under Partial Sensor Overlap},
+  title         = {World Models for Cross-Machine CNC Transfer under Partial Sensor Overlap},
   author        = {Ayoub Louaye Bouaziz and Matthieu Ostertag and Anton Demasles},
   year          = {2026},
   eprint        = {2609.16071},
