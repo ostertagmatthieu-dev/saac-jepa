@@ -7,8 +7,8 @@ from cncjepa.data import target_support_query_split,WindowDataset,collate
 from cncjepa.factory import build_jepa
 from cncjepa.adaptation import adapt_jepa
 from cncjepa.trainers import evaluate_jepa
-from cncjepa.utils import device_from_arg
-p=argparse.ArgumentParser(); p.add_argument('--config',default='configs/base.yaml'); p.add_argument('--ckpt',default='outputs/jepa_finetune/best.pt'); p.add_argument('--device',default='auto'); p.add_argument('--out',default='outputs/transfer_ds01_ds03.json'); a=p.parse_args(); c=load_config(a.config); _,sp,_,sn,an=prepare(c,training_mask=False); dev=device_from_arg(a.device); base=build_jepa(c,True); base.load_state_dict(torch.load(a.ckpt,map_location='cpu')['model'],strict=False); base.to(dev); rep={}
+from cncjepa.utils import device_from_arg,torch_load_checkpoint
+p=argparse.ArgumentParser(); p.add_argument('--config',default='configs/base.yaml'); p.add_argument('--ckpt',default='outputs/jepa_finetune/best.pt'); p.add_argument('--device',default='auto'); p.add_argument('--out',default='outputs/transfer_ds01_ds03.json'); a=p.parse_args(); c=load_config(a.config); _,sp,_,sn,an=prepare(c,training_mask=False); dev=device_from_arg(a.device); base=build_jepa(c,True); base.load_state_dict(torch_load_checkpoint(a.ckpt,map_location='cpu')['model'],strict=False); base.to(dev); rep={}
 for frac in c['protocol']['target_support_fractions']:
  sup,q=target_support_query_split(sp['target_all'],c,float(frac)); qds=WindowDataset(q,c,sn,an,training=False); ql=DataLoader(qds,batch_size=c['train']['batch_size'],collate_fn=collate)
  model=base; adapted=False

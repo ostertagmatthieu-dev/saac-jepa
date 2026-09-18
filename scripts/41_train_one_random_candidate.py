@@ -50,7 +50,7 @@ from cncjepa.pipeline import prepare, loaders_from_ds
 from cncjepa.factory import build_jepa
 from cncjepa.checkpoint import load_jepa_checkpoint, load_jepa_body_fresh_head
 from cncjepa.trainers import train_jepa
-from cncjepa.utils import device_from_arg, set_seed, count_parameters
+from cncjepa.utils import device_from_arg, set_seed, count_parameters,torch_load_checkpoint
 
 p=argparse.ArgumentParser(description=__doc__,formatter_class=argparse.RawDescriptionHelpFormatter)
 p.add_argument('--config',required=True)
@@ -140,7 +140,7 @@ audit['load_ok']=load_ok
 t0=time.time()
 train_jepa(model,ld['source_train'],ld['source_val'],cfg,dev,out/'finetune',pretrain_only=False,max_epochs=ft_epochs)
 ft_sec=round(time.time()-t0,1)
-ft_best=torch.load(out/'finetune'/'best.pt',map_location='cpu',weights_only=False)
+ft_best=torch_load_checkpoint(out/'finetune'/'best.pt',map_location='cpu')
 model.load_state_dict(ft_best['model'],strict=False); model.to(dev).eval()
 print(f"[finetune] best val_rmse={ft_best.get('best')} at epoch {ft_best.get('epoch')} ({ft_sec}s)")
 

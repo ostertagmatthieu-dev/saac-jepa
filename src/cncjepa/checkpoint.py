@@ -1,6 +1,6 @@
 from __future__ import annotations
-import torch
 from .factory import build_jepa, build_forecaster
+from .utils import torch_load_checkpoint
 
 BODY_PREFIXES=('context_encoder.','target_encoder.','predictor.','revin.')   # revin.* only exists with model.revin.affine=true
 HEAD_PREFIXES=('physical_mu.','physical_logvar.','action_recovery.')
@@ -30,14 +30,14 @@ def _audit(model,state,before,ret,note=''):
 def load_jepa_checkpoint(path,cfg,device='cpu',schema_adaptive=True):
     """Load a full JEPA checkpoint. Returns (model, obj) with obj['load_audit'] carrying
     missing/unexpected keys and a weights_changed proof."""
-    obj=torch.load(path,map_location=device,weights_only=False); model=build_jepa(cfg,schema_adaptive=schema_adaptive)
+    obj=torch_load_checkpoint(path,map_location=device); model=build_jepa(cfg,schema_adaptive=schema_adaptive)
     before=_probe(model); ret=model.load_state_dict(obj['model'],strict=False)
     obj['load_audit']=_audit(model,obj['model'],before,ret,f'jepa full <- {path}')
     model.to(device); return model,obj
 
 
 def load_forecaster_checkpoint(path,cfg,name,device='cpu'):
-    obj=torch.load(path,map_location=device,weights_only=False); model=build_forecaster(name,cfg)
+    obj=torch_load_checkpoint(path,map_location=device); model=build_forecaster(name,cfg)
     before=_probe(model); ret=model.load_state_dict(obj['model'],strict=False)
     obj['load_audit']=_audit(model,obj['model'],before,ret,f'forecaster {name} <- {path}')
     model.to(device); return model,obj
@@ -52,7 +52,7 @@ def load_jepa_body_fresh_head(path,cfg,device='cpu',schema_adaptive=True):
     'pretraining helped' with 'the head happened to be pre-fit'. Returns (model, audit); the
     audit lists head keys deliberately dropped under 'reinitialised'.
     """
-    obj=torch.load(path,map_location=device,weights_only=False)
+    obj=torch_load_checkpoint(path,map_location=device)
     model=build_jepa(cfg,schema_adaptive=schema_adaptive)
     body={k:v for k,v in obj['model'].items() if k.startswith(BODY_PREFIXES)}
     dropped=sorted(k for k in obj['model'] if not k.startswith(BODY_PREFIXES))
