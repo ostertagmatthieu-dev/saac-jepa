@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "saac-jepa"
 dynamic = ["version"]
-description = "Schema-Adaptive Action-Conditioned JEPA for cross-machine CNC transfer under partial sensor overlap"
+description = "World Models for Cross-Machine CNC Transfer under Partial Sensor Overlap"
 readme = "README.md"
 license = { file = "LICENSE" }
 requires-python = ">=3.10"
