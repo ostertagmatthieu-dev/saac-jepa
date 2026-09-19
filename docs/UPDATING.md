@@ -178,6 +178,28 @@ console.log("BibTeX DRIFTED");for(const[n,s]of[["docs/index.html",html],["docs/m
 If HTML entities creep into `docs/index.html` (e.g. `&amp;`), decode them before comparing
 — the regexes above assume plain text.
 
+### Finishing the v2 retitle (2609.16071v2)
+
+Everything that does not depend on arXiv is already on the branch: the new title on every
+surface, `docs/paper.pdf` (the v2 build), `docs/og.png` (re-rendered with the new title) and a
+`CHANGELOG.md` entry with two placeholders, `@V2_DATE@` and `@NEW_KEY@`. Once v2 is announced:
+
+1. Open <https://arxiv.org/abs/2609.16071>, check that it shows `[v2]` and the new title, and copy
+   the key from *Export BibTeX Citation*.
+2. Run
+   ```sh
+   .github/scripts/apply_arxiv_v2.sh <key from arXiv> <announcement date, YYYY-MM-DD>
+   ```
+   It swaps the retired key in the three BibTeX copies, fills the CHANGELOG placeholders, checks
+   the three copies are identical, that `docs/paper.pdf` carries the v2 title and stays under
+   1024 KB, that the retired key survives only in the history, and validates `CITATION.cff`.
+   Pass the v2 PDF as a third argument only if the arXiv build differs from the committed one.
+3. Review `git diff`, commit, push, take the pull request out of draft and merge.
+4. After Pages deploys, check the live `citation_title`, and re-scrape the card
+   (LinkedIn Post Inspector, X card validator) so the old `og.png` is evicted.
+
+The script can be deleted after this retitle; the steps above remain the procedure.
+
 ---
 
 ## 3. Where every headline number lives
