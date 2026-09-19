@@ -4,14 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>SAAC-JEPA — World Models for Cross-Machine CNC Transfer</title>
-<meta name="description" content="Project page for an action-conditioned latent world model for CNC milling, evaluated zero-shot on a machine sharing only 10 of the source's 17 sensor channels.">
+<meta name="description" content="Project page for a command-conditioned latent world model for CNC milling, evaluated zero-shot on a machine sharing only 10 of the source's 17 sensor channels.">
 <meta name="robots" content="index,follow">
 <meta name="theme-color" content="#0F1B2D">
 <link rel="canonical" href="https://ostertagmatthieu-dev.github.io/saac-jepa/">
 
 <!-- ------------------------------ Open Graph ------------------------------ -->
 <meta property="og:title" content="SAAC-JEPA — World Models for Cross-Machine CNC Transfer">
-<meta property="og:description" content="An action-conditioned world model trained on one CNC machine, evaluated zero-shot on another machine with only partial sensor overlap.">
+<meta property="og:description" content="A command-conditioned world model trained on one CNC machine, evaluated zero-shot on another machine with only partial sensor overlap.">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://ostertagmatthieu-dev.github.io/saac-jepa/">
 <meta property="og:site_name" content="SAAC-JEPA">
@@ -24,7 +24,7 @@
 <!-- -------------------------------- Twitter ------------------------------- -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="SAAC-JEPA — World Models for Cross-Machine CNC Transfer">
-<meta name="twitter:description" content="An action-conditioned world model trained on one CNC machine, evaluated zero-shot on another machine with only partial sensor overlap.">
+<meta name="twitter:description" content="A command-conditioned world model trained on one CNC machine, evaluated zero-shot on another machine with only partial sensor overlap.">
 <meta name="twitter:image" content="https://ostertagmatthieu-dev.github.io/saac-jepa/og.png">
 
 <!-- --------------------------- Google Scholar ----------------------------- -->
@@ -175,7 +175,7 @@
 
     <h1 class="masthead__title">World Models for Cross-Machine CNC Transfer under Partial Sensor Overlap</h1>
 
-    <p class="masthead__deck">An action-conditioned world model trained on 17 sensors, locked on source data alone, then evaluated in a single sealed pass on a machine it has never seen, missing 7 of them.</p>
+    <p class="masthead__deck">A command-conditioned world model trained on 17 sensors, locked on source data alone, then evaluated in a single sealed pass on a machine it has never seen, missing 7 of them.</p>
 
     <p class="masthead__authors">
       <span class="masthead__author"><a class="masthead__mail" href="mailto:abouaziz@univ-brest.fr">Ayoub Louaye Bouaziz</a><span class="masthead__aff">Université de Bretagne Occidentale</span></span>
@@ -208,7 +208,7 @@
   <section class="sec" id="abstract">
     <hr class="rule">
     <h2 class="sec__head"><span class="sec__num">01</span>Abstract</h2>
-    <p class="body">Industrial world models must move between machines whose dynamics, sensing interfaces and command units all differ. This study asks whether an action-conditioned latent world model—trained to predict future representations of the process rather than to reconstruct future samples—keeps its value on a machine it has never seen: a source CNC machine exposes 17 sensor channels, the target sharing 10 of those. Every design decision is taken on source data alone, and the target machine is evaluated only after the configuration is frozen. Two findings follow. First, latent-predictive pretraining brings no in-domain forecasting gain over matched training from scratch, so source accuracy alone cannot show what such a representation is worth. Second, the transferred model beats persistence on the unseen machine but trails official forecasters that normalize each input window by its own statistics; a pre-declared ablation attributes that gap to input normalization rather than to the latent objective, and closing it costs predictive calibration. Cross-machine transfer under partial sensor overlap is therefore a distinct evaluation axis for action-conditioned world models.</p>
+    <p class="body">Industrial world models must move between machines whose dynamics, sensing interfaces and command conventions differ. This study asks whether a command-conditioned latent world model—trained to predict future representations of the process rather than to reconstruct future samples—keeps its value on a machine it has never seen: a source CNC machine exposes 17 sensor channels, the target sharing 10 of those. All model selection uses source data only, and the locked configuration is evaluated on the target once. Two findings follow. First, latent-predictive pretraining brings no in-domain forecasting gain over matched training from scratch, so source accuracy alone cannot show what such a representation is worth. Second, the transferred model beats persistence on the unseen machine (with <i>R</i>² ≈ 0.01 against the target mean) but trails official forecasters that normalize each input window by its own statistics; a post-lock ablation, declared before it ran, shows that this input normalization alone closes the gap, and closing it costs predictive calibration. Cross-machine transfer under partial sensor overlap is therefore a distinct evaluation axis for command-conditioned world models.</p>
   </section>
 
   <!-- ================================ OVERVIEW =============================== -->
@@ -235,13 +235,13 @@
     <figure class="panel" data-fig="f1">
       <figcaption class="panel__bar">
         <span class="panel__id">FIG. 1</span>
-        <span class="panel__name">Action-conditioned latent dynamics</span>
+        <span class="panel__name">Command-conditioned latent dynamics</span>
         <button class="panel__replay" type="button" data-replay="f1" aria-label="Replay the Figure 1 animation">Replay</button>
       </figcaption>
       <div class="panel__body">
         <svg class="f1" viewBox="0 0 1080 512" role="img" focusable="false"
              aria-labelledby="f1Title" aria-describedby="f1Desc">
-          <title id="f1Title">Action-conditioned latent dynamics</title>
+          <title id="f1Title">Command-conditioned latent dynamics</title>
           <desc id="f1Desc">Animated schematic of the world model's training graph. Sensors pass through a schema mask and enter the context encoder together with the presence mask and past actions, producing a context latent. Future actions and that latent enter the predictor, which emits predicted latents at horizons of 1, 2, 4, 8 and 16 seconds. The future observation window passes through an EMA target encoder to give target latents, compared to the predictions through a stop-gradient by the latent loss. Two partial schema views drive the schema-consistency loss, a variance-covariance term regularises both latent sets, and an action-recovery head reconstructs the applied action. In the post-lock RevIN variant, shown as dashed green blocks, both windows are first normalised with per-channel statistics of the context window and the physical head output is de-normalised before any loss or metric; the locked model does not include this step.</desc>
 
           <!-- links (drawn first, under nodes) -->
@@ -539,13 +539,13 @@
     <figure class="panel" data-fig="f2">
       <figcaption class="panel__bar">
         <span class="panel__id">FIG. 2</span>
-        <span class="panel__name">Action-conditioned simulation of candidate futures</span>
+        <span class="panel__name">Command-conditioned simulation of candidate futures</span>
         <button class="panel__replay" type="button" data-replay="f2" aria-label="Replay the Figure 2 animation">Replay</button>
       </figcaption>
       <div class="panel__body">
         <svg class="f2" viewBox="0 0 1080 474" role="img" focusable="false"
              aria-labelledby="f2Title" aria-describedby="f2Desc">
-          <title id="f2Title">Action-conditioned simulation of candidate futures</title>
+          <title id="f2Title">Command-conditioned simulation of candidate futures</title>
           <desc id="f2Desc">Animated schematic: a 32-second context window of observed sensor traces is encoded into a latent state; two candidate action sequences, spindle up and spindle down, then produce two diverging multi-horizon predictions with widening uncertainty bands at 1, 2, 4, 8 and 16 seconds. Conceptual, not a closed-loop result.</desc>
           <g id="f2gen"></g>
         </svg>
