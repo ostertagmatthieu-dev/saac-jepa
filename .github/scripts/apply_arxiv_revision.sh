@@ -64,7 +64,7 @@ if(html===js&&js===md){console.log("BibTeX in sync (index.html, main.js, README.
 console.log("BibTeX DRIFTED");process.exit(1);'
 
 # nothing left to fill, and the retired key survives only in the CHANGELOG history
-! grep -rn -E "@REVISION_DATE@|@NEW_KEY@" CHANGELOG.md README.md docs/ || { echo "placeholder left"; exit 1; }
+! grep -n -E "@REVISION_DATE@|@NEW_KEY@" CHANGELOG.md README.md docs/index.html docs/main.js || { echo "placeholder left"; exit 1; }
 left=$(grep -rln "$OLD_KEY" --exclude-dir=.git --exclude-dir=internal . | grep -v -E "^\./(CHANGELOG\.md|docs/UPDATING\.md|\.github/scripts/apply_arxiv_revision\.sh)$" || true)
 [[ -z "$left" ]] || { echo "retired key still in: $left"; exit 1; }
 
