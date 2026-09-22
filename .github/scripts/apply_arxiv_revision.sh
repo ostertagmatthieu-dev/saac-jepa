@@ -14,7 +14,8 @@
 # placeholders of the CHANGELOG entry, and runs the checks of docs/UPDATING.md §2.
 # It edits files only; review the diff, commit and push yourself.
 set -euo pipefail
-cd "$(git rev-parse --show-toplevel)"
+# work in the repository this script belongs to, whatever the caller's directory
+cd "$(dirname "${BASH_SOURCE[0]}")/../.."
 
 OLD_KEY="bouaziz2026schemaadaptiveactionconditionedjepacrossmachine"
 NEW_KEY="${1:-}"; REVISION_DATE="${2:-}"; PDF="${3:-}"
