@@ -1,3 +1,6 @@
+# Crawlers read robots.txt only at the host root (ostertagmatthieu-dev.github.io/robots.txt),
+# which this project site does not control; this copy documents the intent and names the sitemap.
+# Search engines and AI crawlers are welcome.
 User-agent: *
 Allow: /
 Sitemap: https://ostertagmatthieu-dev.github.io/saac-jepa/sitemap.xml

@@ -3,15 +3,20 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>SAAC-JEPA — World Models for Cross-Machine CNC Transfer</title>
-<meta name="description" content="Project page for a command-conditioned latent world model for CNC milling, evaluated zero-shot on a machine sharing only 10 of the source's 17 sensor channels.">
-<meta name="robots" content="index,follow">
+<script>document.documentElement.classList.add("js")</script>
+<title>World Models for Cross-Machine CNC Transfer · SAAC-JEPA</title>
+<meta name="description" content="A JEPA-style, command-conditioned latent world model for CNC milling, trained on a 17-sensor machine and evaluated zero-shot on an unseen machine sharing only 10 channels. Source-only model selection, one sealed target pass, arXiv:2609.16071.">
+<meta name="keywords" content="world model, JEPA, joint-embedding predictive architecture, latent dynamics, command-conditioned prediction, CNC machining, cross-machine transfer, domain shift, schema shift, partial sensor overlap, zero-shot transfer, VICReg, inverse dynamics, RevIN, industrial time series, multivariate forecasting">
+<meta name="author" content="Ayoub Louaye Bouaziz, Matthieu Ostertag, Anton Demasles">
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">
 <meta name="theme-color" content="#0F1B2D">
 <link rel="canonical" href="https://ostertagmatthieu-dev.github.io/saac-jepa/">
+<link rel="alternate" type="application/pdf" href="https://ostertagmatthieu-dev.github.io/saac-jepa/paper.pdf" title="Preprint PDF">
+<link rel="alternate" type="text/plain" href="https://ostertagmatthieu-dev.github.io/saac-jepa/llms.txt" title="Plain-text summary for language models">
 
 <!-- ------------------------------ Open Graph ------------------------------ -->
-<meta property="og:title" content="SAAC-JEPA — World Models for Cross-Machine CNC Transfer">
-<meta property="og:description" content="A command-conditioned world model trained on one CNC machine, evaluated zero-shot on another machine with only partial sensor overlap.">
+<meta property="og:title" content="World Models for Cross-Machine CNC Transfer · SAAC-JEPA">
+<meta property="og:description" content="A command-conditioned latent world model trained on one CNC machine and evaluated zero-shot, once, on another machine that measures only 10 of its 17 sensors.">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://ostertagmatthieu-dev.github.io/saac-jepa/">
 <meta property="og:site_name" content="SAAC-JEPA">
@@ -20,12 +25,20 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Project page card: a two-panel machine strip showing a 17-channel THWS source machine, a latent state, and a JOANNEUM target machine where 7 of the channels are absent.">
+<meta property="article:published_time" content="2026-09-13">
+<meta property="article:modified_time" content="2026-09-24">
+<meta property="article:section" content="Machine Learning">
+<meta property="article:tag" content="world models">
+<meta property="article:tag" content="JEPA">
+<meta property="article:tag" content="CNC machining">
+<meta property="article:tag" content="transfer learning">
 
 <!-- -------------------------------- Twitter ------------------------------- -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="SAAC-JEPA — World Models for Cross-Machine CNC Transfer">
-<meta name="twitter:description" content="A command-conditioned world model trained on one CNC machine, evaluated zero-shot on another machine with only partial sensor overlap.">
+<meta name="twitter:title" content="World Models for Cross-Machine CNC Transfer · SAAC-JEPA">
+<meta name="twitter:description" content="A command-conditioned latent world model trained on one CNC machine and evaluated zero-shot, once, on another machine that measures only 10 of its 17 sensors.">
 <meta name="twitter:image" content="https://ostertagmatthieu-dev.github.io/saac-jepa/og.png">
+<meta name="twitter:image:alt" content="A 17-channel source machine, a latent state, and a target machine where 7 of the channels are absent.">
 
 <!-- --------------------------- Google Scholar ----------------------------- -->
 <meta name="citation_arxiv_id" content="2609.16071">
@@ -33,34 +46,114 @@
 <meta name="citation_title" content="World Models for Cross-Machine CNC Transfer under Partial Sensor Overlap">
 <meta name="citation_author" content="Bouaziz, Ayoub Louaye">
 <meta name="citation_author_institution" content="Université de Bretagne Occidentale">
+<meta name="citation_author_orcid" content="0009-0008-9074-0374">
 <meta name="citation_author" content="Ostertag, Matthieu">
 <meta name="citation_author_institution" content="Mines Nancy, Université de Lorraine">
+<meta name="citation_author_orcid" content="0009-0002-3829-0536">
 <meta name="citation_author" content="Demasles, Anton">
 <meta name="citation_author_institution" content="Mines Nancy, Université de Lorraine">
-<meta name="citation_publication_date" content="2026">
+<meta name="citation_author_orcid" content="0009-0008-0640-6622">
+<meta name="citation_publication_date" content="2026/09/13">
+<meta name="citation_online_date" content="2026/09/13">
 <meta name="citation_technical_report_institution" content="arXiv">
+<meta name="citation_abstract_html_url" content="https://arxiv.org/abs/2609.16071">
 <meta name="citation_pdf_url" content="https://ostertagmatthieu-dev.github.io/saac-jepa/paper.pdf">
+<meta name="citation_keywords" content="world model; JEPA; CNC machining; cross-machine transfer; partial sensor overlap; schema shift">
+<meta name="citation_language" content="en">
 
 <!-- ------------------------------- JSON-LD -------------------------------- -->
+<!-- One graph: the article, the code, the two datasets, the authors and the
+     questions answered on this page. Every FAQ answer below is visible text on
+     the page (section 01 and section 02); keep them in sync. -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "ScholarlyArticle",
-  "headline": "World Models for Cross-Machine CNC Transfer under Partial Sensor Overlap",
-  "name": "World Models for Cross-Machine CNC Transfer under Partial Sensor Overlap",
-  "author": [
+  "@graph": [
+    {
+      "@type": "ScholarlyArticle",
+      "@id": "https://ostertagmatthieu-dev.github.io/saac-jepa/#article",
+      "headline": "World Models for Cross-Machine CNC Transfer under Partial Sensor Overlap",
+      "name": "World Models for Cross-Machine CNC Transfer under Partial Sensor Overlap",
+      "abstract": "Industrial world models must move between machines whose dynamics, sensing interfaces and command conventions differ. This study asks whether a command-conditioned latent world model, trained to predict future representations of the process rather than to reconstruct future samples, keeps its value on a machine it has never seen: a source CNC machine exposes 17 sensor channels, the target sharing 10 of those. All model selection uses source data only, and the locked configuration is evaluated on the target once. Two findings follow. First, latent-predictive pretraining brings no in-domain forecasting gain over matched training from scratch, so source accuracy alone cannot show what such a representation is worth. Second, the transferred model beats persistence on the unseen machine (with R² ≈ 0.01 against the target mean) but trails official forecasters that normalize each input window by its own statistics; a post-lock ablation, declared before it ran, shows that this input normalization alone closes the gap, and closing it costs predictive calibration. Cross-machine transfer under partial sensor overlap is therefore a distinct evaluation axis for command-conditioned world models.",
+      "keywords": ["world model", "JEPA", "joint-embedding predictive architecture", "latent dynamics", "command-conditioned prediction", "CNC machining", "cross-machine transfer", "schema shift", "partial sensor overlap", "zero-shot transfer", "VICReg", "RevIN"],
+      "about": [
+        { "@type": "Thing", "name": "World model" },
+        { "@type": "Thing", "name": "Joint-embedding predictive architecture" },
+        { "@type": "Thing", "name": "Transfer learning" },
+        { "@type": "Thing", "name": "Numerical control" }
+      ],
+      "author": [
+        { "@id": "https://orcid.org/0009-0008-9074-0374" },
+        { "@id": "https://orcid.org/0009-0002-3829-0536" },
+        { "@id": "https://orcid.org/0009-0008-0640-6622" }
+      ],
+      "datePublished": "2026-09-13",
+      "dateModified": "2026-09-24",
+      "version": "2609.16071v2",
+      "inLanguage": "en",
+      "url": "https://ostertagmatthieu-dev.github.io/saac-jepa/",
+      "mainEntityOfPage": "https://ostertagmatthieu-dev.github.io/saac-jepa/",
+      "sameAs": ["https://arxiv.org/abs/2609.16071", "https://doi.org/10.48550/arXiv.2609.16071"],
+      "image": "https://ostertagmatthieu-dev.github.io/saac-jepa/og.png",
+      "encoding": { "@type": "MediaObject", "contentUrl": "https://ostertagmatthieu-dev.github.io/saac-jepa/paper.pdf", "encodingFormat": "application/pdf" },
+      "publisher": { "@type": "Organization", "name": "arXiv", "url": "https://arxiv.org" },
+      "identifier": [
+        { "@type": "PropertyValue", "propertyID": "arXiv", "value": "arXiv:2609.16071" },
+        { "@type": "PropertyValue", "propertyID": "DOI", "value": "10.48550/arXiv.2609.16071" }
+      ],
+      "isBasedOn": [
+        { "@id": "https://doi.org/10.5281/zenodo.14094887" },
+        { "@id": "https://doi.org/10.17632/gtvvwmz7r7.2" }
+      ],
+      "workExample": { "@id": "https://github.com/ostertagmatthieu-dev/saac-jepa#code" },
+      "isAccessibleForFree": true,
+      "creativeWorkStatus": "Preprint"
+    },
+    {
+      "@type": "SoftwareSourceCode",
+      "@id": "https://github.com/ostertagmatthieu-dev/saac-jepa#code",
+      "name": "SAAC-JEPA",
+      "description": "Training, source-only model selection and evaluation code for the command-conditioned CNC world model of arXiv:2609.16071.",
+      "codeRepository": "https://github.com/ostertagmatthieu-dev/saac-jepa",
+      "programmingLanguage": "Python",
+      "runtimePlatform": "PyTorch",
+      "license": "https://opensource.org/licenses/MIT",
+      "author": [
+        { "@id": "https://orcid.org/0009-0008-9074-0374" },
+        { "@id": "https://orcid.org/0009-0002-3829-0536" },
+        { "@id": "https://orcid.org/0009-0008-0640-6622" }
+      ]
+    },
+    {
+      "@type": "Dataset",
+      "@id": "https://doi.org/10.5281/zenodo.14094887",
+      "name": "THWS five-axis CNC milling production dataset with multiple changeovers",
+      "description": "Source machine: Spinner U5-620 five-axis machining centre, 17 sensor channels used here, 62 NC-program sessions.",
+      "url": "https://doi.org/10.5281/zenodo.14094887",
+      "license": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    {
+      "@type": "Dataset",
+      "@id": "https://doi.org/10.17632/gtvvwmz7r7.2",
+      "name": "FH JOANNEUM CNC machining data repository with high-frequency energy measurements",
+      "description": "Target machine: 7 independent runs; 10 of the 17 source channels are present.",
+      "url": "https://doi.org/10.17632/gtvvwmz7r7.2",
+      "license": "https://creativecommons.org/licenses/by/4.0/"
+    },
     {
       "@type": "Person",
       "@id": "https://orcid.org/0009-0008-9074-0374",
       "name": "Ayoub Louaye Bouaziz",
       "email": "abouaziz@univ-brest.fr",
+      "sameAs": "https://orcid.org/0009-0008-9074-0374",
       "affiliation": { "@type": "Organization", "name": "Université de Bretagne Occidentale" }
     },
     {
       "@type": "Person",
-      "name": "Matthieu Ostertag",
       "@id": "https://orcid.org/0009-0002-3829-0536",
+      "name": "Matthieu Ostertag",
       "email": "matthieu.ostertag7@etu.univ-lorraine.fr",
+      "sameAs": "https://orcid.org/0009-0002-3829-0536",
       "affiliation": { "@type": "Organization", "name": "Mines Nancy, Université de Lorraine" }
     },
     {
@@ -68,25 +161,46 @@
       "@id": "https://orcid.org/0009-0008-0640-6622",
       "name": "Anton Demasles",
       "email": "anton.demasles2@etu.univ-lorraine.fr",
+      "sameAs": "https://orcid.org/0009-0008-0640-6622",
       "affiliation": { "@type": "Organization", "name": "Mines Nancy, Université de Lorraine" }
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://ostertagmatthieu-dev.github.io/saac-jepa/#faq",
+      "about": { "@id": "https://ostertagmatthieu-dev.github.io/saac-jepa/#article" },
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Does JEPA-style latent pretraining improve forecasting on the source CNC machine?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No. With five matched seeds, training from scratch reaches source RMSE 0.811 ± 0.022 and a pretrained body with a fresh head 0.813 ± 0.022 (p = 0.76). Source accuracy alone cannot show what the representation is worth." }
+        },
+        {
+          "@type": "Question",
+          "name": "Does the world model transfer zero-shot to an unseen CNC machine with fewer sensors?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes, above a trivial floor. Selected and locked on source data alone, then evaluated once on a machine that measures 10 of the 17 source channels, it reaches zero-shot RMSE 0.546 against 0.654 for persistence, with R² = 0.012." }
+        },
+        {
+          "@type": "Question",
+          "name": "Why do PatchTST and iTransformer transfer better in RMSE?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Input normalization is sufficient to explain it. The official baselines use RevIN (0.503 and 0.498, single seed each, no hyperparameter search). In a post-lock three-seed ablation, adding the same instance normalization to the world model gives 0.495 ± 0.004, but the target NLL of the paired control arm, 0.89, rises to 20.6 because stationary windows collapse the instance scale. The locked seed alone has NLL 0.52." }
+        },
+        {
+          "@type": "Question",
+          "name": "What are the commands in this CNC world model?",
+          "acceptedAnswer": { "@type": "Answer", "text": "The spindle-speed and X, Y, Z feed setpoints issued by the numerical controller. The world model predicts future sensor values at horizons of 1, 2, 4, 8 and 16 seconds from a 32-second context of sensors, presence mask and past commands, and from the mean future command over each horizon." }
+        },
+        {
+          "@type": "Question",
+          "name": "Which datasets are used?",
+          "acceptedAnswer": { "@type": "Answer", "text": "The THWS five-axis CNC milling dataset (Spinner U5-620, 17 sensor channels, 62 sessions) as source and the FH JOANNEUM CNC machining repository (7 runs, 10 shared channels) as target, both CC BY 4.0." }
+        }
+      ]
     }
-  ],
-  "datePublished": "2026",
-  "url": "https://ostertagmatthieu-dev.github.io/saac-jepa/",
-  "sameAs": "https://github.com/ostertagmatthieu-dev/saac-jepa",
-  "image": "https://ostertagmatthieu-dev.github.io/saac-jepa/og.png",
-  "publisher": { "@type": "Organization", "name": "arXiv" },
-  "identifier": [
-    { "@type": "PropertyValue", "propertyID": "arXiv", "value": "arXiv:2609.16071" },
-    { "@type": "PropertyValue", "propertyID": "DOI", "value": "10.48550/arXiv.2609.16071" }
-  ],
-  "isAccessibleForFree": true,
-  "license": "https://opensource.org/licenses/MIT",
-  "creativeWorkStatus": "Preprint"
+  ]
 }
 </script>
-<!-- The "license" field above refers to the CODE released at the sameAs repository (MIT).
-     It is not a licence statement for the paper or for this page. -->
+<!-- The "license" of SoftwareSourceCode refers to the CODE (MIT). It is not a
+     licence statement for the paper or for this page. -->
 
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
@@ -105,7 +219,7 @@
 <header class="masthead">
   <div class="wrap">
 
-    <p class="masthead__eyebrow">SAAC-JEPA <span class="masthead__sep">/</span> project page <span class="masthead__sep">/</span> preprint 2026</p>
+    <p class="masthead__eyebrow">SAAC-JEPA <span class="masthead__sep">/</span> project page <span class="masthead__sep">/</span> arXiv 2609.16071</p>
 
     <!-- ============ HERO SIGNATURE: live two-panel machine strip ============ -->
     <figure class="strip" id="strip">
@@ -113,7 +227,7 @@
         <svg class="strip__svg" viewBox="0 0 1080 268" role="img" focusable="false"
              aria-labelledby="stripTitle" aria-describedby="stripDesc">
           <title id="stripTitle">Source machine, latent state, target machine</title>
-          <desc id="stripDesc">Animated schematic: a left panel labelled THWS source shows seventeen scrolling teal sensor traces and four amber step-shaped action traces; a violet latent bar in the middle pulses when a prediction is emitted; a right panel labelled JOANNEUM target, whose header reads 10 SHARED and 7 ABSENT for the seventeen channels, shows the same traces entering, where ten keep flowing in teal and seven fade to grey dashed flat lines.</desc>
+          <desc id="stripDesc">Animated schematic: a left panel labelled THWS source shows seventeen scrolling teal sensor traces and four amber step-shaped command traces; a violet latent state in the middle pulses when a prediction is emitted, with signal packets travelling from the source panel into it and out to the target; a right panel labelled JOANNEUM target, whose header reads 10 SHARED and 7 ABSENT, shows the same traces entering, where ten keep flowing in teal and seven fade to grey dashed flat lines.</desc>
           <defs>
             <!-- The scrolling traces are painted as tiling patterns, not as long
                  translated paths: a pattern tile clips at its own edges, so no
@@ -138,13 +252,15 @@
           <rect class="strip__panel" x="16" y="26" width="404" height="222" rx="3"/>
           <rect class="strip__panelhead" x="16" y="26" width="404" height="19"/>
           <text class="strip__title" x="26" y="40">THWS SOURCE <tspan class="strip__titledim">· SPINNER U5-620</tspan></text>
-          <text class="strip__meta" x="410" y="40" text-anchor="end">17 CH · 1 Hz</text>
+          <text class="strip__meta" x="410" y="40" text-anchor="end">17 CH + 4 CMD · 1 Hz</text>
           <rect class="strip__field" x="16" y="44" width="404" height="204" fill="url(#srcPat)"/>
 
           <!-- latent bridge -->
           <g class="strip__bridge">
             <path class="strip__wire" d="M424 146 H 470"/>
             <path class="strip__wire" d="M610 146 H 656"/>
+            <circle class="strip__packet strip__packet--in" cx="424" cy="146" r="3"/>
+            <circle class="strip__packet strip__packet--out" cx="610" cy="146" r="3"/>
             <rect class="strip__latent" x="472" y="70" width="136" height="152" rx="3"/>
             <rect class="strip__latentpulse" x="472" y="70" width="136" height="152" rx="3"/>
             <text class="strip__latentlabel" x="540" y="104" text-anchor="middle">LATENT</text>
@@ -175,7 +291,7 @@
 
     <h1 class="masthead__title">World Models for Cross-Machine CNC Transfer under Partial Sensor Overlap</h1>
 
-    <p class="masthead__deck">A command-conditioned world model trained on 17 sensors, locked on source data alone, then evaluated in a single sealed pass on a machine it has never seen, missing 7 of them.</p>
+    <p class="masthead__deck">A command-conditioned latent world model, trained on a CNC machine with 17 sensors, selected and locked on that machine alone, then evaluated once on a machine it has never seen, which measures only 10 of them.</p>
 
     <p class="masthead__authors">
       <span class="masthead__author"><a class="masthead__mail" href="mailto:abouaziz@univ-brest.fr">Ayoub Louaye Bouaziz</a><span class="masthead__aff">Université de Bretagne Occidentale</span></span>
@@ -190,12 +306,12 @@
       <a class="btn" href="#cite"><svg class="btn__icon" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><path fill="currentColor" d="M3,4 L6.5,4 L6.5,8 L4.3,8 L3,10.3 L3,8 Z M9.5,4 L13,4 L13,8 L10.8,8 L9.5,10.3 L9.5,8 Z"/></svg><span class="btn__label">Cite</span></a>
     </p>
 
-    <ul class="legend" aria-label="Colour and line-style legend used in every schematic">
-      <li class="legend__item"><span class="legend__swatch legend__swatch--act"></span>actions — spindle speed, commanded X/Y/Z feeds</li>
-      <li class="legend__item"><span class="legend__swatch legend__swatch--obs"></span>observed sensors</li>
-      <li class="legend__item"><span class="legend__swatch legend__swatch--lat"></span>latent states and latent-derived predictions</li>
-      <li class="legend__item"><span class="legend__swatch legend__swatch--abs"></span>sensors absent on the target machine</li>
-      <li class="legend__item"><span class="legend__swatch legend__swatch--norm"></span>RevIN variant — post-lock ablation, not in the locked model</li>
+    <ul class="legend" aria-label="Colour and line-style legend used in every figure">
+      <li class="legend__item"><span class="legend__swatch legend__swatch--act"></span>commands: spindle-speed and X/Y/Z feed setpoints</li>
+      <li class="legend__item"><span class="legend__swatch legend__swatch--obs"></span>measured sensors</li>
+      <li class="legend__item"><span class="legend__swatch legend__swatch--lat"></span>latent states and the locked world model</li>
+      <li class="legend__item"><span class="legend__swatch legend__swatch--abs"></span>sensors absent on the target, baselines</li>
+      <li class="legend__item"><span class="legend__swatch legend__swatch--norm"></span>RevIN variant, post-lock ablation</li>
     </ul>
 
   </div>
@@ -204,45 +320,139 @@
 <main id="main" tabindex="-1">
 <div class="wrap">
 
-  <!-- ================================ ABSTRACT =============================== -->
-  <section class="sec" id="abstract">
+  <!-- ============================== 01 IN BRIEF ============================== -->
+  <section class="sec" id="brief" aria-labelledby="h-brief" data-reveal>
     <hr class="rule">
-    <h2 class="sec__head"><span class="sec__num">01</span>Abstract</h2>
-    <p class="body">Industrial world models must move between machines whose dynamics, sensing interfaces and command conventions differ. This study asks whether a command-conditioned latent world model—trained to predict future representations of the process rather than to reconstruct future samples—keeps its value on a machine it has never seen: a source CNC machine exposes 17 sensor channels, the target sharing 10 of those. All model selection uses source data only, and the locked configuration is evaluated on the target once. Two findings follow. First, latent-predictive pretraining brings no in-domain forecasting gain over matched training from scratch, so source accuracy alone cannot show what such a representation is worth. Second, the transferred model beats persistence on the unseen machine (with <i>R</i>² ≈ 0.01 against the target mean) but trails official forecasters that normalize each input window by its own statistics; a post-lock ablation, declared before it ran, shows that this input normalization alone closes the gap, and closing it costs predictive calibration. Cross-machine transfer under partial sensor overlap is therefore a distinct evaluation axis for command-conditioned world models.</p>
+    <h2 class="sec__head" id="h-brief"><span class="sec__num">01</span>Key findings</h2>
+    <p class="lede">Three questions, three answers. Lower RMSE is better; all numbers are in z units of the source normalizer.</p>
+
+    <ol class="finds">
+      <li class="find" data-reveal>
+        <p class="find__q"><span class="find__n">Q1</span>Does latent pretraining help on the source machine?</p>
+        <p class="find__a"><strong>No.</strong> Matched training from scratch does as well as a pretrained body, five seeds each (p = 0.76).</p>
+        <div class="mbar" style="--lo:.60;--hi:.90" role="img" aria-label="Source RMSE: scratch 0.811, pretrained 0.813">
+          <div class="mbar__row"><span class="mbar__lab">scratch</span><span class="mbar__track"><span class="mbar__fill mbar__fill--base" style="--v:.811"></span></span><span class="mbar__val">0.811</span></div>
+          <div class="mbar__row"><span class="mbar__lab">pretrained</span><span class="mbar__track"><span class="mbar__fill mbar__fill--ours" style="--v:.813"></span></span><span class="mbar__val">0.813</span></div>
+        </div>
+      </li>
+      <li class="find" data-reveal>
+        <p class="find__q"><span class="find__n">Q2</span>Does it transfer to an unseen machine with 7 sensors missing?</p>
+        <p class="find__a"><strong>Yes, above persistence.</strong> Locked on source data, evaluated once on the target: R² = 0.012, a small margin.</p>
+        <div class="mbar" role="img" aria-label="Target zero-shot RMSE: locked world model 0.546, persistence 0.654">
+          <div class="mbar__row"><span class="mbar__lab">world model</span><span class="mbar__track"><span class="mbar__fill mbar__fill--ours" style="--v:.546"></span></span><span class="mbar__val">0.546</span></div>
+          <div class="mbar__row"><span class="mbar__lab">persistence</span><span class="mbar__track"><span class="mbar__fill mbar__fill--ref" style="--v:.654"></span></span><span class="mbar__val">0.654</span></div>
+        </div>
+      </li>
+      <li class="find" data-reveal>
+        <p class="find__q"><span class="find__n">Q3</span>Why do PatchTST and iTransformer do better?</p>
+        <p class="find__a"><strong>Input normalization is enough to explain it.</strong> In a post-lock ablation the same model with RevIN matches them, but the target NLL of the paired arms jumps from 0.89 to 20.6.</p>
+        <div class="mbar" role="img" aria-label="Target zero-shot RMSE: world model with RevIN 0.495, iTransformer 0.498, PatchTST 0.503">
+          <div class="mbar__row"><span class="mbar__lab">+ RevIN</span><span class="mbar__track"><span class="mbar__fill mbar__fill--norm" style="--v:.495"></span></span><span class="mbar__val">0.495</span></div>
+          <div class="mbar__row"><span class="mbar__lab">iTransformer</span><span class="mbar__track"><span class="mbar__fill mbar__fill--base" style="--v:.498"></span></span><span class="mbar__val">0.498</span></div>
+          <div class="mbar__row"><span class="mbar__lab">PatchTST</span><span class="mbar__track"><span class="mbar__fill mbar__fill--base" style="--v:.503"></span></span><span class="mbar__val">0.503</span></div>
+        </div>
+      </li>
+    </ol>
+
+    <details class="fold" id="abstract">
+      <summary class="fold__sum">Abstract</summary>
+      <p class="body">Industrial world models must move between machines whose dynamics, sensing interfaces and command conventions differ. This study asks whether a command-conditioned latent world model—trained to predict future representations of the process rather than to reconstruct future samples—keeps its value on a machine it has never seen: a source CNC machine exposes 17 sensor channels, the target sharing 10 of those. All model selection uses source data only, and the locked configuration is evaluated on the target once. Two findings follow. First, latent-predictive pretraining brings no in-domain forecasting gain over matched training from scratch, so source accuracy alone cannot show what such a representation is worth. Second, the transferred model beats persistence on the unseen machine (with <i>R</i>² ≈ 0.01 against the target mean) but trails official forecasters that normalize each input window by its own statistics; a post-lock ablation, declared before it ran, shows that this input normalization alone closes the gap, and closing it costs predictive calibration. Cross-machine transfer under partial sensor overlap is therefore a distinct evaluation axis for command-conditioned world models.</p>
+    </details>
   </section>
 
-  <!-- ================================ OVERVIEW =============================== -->
-  <section class="sec" id="overview">
+  <!-- ================================ 02 SETUP =============================== -->
+  <section class="sec" id="setup" aria-labelledby="h-setup" data-reveal>
+    <!-- anchors of the previous page layout, kept so old links still land -->
+    <span class="alias" id="overview"></span>
     <hr class="rule">
-    <h2 class="sec__head"><span class="sec__num">02</span>Same process, different machine, fewer sensors</h2>
-    <p class="lede">A CNC world model should predict what the process does next <em>under a candidate action</em>, and it should keep working when it is moved to another machine whose sensing interface is not the one it was trained on.</p>
-    <p class="body">We train on the <strong>THWS Spinner U5-620</strong> five-axis machining centre — 17 canonical sensor channels, 62 NC-program sessions on a 1 Hz grid — and transfer to the <strong>FH JOANNEUM</strong> repository, where only 10 of those channels exist across 7 independent runs. Actions are the spindle speed and the commanded X/Y/Z feeds. The model takes a <span class="mono">K&nbsp;=&nbsp;32&nbsp;s</span> context and predicts directly at horizons <span class="mono">{1,&nbsp;2,&nbsp;4,&nbsp;8,&nbsp;16}&nbsp;s</span> rather than rolling out autoregressively.</p>
-    <p class="body">Trained on 17 channels and locked on source data alone, with the target machine kept outside the architecture search, the model transfers to an unseen machine missing 7 of them and beats persistence on a single sealed pass. JEPA pretraining does <em>not</em> improve clean-source forecasting over matched scratch training. Source accuracy alone is therefore not sufficient to judge a transferred representation, and cross-machine adaptation under partial sensor overlap has to be evaluated as an axis of its own. Whether the transferred latent actually uses the control input is still to be measured on the locked model (see §08).</p>
+    <h2 class="sec__head" id="h-setup"><span class="sec__num">02</span>Two machines, one set of weights</h2>
+    <p class="lede">The same process runs on two machines that do not measure the same things. Under <dfn>domain shift</dfn> the channels are the same but the signals differ; under <dfn>schema shift</dfn> the list of channels itself changes. The target machine has both.</p>
+
+    <figure class="chart chart--schema" data-reveal aria-labelledby="schTitle">
+      <figcaption class="chart__bar"><span class="panel__id">FIG. 1</span><span class="chart__name" id="schTitle">Sensor schemas and commands of the two machines</span><span class="panel__src">paper Table 1</span></figcaption>
+    <div class="schema">
+      <div class="schema__col">
+        <p class="schema__head"><span class="schema__name">THWS · source</span><span class="schema__meta">Spinner U5-620 · 62 sessions · 17 channels</span></p>
+        <ul class="chips" aria-label="Source sensor channels">
+          <li class="chip">spindle current</li><li class="chip">spindle torque</li><li class="chip">spindle power</li>
+          <li class="chip">X current</li><li class="chip">X torque</li><li class="chip">Y current</li><li class="chip">Y torque</li>
+          <li class="chip">Z current</li><li class="chip">Z torque</li><li class="chip">Z power</li>
+          <li class="chip chip--only">spindle motor temp.</li><li class="chip chip--only">X motor temp.</li><li class="chip chip--only">Y motor temp.</li>
+          <li class="chip chip--only">Z motor temp.</li><li class="chip chip--only">spindle DC-link voltage</li><li class="chip chip--only">spindle modulation depth</li><li class="chip chip--only">ambient temp.</li>
+        </ul>
+      </div>
+      <div class="schema__col">
+        <p class="schema__head"><span class="schema__name">JOANNEUM · target</span><span class="schema__meta">7 independent runs · 10 of 17 channels</span></p>
+        <ul class="chips" aria-label="Target sensor channels; seven source channels are absent">
+          <li class="chip">spindle current</li><li class="chip">spindle torque</li><li class="chip">spindle power</li>
+          <li class="chip">X current</li><li class="chip">X torque</li><li class="chip">Y current</li><li class="chip">Y torque</li>
+          <li class="chip">Z current</li><li class="chip">Z torque</li><li class="chip">Z power</li>
+          <li class="chip chip--absent" style="--i:0"><s>spindle motor temp.</s><span class="vh"> absent</span></li><li class="chip chip--absent" style="--i:1"><s>X motor temp.</s><span class="vh"> absent</span></li><li class="chip chip--absent" style="--i:2"><s>Y motor temp.</s><span class="vh"> absent</span></li>
+          <li class="chip chip--absent" style="--i:3"><s>Z motor temp.</s><span class="vh"> absent</span></li><li class="chip chip--absent" style="--i:4"><s>spindle DC-link voltage</s><span class="vh"> absent</span></li><li class="chip chip--absent" style="--i:5"><s>spindle modulation depth</s><span class="vh"> absent</span></li><li class="chip chip--absent" style="--i:6"><s>ambient temp.</s><span class="vh"> absent</span></li>
+        </ul>
+      </div>
+      <div class="schema__cmd">
+        <p class="schema__head"><span class="schema__name">Commands · both machines</span><span class="schema__meta">setpoints issued by the numerical controller, units aligned</span></p>
+        <ul class="chips" aria-label="Command channels">
+          <li class="chip chip--cmd">spindle speed</li><li class="chip chip--cmd">feed X</li><li class="chip chip--cmd">feed Y</li><li class="chip chip--cmd">feed Z</li>
+        </ul>
+      </div>
+    </div>
+      <p class="chart__cap">Each chip is one canonical channel. Teal: measured sensors, solid if the target machine also has the channel, dashed if only the source does. Grey, struck through: the seven source channels absent on the target, which the model reads as absent rather than zero. Amber: the four command channels, present on both machines after unit alignment. Native column names: <a class="link" href="data.md">docs/data.md</a>.</p>
+    </figure>
+
+    <p class="body">An absent channel is not a zero. Each channel is one token with a presence bit; tokens marked absent are dropped before attention and pooling, so the seven source-only channels simply do not exist for the model on the target, and the same weights read both machines without imputation or retraining.</p>
+
     <dl class="facts">
-      <div class="facts__cell"><dt class="facts__k">Source</dt><dd class="facts__v">17 sensors · 62 sessions</dd></div>
-      <div class="facts__cell"><dt class="facts__k">Target</dt><dd class="facts__v">10 shared · 7 runs</dd></div>
-      <div class="facts__cell"><dt class="facts__k">Context</dt><dd class="facts__v">32 s @ 1 Hz</dd></div>
+      <div class="facts__cell"><dt class="facts__k">Context</dt><dd class="facts__v">K = 32 s @ 1 Hz</dd></div>
       <div class="facts__cell"><dt class="facts__k">Horizons</dt><dd class="facts__v">1 2 4 8 16 s</dd></div>
-      <div class="facts__cell"><dt class="facts__k">Zero-shot (target)</dt><dd class="facts__v">RMSE 0.546</dd></div>
-      <div class="facts__cell"><dt class="facts__k">Persistence (target)</dt><dd class="facts__v">RMSE 0.654</dd></div>
+      <div class="facts__cell"><dt class="facts__k">Rollout</dt><dd class="facts__v">direct, one pass</dd></div>
+      <div class="facts__cell"><dt class="facts__k">Source windows</dt><dd class="facts__v">18,267 / 3,423 / 5,189</dd></div>
+      <div class="facts__cell"><dt class="facts__k">Target windows</dt><dd class="facts__v">2,457 · sealed</dd></div>
+      <div class="facts__cell"><dt class="facts__k">Normalizer</dt><dd class="facts__v">source train only</dd></div>
     </dl>
   </section>
 
-  <!-- ================================= FIG 1 ================================= -->
-  <section class="sec" id="fig1">
+  <!-- ================================ 03 MODEL =============================== -->
+  <section class="sec" id="model" aria-labelledby="h-model" data-reveal>
+    <!-- anchors of the previous page layout, kept so old links still land -->
+    <span class="alias" id="fig1"></span><span class="alias" id="fig2"></span>
     <hr class="rule">
-    <h2 class="sec__head"><span class="sec__num">03</span>The architecture</h2>
-    <figure class="panel" data-fig="f1">
+    <h2 class="sec__head" id="h-model"><span class="sec__num">03</span>The world model</h2>
+    <p class="lede">A forecaster answers “what happens next”. A world model answers “what happens next <em>if the controller issues these commands</em>”. The commands are an input given in advance; nothing here is closed loop.</p>
+
+    <figure class="panel" data-fig="f2">
       <figcaption class="panel__bar">
-        <span class="panel__id">FIG. 1</span>
-        <span class="panel__name">Command-conditioned latent dynamics</span>
-        <button class="panel__replay" type="button" data-replay="f1" aria-label="Replay the Figure 1 animation">Replay</button>
+        <span class="panel__id">FIG. 2</span>
+        <span class="panel__name">Command-conditioned simulation of candidate futures</span>
+        <span class="panel__tag">schematic · not data</span><span class="panel__src">after paper Fig. 2</span>
+        <button class="panel__replay" type="button" data-replay="f2" aria-label="Replay the Figure 2 animation">Replay</button>
       </figcaption>
       <div class="panel__body">
-        <svg class="f1" viewBox="0 0 1080 512" role="img" focusable="false"
+        <svg class="f2" viewBox="0 0 1080 474" role="img" focusable="false"
+             aria-labelledby="f2Title" aria-describedby="f2Desc">
+          <title id="f2Title">Command-conditioned simulation of candidate futures</title>
+          <desc id="f2Desc">Animated schematic: a 32-second context window of observed sensor traces is encoded into a latent state; two candidate spindle-speed command sequences, up and down, then produce two diverging multi-horizon predictions with widening uncertainty bands at 1, 2, 4, 8 and 16 seconds. Conceptual, not measured, and not a closed-loop result.</desc>
+          <g id="f2gen"></g>
+        </svg>
+        <noscript><p class="panel__noscript">This schematic is drawn by script; open the PDF for the static figure.</p></noscript>
+      </div>
+      <p class="panel__hint">Scroll sideways to read the figure</p>
+      <p class="panel__cap">The same context and latent state are predicted forward at each horizon, directly rather than autoregressively, under two candidate spindle commands; the head emits a mean and a variance per channel. The divergence of the branches and the width of the bands illustrate the mechanism and are not taken from data; the measured command sensitivity is in Fig. 7. Teal: observed sensors; violet: latent state and predictions, solid under candidate A and dashed under candidate B, bands ±1σ; amber: the spindle-speed command, dashed for A and dotted for B.</p>
+    </figure>
+
+    <figure class="panel" data-fig="f1">
+      <figcaption class="panel__bar">
+        <span class="panel__id">FIG. 3</span>
+        <span class="panel__name">Training graph of the command-conditioned latent dynamics</span>
+        <span class="panel__src">after paper Figs. 1(b) and 3</span>
+        <button class="panel__replay" type="button" data-replay="f1" aria-label="Replay the Figure 3 animation">Replay</button>
+      </figcaption>
+      <div class="panel__body">
+        <svg class="f1" viewBox="16 72 896 404" role="img" focusable="false"
              aria-labelledby="f1Title" aria-describedby="f1Desc">
-          <title id="f1Title">Command-conditioned latent dynamics</title>
-          <desc id="f1Desc">Animated schematic of the world model's training graph. Sensors pass through a schema mask and enter the context encoder together with the presence mask and past actions, producing a context latent. Future actions and that latent enter the predictor, which emits predicted latents at horizons of 1, 2, 4, 8 and 16 seconds. The future observation window passes through an EMA target encoder to give target latents, compared to the predictions through a stop-gradient by the latent loss. Two partial schema views drive the schema-consistency loss, a variance-covariance term regularises both latent sets, and an action-recovery head reconstructs the applied action. In the post-lock RevIN variant, shown as dashed green blocks, both windows are first normalised with per-channel statistics of the context window and the physical head output is de-normalised before any loss or metric; the locked model does not include this step.</desc>
+          <title id="f1Title">Training graph of the command-conditioned latent dynamics</title>
+          <desc id="f1Desc">Animated schematic of the world model's training graph. Sensors pass through a schema mask and enter the context encoder together with the presence mask and past commands, producing a context latent. Mean future commands and that latent enter the predictor, which emits predicted latents at horizons of 1, 2, 4, 8 and 16 seconds in one pass. The five future rows are encoded jointly, with zero commands, by an EMA target encoder to give target latents, compared to the predictions through a stop-gradient by the latent loss. Two partial schema views drive the schema-consistency loss, a variance-covariance term regularises the context latent, and a command-recovery head regresses the mean future command from the context and target latents. In the post-lock RevIN variant, shown as dashed green blocks, both windows are first normalised with per-channel statistics of the context window and the physical head output is de-normalised before any loss or metric; the locked model does not include this step.</desc>
 
           <!-- links (drawn first, under nodes) -->
           <g class="f1__wires">
@@ -266,26 +476,28 @@
             <path class="f1__link f1__link--vic anim-draw" style="--d:3.60s" d="M498 132 H 476 V 418 H 498"/>
             <path class="f1__link f1__link--vic anim-draw" style="--d:3.66s" d="M400 268 H 476"/>
             <path class="f1__link f1__link--sch anim-draw" style="--d:3.90s" d="M300 200 H 318 V 232 H 300"/>
-            <path class="f1__link anim-draw" style="--d:4.10s" d="M594 120 H 700"/>
+            <path class="f1__link anim-draw" style="--d:4.10s" d="M594 120 H 692"/>
           </g>
+          <!-- data-flow overlay, filled by main.js once the build animation ends -->
+          <g class="f1__flow" id="f1flow" aria-hidden="true"></g>
 
           <!-- nodes -->
           <g class="f1__node anim-in" style="--d:0s">
             <rect class="f1__box f1__box--obs" x="36" y="88" width="136" height="44" rx="3"/>
             <text class="f1__lab" x="104" y="106" text-anchor="middle">SENSORS</text>
-            <text class="f1__sub" x="104" y="122" text-anchor="middle">x t−K:t · 17 ch</text>
+            <text class="f1__sub" x="104" y="123" text-anchor="middle">x<tspan class="sb" dy="2.5">t−K+1:t</tspan><tspan dy="-2.5"> · 17 ch</tspan></text>
           </g>
           <g class="f1__node anim-in" style="--d:.10s">
             <rect class="f1__box f1__box--act" x="36" y="140" width="136" height="38" rx="3"/>
-            <text class="f1__lab" x="104" y="157" text-anchor="middle">PAST ACTIONS</text>
-            <text class="f1__sub" x="104" y="171" text-anchor="middle">a t−K:t</text>
+            <text class="f1__lab" x="104" y="157" text-anchor="middle">PAST COMMANDS</text>
+            <text class="f1__sub" x="104" y="172" text-anchor="middle">a<tspan class="sb" dy="2.5">t−K+1:t</tspan></text>
           </g>
 
           <g class="f1__node anim-in" style="--d:.46s">
             <rect class="f1__box f1__box--mask" x="196" y="90" width="76" height="64" rx="3"/>
             <text class="f1__lab" x="234" y="112" text-anchor="middle">SCHEMA</text>
             <text class="f1__lab" x="234" y="128" text-anchor="middle">MASK m</text>
-            <text class="f1__sub" x="234" y="144" text-anchor="middle">presence bits</text>
+            <text class="f1__sub f1__sub--tight" x="234" y="144" text-anchor="middle">presence bits</text>
           </g>
           <g class="f1__node anim-in" style="--d:.60s">
             <rect class="f1__box f1__box--norm" x="280" y="113" width="42" height="18" rx="3"/>
@@ -295,37 +507,37 @@
 
           <!-- two partial views: 17 cells each -->
           <g class="f1__node anim-in" style="--d:3.74s">
-            <text class="f1__sub" x="200" y="196" text-anchor="start">view A</text>
-            <text class="f1__sub" x="200" y="228" text-anchor="start">view B</text>
+            <text class="f1__sub" x="233" y="201" text-anchor="end">view A</text>
+            <text class="f1__sub" x="233" y="233" text-anchor="end">view B</text>
             <g class="f1__cells" id="f1cellsA" transform="translate(238,192)"></g>
             <g class="f1__cells" id="f1cellsB" transform="translate(238,224)"></g>
-            <text class="f1__loss" x="326" y="220" text-anchor="start">L schema</text>
-            <text class="f1__sub f1__sub--free" x="200" y="250" text-anchor="start">two partial views must agree</text>
+            <text class="f1__loss" x="326" y="220" text-anchor="start">L<tspan class="sb" dy="2.5">schema</tspan></text>
+            <text class="f1__sub f1__sub--free" x="200" y="252" text-anchor="start">reduced view pulled to the fuller one</text>
           </g>
 
           <g class="f1__node anim-in" style="--d:.82s">
             <rect class="f1__box f1__box--mdl" x="328" y="90" width="138" height="64" rx="3"/>
             <text class="f1__lab" x="397" y="115" text-anchor="middle">CONTEXT ENCODER</text>
-            <text class="f1__sub" x="397" y="133" text-anchor="middle">f θ</text>
+            <text class="f1__sub" x="397" y="133" text-anchor="middle">f<tspan class="sb" dy="2.5">θe</tspan><tspan dy="-2.5"> · two passes</tspan></text>
           </g>
-          <text class="f1__tag f1__tag--ema anim-in" style="--d:3.02s" x="404" y="190" text-anchor="start">EMA  τ</text>
+          <text class="f1__tag f1__tag--ema anim-in" style="--d:3.02s" x="404" y="190" text-anchor="start">EMA  τ = 0.996</text>
 
           <g class="f1__node anim-in" style="--d:1.14s">
             <rect class="f1__box f1__box--lat" x="498" y="96" width="96" height="48" rx="3"/>
-            <text class="f1__lab" x="546" y="119" text-anchor="middle">z c</text>
-            <text class="f1__sub" x="546" y="134" text-anchor="middle">context latent</text>
+            <text class="f1__lab" x="546" y="119" text-anchor="middle">z<tspan class="sb" dy="-4">c</tspan><tspan class="sb" dy="7">t</tspan></text>
+            <text class="f1__sub f1__sub--tight" x="546" y="136" text-anchor="middle">context latent</text>
           </g>
 
           <g class="f1__node anim-in" style="--d:1.42s">
             <rect class="f1__box f1__box--mdl" x="489" y="246" width="172" height="68" rx="3"/>
             <text class="f1__lab" x="575" y="273" text-anchor="middle">PREDICTOR</text>
-            <text class="f1__sub" x="575" y="291" text-anchor="middle">g φ  ·  direct multi-horizon</text>
+            <text class="f1__sub" x="575" y="291" text-anchor="middle">g<tspan class="sb" dy="2.5">φ</tspan><tspan dy="-2.5">  ·  5 slots, one pass</tspan></text>
           </g>
 
           <g class="f1__node anim-in" style="--d:1.70s">
             <rect class="f1__box f1__box--act" x="489" y="334" width="172" height="52" rx="3"/>
-            <text class="f1__lab" x="575" y="355" text-anchor="middle">FUTURE ACTIONS</text>
-            <text class="f1__sub" x="575" y="371" text-anchor="middle">mean of a t:t+h−1</text>
+            <text class="f1__lab" x="575" y="355" text-anchor="middle">FUTURE COMMANDS</text>
+            <text class="f1__sub" x="575" y="372" text-anchor="middle">ā<tspan class="sb" dy="2.5">h</tspan><tspan dy="-2.5"> = mean a</tspan><tspan class="sb" dy="2.5">t+1:t+h</tspan></text>
           </g>
 
           <!-- horizon chips -->
@@ -337,8 +549,8 @@
 
           <g class="f1__node anim-in" style="--d:2.42s">
             <rect class="f1__box f1__box--obs" x="36" y="404" width="136" height="52" rx="3"/>
-            <text class="f1__lab" x="104" y="425" text-anchor="middle">FUTURE WINDOW</text>
-            <text class="f1__sub" x="104" y="441" text-anchor="middle">x t+1:t+H</text>
+            <text class="f1__lab" x="104" y="425" text-anchor="middle">FUTURE ROWS</text>
+            <text class="f1__sub" x="104" y="442" text-anchor="middle">x<tspan class="sb" dy="2.5">t+h</tspan><tspan dy="-2.5">, h ∈ ℋ</tspan></text>
           </g>
           <g class="f1__node anim-in" style="--d:2.50s">
             <rect class="f1__box f1__box--norm" x="230" y="421" width="42" height="18" rx="3"/>
@@ -348,12 +560,12 @@
           <g class="f1__node anim-in" style="--d:2.58s">
             <rect class="f1__box f1__box--mdl" x="328" y="396" width="138" height="68" rx="3"/>
             <text class="f1__lab" x="397" y="422" text-anchor="middle">TARGET ENCODER</text>
-            <text class="f1__sub" x="397" y="440" text-anchor="middle">f θ̄  ·  EMA, stop-grad</text>
+            <text class="f1__sub" x="397" y="440" text-anchor="middle">f<tspan class="sb" dy="2.5">θ̄e</tspan><tspan dy="-2.5">  ·  EMA, sg</tspan></text>
           </g>
           <g class="f1__node anim-in" style="--d:2.82s">
             <rect class="f1__box f1__box--lat" x="498" y="406" width="94" height="48" rx="3"/>
-            <text class="f1__lab" x="545" y="429" text-anchor="middle">z̄ t+h</text>
-            <text class="f1__sub" x="545" y="444" text-anchor="middle">target latent</text>
+            <text class="f1__lab" x="545" y="429" text-anchor="middle">z̄<tspan class="sb" dy="2.5">t+h</tspan></text>
+            <text class="f1__sub f1__sub--tight" x="545" y="446" text-anchor="middle">target latent</text>
           </g>
           <text class="f1__tag anim-in" style="--d:3.34s" x="700" y="422" text-anchor="middle">sg[ · ]</text>
 
@@ -363,68 +575,109 @@
             <text class="f1__lossin" x="872" y="381" text-anchor="middle">lat</text>
           </g>
 
-          <text class="f1__loss anim-in" style="--d:3.70s" x="388" y="272" text-anchor="end">L VICReg</text>
+          <text class="f1__loss anim-in" style="--d:3.70s" x="388" y="272" text-anchor="end">L<tspan class="sb" dy="2.5">VICReg</tspan></text>
           <text class="f1__sub f1__sub--free anim-in" style="--d:3.70s" x="388" y="290" text-anchor="end">variance–covariance, anti-collapse</text>
 
           <g class="f1__node anim-in" style="--d:4.18s">
-            <rect class="f1__box f1__box--head" x="700" y="96" width="156" height="48" rx="3"/>
-            <text class="f1__loss" x="778" y="116" text-anchor="middle">L act</text>
-            <text class="f1__sub" x="778" y="132" text-anchor="middle">â = head( z c , z̄ t+h )</text>
+            <rect class="f1__box f1__box--head" x="692" y="96" width="204" height="48" rx="3"/>
+            <text class="f1__loss" x="794" y="116" text-anchor="middle">L<tspan class="sb" dy="2.5">act</tspan><tspan dy="-2.5"> · command recovery</tspan></text>
+            <text class="f1__sub" x="794" y="133" text-anchor="middle">r<tspan class="sb" dy="2.5">ω</tspan><tspan dy="-2.5">(z</tspan><tspan class="sb" dy="-4">c</tspan><tspan dy="4">, z̄</tspan><tspan class="sb" dy="2.5">t+h</tspan><tspan dy="-2.5">) → ā</tspan><tspan class="sb" dy="2.5">h</tspan></text>
           </g>
 
         </svg>
       </div>
       <p class="panel__hint">Scroll sideways to read the figure</p>
-      <p class="panel__cap">Sensors are masked to a partial schema and encoded together with the presence mask and past actions into a context latent; future actions condition a direct multi-horizon predictor whose five predicted latents are matched, through a stop-gradient, to an EMA target encoder — with variance–covariance, schema-consistency and action-recovery terms holding the representation in place. Dashed green: the post-lock RevIN variant (paper App. H) — per-window normalisation of both inputs with context-window statistics, inverted on the physical head; not part of the locked model.</p>
+      <p class="panel__cap">One training step. The context encoder reads the present sensors, their presence mask and the past commands; the predictor fills five horizon slots in one pass from the context latent and the mean future command of each horizon; an EMA target encoder, behind a stop-gradient, gives the latents the predictions must match. Three auxiliary terms hold the representation in place. Colours: teal sensors, amber commands, violet latents, red losses, grey dashed the EMA copy of the encoder, green dashed the post-lock RevIN variant (paper Sec. 4.4 and App. H), not part of the locked model. Symbols: <i>x</i> sensor rows, <i>m</i> presence mask, <i>a</i> commands, <i>ā</i><sub>h</sub> mean command over (t, t+h], <i>z</i><sup>c</sup> context latent, <i>ẑ</i> predicted latent, <i>z̄</i> target latent, sg stop-gradient, ℋ = {1, 2, 4, 8, 16} s.</p>
     </figure>
-    <p class="body">The dashed green RevIN blocks mark the post-lock variant of the paper’s Sec. 4.4 / App. H: a per-channel centre and scale (c, s) computed from the context rows only, held at the identity for channels never observed, applied to both windows before encoding and inverted on the physical head before any loss or metric. The locked model uses a fixed source-train z-score instead; the RevIN numbers in §04 are diagnostic, not the locked result.</p>
-  </section>
 
-  <!-- ================================ RESULTS ================================ -->
-  <section class="sec" id="results">
-    <hr class="rule">
-    <h2 class="sec__head"><span class="sec__num">04</span>Results at a glance</h2>
-    <p class="lede"><strong>One sealed pass on a machine never seen in training, 7 of 17 sensors missing: RMSE 0.546 against 0.654 for persistence.</strong> Two official baselines still do better: PatchTST 0.503 and iTransformer 0.498 (lower is better). A post-lock ablation shows why: give the same model their instance normalization (RevIN) and it reaches 0.495 ± 0.004 over three seeds, at the price of its calibration.</p>
+    <h3 class="sub">What is modelled, and how it is trained</h3>
+    <div class="formal">
+      <div class="formal__row">
+        <p class="formal__k">Object</p>
+        <div class="formal__eq">
+          <math display="block"><mrow><msub><mi>p</mi><mi>θ</mi></msub><mo stretchy="false">(</mo><msub><mi>x</mi><mrow><mi>t</mi><mo>+</mo><mn>1</mn><mo>:</mo><mi>t</mi><mo>+</mo><mi>H</mi></mrow></msub><mo>∣</mo><msub><mi>x</mi><mrow><mi>t</mi><mo>−</mo><mi>K</mi><mo>+</mo><mn>1</mn><mo>:</mo><mi>t</mi></mrow></msub><mo>,</mo><msub><mi>m</mi><mrow><mi>t</mi><mo>−</mo><mi>K</mi><mo>+</mo><mn>1</mn><mo>:</mo><mi>t</mi></mrow></msub><mo>,</mo><msub><mi>a</mi><mrow><mi>t</mi><mo>−</mo><mi>K</mi><mo>+</mo><mn>1</mn><mo>:</mo><mi>t</mi><mo>+</mo><mi>H</mi></mrow></msub><mo stretchy="false">)</mo></mrow></math>
+          <p class="formal__gl">Future sensor rows given the last K = 32 rows, their presence mask <i>m</i> and the commands <i>a</i>, past and planned. This is the object of interest, not the training loss.</p>
+        </div>
+      </div>
+      <div class="formal__row">
+        <p class="formal__k">Model</p>
+        <div class="formal__eq">
+          <math display="block"><mrow><msub><mi>p</mi><mi>θ</mi></msub><mo stretchy="false">(</mo><msub><mi>x</mi><mrow><mi>t</mi><mo>+</mo><mi>ℋ</mi></mrow></msub><mo>∣</mo><mo>·</mo><mo stretchy="false">)</mo><mo>=</mo><munder><mo>∏</mo><mrow><mi>h</mi><mo>∈</mo><mi>ℋ</mi></mrow></munder><mi>𝒩</mi><mo stretchy="false">(</mo><msub><mi>x</mi><mrow><mi>t</mi><mo>+</mo><mi>h</mi></mrow></msub><mo>;</mo><msub><mi>μ</mi><mi>ψ</mi></msub><mo stretchy="false">(</mo><msub><mover><mi>z</mi><mo>^</mo></mover><mrow><mi>t</mi><mo>+</mo><mi>h</mi></mrow></msub><mo stretchy="false">)</mo><mo>,</mo><mspace width="0.2em"/><mi>diag</mi><mspace width="0.2em"/><msubsup><mi>σ</mi><mi>ψ</mi><mn>2</mn></msubsup><mo stretchy="false">(</mo><msub><mover><mi>z</mi><mo>^</mo></mover><mrow><mi>t</mi><mo>+</mo><mi>h</mi></mrow></msub><mo stretchy="false">)</mo><mo stretchy="false">)</mo></mrow></math>
+          <math display="block"><mrow><msub><mover><mi>z</mi><mo>^</mo></mover><mrow><mi>t</mi><mo>+</mo><mi>ℋ</mi></mrow></msub><mo>=</mo><msub><mi>g</mi><mi>φ</mi></msub><mo stretchy="false">(</mo><msubsup><mi>z</mi><mi>t</mi><mi>c</mi></msubsup><mo>,</mo><mo stretchy="false">(</mo><msub><mover><mi>a</mi><mo>¯</mo></mover><mi>h</mi></msub><msub><mo stretchy="false">)</mo><mrow><mi>h</mi><mo>∈</mo><mi>ℋ</mi></mrow></msub><mo stretchy="false">)</mo></mrow></math>
+          <math display="block"><mrow><msubsup><mi>z</mi><mi>t</mi><mi>c</mi></msubsup><mo>=</mo><msub><mi>f</mi><msub><mi>θ</mi><mi>e</mi></msub></msub><mo stretchy="false">(</mo><msub><mi>x</mi><mrow><mi>t</mi><mo>−</mo><mi>K</mi><mo>+</mo><mn>1</mn><mo>:</mo><mi>t</mi></mrow></msub><mo>,</mo><msub><mi>m</mi><mrow><mi>t</mi><mo>−</mo><mi>K</mi><mo>+</mo><mn>1</mn><mo>:</mo><mi>t</mi></mrow></msub><mo>,</mo><msub><mi>a</mi><mrow><mi>t</mi><mo>−</mo><mi>K</mi><mo>+</mo><mn>1</mn><mo>:</mo><mi>t</mi></mrow></msub><mo stretchy="false">)</mo></mrow></math>
+          <p class="formal__gl">A Gaussian head ψ on each predicted latent, over the grid ℋ = {1, 2, 4, 8, 16} s, with θ = (θ<sub>e</sub>, φ, ψ). The future commands enter through their means <i>ā</i><sub>h</sub> = mean(<i>a</i><sub>t+1:t+h</sub>), nested over the five horizons.</p>
+        </div>
+      </div>
+      <div class="formal__row">
+        <p class="formal__k">Loss</p>
+        <div class="formal__eq">
+          <math display="block"><mrow><msub><mi>ℒ</mi><mtext>SSL</mtext></msub><mo>=</mo><msub><mi>ℒ</mi><mtext>lat</mtext></msub><mo>+</mo><mn>0.05</mn><mspace width="0.15em"/><msub><mi>ℒ</mi><mtext>VICReg</mtext></msub><mo>+</mo><mn>0.10</mn><mspace width="0.15em"/><msub><mi>ℒ</mi><mtext>schema</mtext></msub><mo>+</mo><mn>0.05</mn><mspace width="0.15em"/><msub><mi>ℒ</mi><mtext>act</mtext></msub></mrow></math>
+          <ul class="formal__terms">
+            <li><b>ℒ<sub>lat</sub></b> smooth-L1 between each predicted latent and the stop-gradient EMA target latent, averaged over horizons.</li>
+            <li><b>ℒ<sub>VICReg</sub></b> variance hinge and covariance penalty (α = 25, β = 1), no invariance term; only the context half carries gradient.</li>
+            <li><b>ℒ<sub>schema</sub></b> the prediction from a further random channel subset (κ = 0.65) is pulled toward the detached prediction of the fuller view; with a whole-window channel dropout of 0.15, a channel is missing from the reduced view with probability ≈ 0.45, close to the 7/17 ≈ 0.41 the target lacks.</li>
+            <li><b>ℒ<sub>act</sub></b> a small head <i>r</i><sub>ω</sub> regresses the mean command <i>ā</i><sub>h</sub> from the context latent and the target latent: a weak, multi-step inverse-dynamics term.</li>
+          </ul>
+          <p class="formal__gl">λ<sub>lat</sub> = 1 is a normalization: in pretraining, a common rescaling of the four weights is absorbed by AdamW (up to its ε and the gradient clip), so three weights are free. Fine-tuning then adds the Gaussian negative log-likelihood of the head.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="caveats">
+      <p class="caveats__head">Read the equations carefully</p>
+      <ul class="caveats__list">
+        <li>The self-supervised loss is a <strong>surrogate</strong> for the object, not a bound on its likelihood: during pretraining the head receives no gradient. Whether it helps is an empirical question, and on the source machine it does not (Q1).</li>
+        <li>The model is a <strong>product of per-horizon marginals</strong>: horizons and channels are treated as conditionally independent given the context and commands, so it does not model their correlations.</li>
+        <li>All horizons come from <strong>one pass</strong> with a causal slot mask; no predicted latent is fed back, so there is no autoregressive rollout, and the future commands enter only as nested means, not as a step-by-step profile.</li>
+      </ul>
+    </div>
+
+    <dl class="facts facts--spec">
+      <div class="facts__cell"><dt class="facts__k">Latent</dt><dd class="facts__v">d = 256</dd></div>
+      <div class="facts__cell"><dt class="facts__k">Attention</dt><dd class="facts__v">8 heads · 6 temporal layers</dd></div>
+      <div class="facts__cell"><dt class="facts__k">EMA</dt><dd class="facts__v">τ = 0.996</dd></div>
+      <div class="facts__cell"><dt class="facts__k">Channel dropout</dt><dd class="facts__v">p = 0.15</dd></div>
+      <div class="facts__cell"><dt class="facts__k">Schema view</dt><dd class="facts__v">κ = 0.65</dd></div>
+      <div class="facts__cell"><dt class="facts__k">Weights λ</dt><dd class="facts__v">1 · 0.05 · 0.10 · 0.05</dd></div>
+    </dl>
+
+    <h3 class="sub">Where it sits among JEPA world models</h3>
     <div class="tablewrap">
-      <table class="rt">
-        <caption class="rt__caption">RMSE in z units, lower is better. Source column: the official baselines are scored on the source test split (5,189 windows, 17 sensors); the world model is the seven-seed mean ± SD on source validation, and the scratch/pretrained rows are five-seed source validation — the source column therefore does not compare like with like. Target column: the 10 shared JOANNEUM channels (2,457 windows); the locked row is the single confirmatory pass, the RevIN row a second, declared read of three seeds with no selection on the target.</caption>
+      <table class="rt rt--pos">
+        <caption class="rt__caption">As summarized in the paper’s Related Work (Sec. 2); “not discussed” means that summary does not cover it, a dash that the method does without the component. The distinguishing axis here is the shift: the observation space itself changes between training and test.</caption>
         <thead>
-          <tr><th class="rt__th" scope="col">Setting</th><th class="rt__th rt__th--num" scope="col">Source RMSE</th><th class="rt__th rt__th--num" scope="col">Target zero-shot RMSE</th><th class="rt__th" scope="col">Notes</th></tr>
+          <tr><th class="rt__th" scope="col"></th><th class="rt__th" scope="col">PLDM</th><th class="rt__th" scope="col">EB-JEPA</th><th class="rt__th" scope="col">LeWorldModel</th><th class="rt__th rt__th--ours" scope="col">This work</th></tr>
         </thead>
         <tbody>
-          <tr class="rt__group"><th class="rt__gh" colspan="4" scope="colgroup">Does pretraining help on the source machine?</th></tr>
-          <tr><th class="rt__rh" scope="row">Scratch</th><td class="rt__num">0.811 ± 0.022</td><td class="rt__num rt__num--none">—</td><td class="rt__note">five matched seeds</td></tr>
-          <tr><th class="rt__rh" scope="row">Pretrained body + fresh head</th><td class="rt__num">0.813 ± 0.022</td><td class="rt__num rt__num--none">—</td><td class="rt__note">p = 0.76 vs scratch</td></tr>
-          <tr><th class="rt__rh" scope="row">Complete pretrained checkpoint</th><td class="rt__num">0.812 ± 0.012</td><td class="rt__num rt__num--none">—</td><td class="rt__note">third matched control</td></tr>
-          <tr class="rt__group"><th class="rt__gh" colspan="4" scope="colgroup">Does it transfer to an unseen machine?</th></tr>
-          <tr><th class="rt__rh" scope="row">Persistence</th><td class="rt__num">1.135</td><td class="rt__num">0.654</td><td class="rt__note">trivial floor; 1.135 on source validation, 1.128 on the source test split</td></tr>
-          <tr><th class="rt__rh" scope="row">Linear drift</th><td class="rt__num">0.928</td><td class="rt__num rt__num--none">—</td><td class="rt__note">trivial reference</td></tr>
-          <tr><th class="rt__rh" scope="row">PatchTST (official, RevIN)</th><td class="rt__num">0.804</td><td class="rt__num">0.503</td><td class="rt__note">deterministic</td></tr>
-          <tr><th class="rt__rh" scope="row">iTransformer (official, RevIN)</th><td class="rt__num">0.822</td><td class="rt__num">0.498</td><td class="rt__note">deterministic</td></tr>
-          <tr class="rt__row--ours"><th class="rt__rh" scope="row">World model (locked, M03)</th><td class="rt__num">0.822 ± 0.009</td><td class="rt__num">0.546</td><td class="rt__note">probabilistic (mean and log-variance head); NLL 0.52; single declared pass</td></tr>
-          <tr class="rt__row--ours"><th class="rt__rh" scope="row">World model + RevIN (post-lock)</th><td class="rt__num">0.766 ± 0.001</td><td class="rt__num rt__num--best">0.495 ± 0.004</td><td class="rt__note">same model, instance normalization on; NLL 20.6; three seeds, diagnostic</td></tr>
+          <tr><th class="rt__rh" scope="row">Inverse dynamics</th><td class="rt__cell">one-step, <i>a</i><sub>t</sub> from (<i>z</i><sub>t</sub>, <i>z</i><sub>t+1</sub>)</td><td class="rt__cell">one-step; in its Two Rooms ablation, removing it collapses the representation</td><td class="rt__cell">—</td><td class="rt__cell rt__cell--ours">multi-step, mean command from (<i>z</i><sup>c</sup><sub>t</sub>, <i>z̄</i><sub>t+h</sub>), λ = 0.05</td></tr>
+          <tr><th class="rt__rh" scope="row">Anti-collapse</th><td class="rt__cell">variance, covariance, temporal smoothness</td><td class="rt__cell">same family</td><td class="rt__cell">SIGReg, trained end-to-end from pixels, no EMA or stop-gradient</td><td class="rt__cell rt__cell--ours">variance, covariance; EMA target, stop-gradient</td></tr>
+          <tr><th class="rt__rh" scope="row">Use</th><td class="rt__cell">planning (MPPI)</td><td class="rt__cell">planning</td><td class="rt__cell">not discussed</td><td class="rt__cell rt__cell--ours">multi-horizon prediction under given commands; no planning</td></tr>
+          <tr><th class="rt__rh" scope="row">Train → test shift</th><td class="rt__cell">held-out maze layouts, same physics and observation space</td><td class="rt__cell">not discussed</td><td class="rt__cell">not discussed</td><td class="rt__cell rt__cell--ours">new machine: dynamics change and 7 of 17 channels disappear</td></tr>
         </tbody>
       </table>
     </div>
-    <p class="honest"><strong>Said plainly:</strong> official RevIN-equipped forecasters remain stronger than the locked world model in raw zero-shot RMSE. That margin is a normalization effect: a post-lock paired ablation that adds presence-aware RevIN inside the same architecture reaches 0.495 ± 0.004 on three seeds, level with PatchTST and iTransformer, but its target NLL rises from 0.9 to 20.6 because a stationary context window shrinks the instance scale to √ε and crushes the predicted variance. The locked model stays the reference result, and the target windows have now been read twice (locked pass, then this declared ablation). On the source machine ordinary supervised baselines are stronger too (RSSM 0.759 and MLP 0.771 on source validation, against 0.822 for the locked candidate). The claim is narrower: the locked model beats persistence on a machine it has never seen while losing 7 of 17 channels, and its configuration was selected on source data alone. Per horizon it explains variance only at short horizons — target R² is 0.035, 0.055, 0.052, −0.023 and −0.059 at h = 1, 2, 4, 8, 16 s, i.e. below the pooled target-mean predictor at 8 and 16 s.</p>
   </section>
 
-  <!-- ================================= FIG 3 ================================= -->
-  <section class="sec" id="fig3">
+  <!-- ================================ 04 LOCK ================================ -->
+  <section class="sec" id="lock" aria-labelledby="h-lock" data-reveal>
+    <!-- anchors of the previous page layout, kept so old links still land -->
+    <span class="alias" id="fig3"></span>
     <hr class="rule">
-    <h2 class="sec__head"><span class="sec__num">05</span>The lock: how the target machine was kept out of model selection</h2>
-    <p class="body">Twenty candidate architectures were written down before any of them ran. Ranking used a composite source-validation score — 0.30 clean RMSE, 0.25 schema-drop RMSE, 0.15 masked RMSE, 0.10 long-horizon RMSE, 0.10 calibration penalty, 0.10 SSL validation loss — each component z-scored within the candidate pool, lower is better — plus penalties of 3.0 per collapsed seed and 1.0 for weak action usage. When the provisional winner changed under confirmation, locking was <em>refused</em> and more seeds were added. Two candidates collapsed outright — the plain JEPA control without anti-collapse regularization on all four seeds, and the largest model (d = 512, eight layers) on three of four. Moving the regularizers to the right latents raised target-encoder effective rank from roughly 5 % to 58 % of the latent dimensionality.</p>
+    <h2 class="sec__head" id="h-lock"><span class="sec__num">04</span>Selection without looking at the target</h2>
+    <p class="lede">Twenty candidates were written down before any ran and ranked on source validation only. The target machine enters no decision before the lock.</p>
+    <p class="body">The composite score weights clean, schema-drop, masked and long-horizon RMSE, calibration and the SSL validation loss, each z-scored within the pool, and penalizes collapsed seeds and weak command use (RMSE with shuffled commands less than 1.02 times RMSE with true ones). When the provisional winner changed under confirmation, locking was refused and seeds were added. Two candidates collapsed: the plain JEPA control without anti-collapse regularization on all four seeds, and the largest model (d = 512, eight layers) on three of four.</p>
     <figure class="panel" data-fig="f3">
       <figcaption class="panel__bar">
         <span class="panel__id">FIG. 4</span>
-        <span class="panel__name">Leakage-safe selection pipeline</span>
+        <span class="panel__name">Leakage-free selection pipeline</span>
+        <span class="panel__src">paper Fig. 4</span>
         <button class="panel__replay" type="button" data-replay="f3" aria-label="Replay the Figure 4 animation">Replay</button>
       </figcaption>
       <div class="panel__body">
         <svg class="f3" viewBox="0 0 1080 470" role="img" focusable="false"
              aria-labelledby="f3Title" aria-describedby="f3Desc">
-          <title id="f3Title">Leakage-safe selection pipeline</title>
-          <desc id="f3Desc">Animated schematic of the model-selection pipeline: twenty candidate chips are each run with four seeds, ranked by a composite source-validation score; the top five receive a fifth seed, at which point the provisional winner changes — per-horizon VICReg drops from first place and the schema-consistency plus action-recovery variant rises to first. Seven seeds confirm it, the configuration is locked with a SHA-256 hash, and a single arrow leads to the sealed JOANNEUM target test. Target data enters no arrow before the lock.</desc>
+          <title id="f3Title">Leakage-free selection pipeline</title>
+          <desc id="f3Desc">Animated schematic of the model-selection pipeline: twenty candidate chips are each run with four seeds, ranked by a composite source-validation score; the top five receive a fifth seed, at which point the provisional winner changes — per-horizon VICReg drops from first place and the schema-consistency plus command-recovery variant rises to first. Seven seeds confirm it, the configuration is locked with a SHA-256 hash, and a single arrow leads to the sealed JOANNEUM target test. Target data enters no arrow before the lock.</desc>
 
           <g class="f3__wires">
             <path class="f3__link anim-draw" style="--d:.90s" d="M232 118 H 262"/>
@@ -452,7 +705,7 @@
             <text class="f3__sub" x="352" y="115" text-anchor="middle">.30 clean · .25 schema-drop</text>
             <text class="f3__sub" x="352" y="129" text-anchor="middle">.15 masked · .10 long-h</text>
             <text class="f3__sub" x="352" y="143" text-anchor="middle">.10 calib penalty · .10 SSL</text>
-            <text class="f3__sub" x="352" y="156" text-anchor="middle">collapse +3 · weak action +1</text>
+            <text class="f3__sub" x="352" y="156" text-anchor="middle">collapse +3 · weak cmd +1</text>
           </g>
 
           <!-- stage 3 : top 5 -->
@@ -475,12 +728,12 @@
           <g class="f3__node anim-in" style="--d:2.90s">
             <rect class="f3__box" x="40" y="236" width="308" height="160" rx="3"/>
             <text class="f3__lab" x="194" y="253" text-anchor="middle">RANK AFTER 7 SEEDS</text>
-            <text class="f3__sub" x="194" y="267" text-anchor="middle">composite score (z-normalized, lower is better)</text>
+            <text class="f3__sub" x="194" y="267" text-anchor="middle">composite score, lower is better</text>
             <text class="f3__rk" x="56" y="292">#1</text>
             <text class="f3__rk" x="56" y="340">#2</text>
             <g class="f3__swapA">
               <rect class="f3__bar f3__bar--win" x="84" y="272" width="246" height="30" rx="2"/>
-              <text class="f3__barlab" x="94" y="292">schema + action recovery</text>
+              <text class="f3__barlab" x="94" y="292">schema + command recovery</text>
               <text class="f3__barval" x="320" y="292" text-anchor="end">−0.83</text>
             </g>
             <g class="f3__swapB">
@@ -488,7 +741,7 @@
               <text class="f3__barlab" x="94" y="340">per-horizon VICReg</text>
               <text class="f3__barval" x="320" y="340" text-anchor="end">+0.09</text>
             </g>
-            <text class="f3__sub" x="194" y="378" text-anchor="middle">the four-seed discovery leader is not the winner</text>
+            <text class="f3__sub" x="194" y="378" text-anchor="middle">the 4-seed leader is not the winner</text>
           </g>
 
           <!-- stage 6 : 7 seeds -->
@@ -527,44 +780,121 @@
         </svg>
       </div>
       <p class="panel__hint">Scroll sideways to read the figure</p>
-      <p class="panel__cap">Twenty candidates, four seeds each, ranked on a composite source-validation score; the top five get a fifth seed, the leader changes, locking is refused, seven seeds settle it — and only then does one arrow reach the sealed target machine.</p>
+      <p class="panel__cap">Four seeds per candidate, a fifth for the top five, a leader change, a refused lock, seven seeds to settle it, and only then one arrow to the sealed target. Scores are composite source-validation scores, z-normalized within the pool, lower is better; RMSE in z units. Red: the refused lock; violet: the lock; teal: candidates, red chips the two that collapsed. A pre-lock model had also been evaluated on the target; those reads entered neither the ranking nor the lock.</p>
     </figure>
   </section>
 
-  <!-- ================================= FIG 2 ================================= -->
-  <section class="sec" id="fig2">
+  <!-- =============================== 05 RESULTS ============================== -->
+  <section class="sec" id="results" aria-labelledby="h-results" data-reveal>
     <hr class="rule">
-    <h2 class="sec__head"><span class="sec__num">06</span>What a world model buys you</h2>
-    <p class="body">A forecaster answers “what happens next”. A world model answers “what happens next <em>if I do this</em>”. On highly autocorrelated industrial streams the two are easy to confuse: a model can score well at short horizons while effectively ignoring the control input.</p>
-    <figure class="panel" data-fig="f2">
-      <figcaption class="panel__bar">
-        <span class="panel__id">FIG. 2</span>
-        <span class="panel__name">Command-conditioned simulation of candidate futures</span>
-        <button class="panel__replay" type="button" data-replay="f2" aria-label="Replay the Figure 2 animation">Replay</button>
-      </figcaption>
-      <div class="panel__body">
-        <svg class="f2" viewBox="0 0 1080 474" role="img" focusable="false"
-             aria-labelledby="f2Title" aria-describedby="f2Desc">
-          <title id="f2Title">Command-conditioned simulation of candidate futures</title>
-          <desc id="f2Desc">Animated schematic: a 32-second context window of observed sensor traces is encoded into a latent state; two candidate action sequences, spindle up and spindle down, then produce two diverging multi-horizon predictions with widening uncertainty bands at 1, 2, 4, 8 and 16 seconds. Conceptual, not a closed-loop result.</desc>
-          <g id="f2gen"></g>
-        </svg>
-        <noscript><p class="panel__noscript">This schematic is drawn by script; open the PDF for the static figure.</p></noscript>
+    <h2 class="sec__head" id="h-results"><span class="sec__num">05</span>Results on the unseen machine</h2>
+    <p class="lede">Same 2,457 target windows, same 10 shared channels, no target-side selection for any method.</p>
+
+    <figure class="chart" data-reveal aria-labelledby="dcTitle">
+      <figcaption class="chart__bar"><span class="panel__id">FIG. 5</span><span class="chart__name" id="dcTitle">Zero-shot RMSE on the target machine</span><span class="panel__src">paper Table 3</span></figcaption>
+      <div class="dc" style="--lo:.45;--hi:.70" role="img" aria-label="Zero-shot target RMSE. Persistence 0.654; locked world model 0.546; PatchTST 0.503; iTransformer 0.498; world model with RevIN 0.495 plus or minus 0.004 over three seeds.">
+        <span class="dc__ref" style="--v:.654" aria-hidden="true"></span>
+        <div class="dc__row dc__row--ref"><span class="dc__lab">Persistence</span><span class="dc__track"><span class="dc__stem" style="--v:.654"></span><span class="dc__dot" style="--v:.654"></span><span class="dc__val" style="--v:.654">0.654</span></span></div>
+        <div class="dc__row dc__row--ours"><span class="dc__lab">World model, locked<small>single declared pass · NLL 0.52</small></span><span class="dc__track"><span class="dc__stem" style="--v:.546"></span><span class="dc__dot" style="--v:.546"></span><span class="dc__val" style="--v:.546">0.546</span></span></div>
+        <div class="dc__row dc__row--base"><span class="dc__lab">PatchTST<small>official, RevIN, 1 seed, no search</small></span><span class="dc__track"><span class="dc__stem" style="--v:.503"></span><span class="dc__dot" style="--v:.503"></span><span class="dc__val" style="--v:.503">0.503</span></span></div>
+        <div class="dc__row dc__row--base"><span class="dc__lab">iTransformer<small>official, RevIN, 1 seed, no search</small></span><span class="dc__track"><span class="dc__stem" style="--v:.498"></span><span class="dc__dot" style="--v:.498"></span><span class="dc__val" style="--v:.498">0.498</span></span></div>
+        <div class="dc__row dc__row--norm"><span class="dc__lab">World model + RevIN<small>post-lock, 3 seeds · NLL 20.6</small></span><span class="dc__track"><span class="dc__stem" style="--v:.495"></span><span class="dc__err" style="--v:.495;--e:.004"></span><span class="dc__dot" style="--v:.495"></span><span class="dc__val" style="--v:.495">0.495 ± 0.004</span></span></div>
+        <div class="dc__axis" aria-hidden="true"><span class="dc__lab"></span><span class="dc__ticks"><span style="--v:.45">0.45</span><span style="--v:.50">0.50</span><span style="--v:.55">0.55</span><span style="--v:.60">0.60</span><span style="--v:.65">0.65</span><span style="--v:.70">0.70</span></span></div>
+        <div class="dc__axis dc__axis--title" aria-hidden="true"><span class="dc__lab"></span><span class="dc__axtitle">RMSE, z units · lower is better</span></div>
       </div>
-      <p class="panel__hint">Scroll sideways to read the figure</p>
-      <p class="panel__cap"><strong>Conceptual schematic, not a measured result.</strong> The same 32 s context and latent state are predicted forward at each horizon — directly, not autoregressively — under two candidate spindle commands; the head emits a mean and a log-variance per channel. The divergence between the two branches and the width of the bands are drawn to illustrate the mechanism, not taken from data. Action sensitivity under transfer and calibration have not been re-measured on the locked model (see §08).</p>
+      <p class="chart__cap">JOANNEUM target, 10 shared channels, 2,457 windows, all horizons pooled; no method is selected on the target. Red dashed line: persistence, the trivial floor; points left of it beat it. Violet: the locked world model, one declared pass. Grey: official baselines, one seed each, no hyperparameter search. Green dashed: the same world model with RevIN, post-lock, mean of three seeds with ± SD as whiskers.</p>
     </figure>
+
+    <div class="duo">
+      <figure class="chart" data-reveal aria-labelledby="r2Title">
+        <figcaption class="chart__bar"><span class="panel__id">FIG. 6</span><span class="chart__name" id="r2Title">Explained variance by horizon, locked model</span><span class="panel__src">paper Sec. 6.5</span></figcaption>
+        <div class="r2" role="img" aria-label="Target R squared by horizon: 0.035 at 1 s, 0.055 at 2 s, 0.052 at 4 s, minus 0.023 at 8 s, minus 0.059 at 16 s.">
+          <div class="r2__plot" style="--max:.07">
+            <span class="r2__zero" aria-hidden="true"></span>
+            <div class="r2__col" style="--v:.035"><span class="r2__bar"></span><span class="r2__val">0.035</span></div>
+            <div class="r2__col" style="--v:.055"><span class="r2__bar"></span><span class="r2__val">0.055</span></div>
+            <div class="r2__col" style="--v:.052"><span class="r2__bar"></span><span class="r2__val">0.052</span></div>
+            <div class="r2__col r2__col--neg" style="--v:.023"><span class="r2__bar"></span><span class="r2__val">−0.023</span></div>
+            <div class="r2__col r2__col--neg" style="--v:.059"><span class="r2__bar"></span><span class="r2__val">−0.059</span></div>
+          </div>
+          <div class="r2__x" aria-hidden="true"><span>1 s</span><span>2 s</span><span>4 s</span><span>8 s</span><span>16 s</span></div>
+        </div>
+        <p class="chart__cap">Target R² of the locked model at each horizon of ℋ, computed against the pooled target mean, so 0 means “as good as predicting the mean”. Violet: above that reference; grey dashed: below it. The model explains a small share of variance up to 4 s and falls below the mean predictor at 8 and 16 s.</p>
+      </figure>
+
+      <figure class="chart" data-reveal aria-labelledby="csTitle">
+        <figcaption class="chart__bar"><span class="panel__id">FIG. 7</span><span class="chart__name" id="csTitle">Does it use the commands? Is it calibrated?</span><span class="panel__src">paper Secs. 4.2, 6.6, 8</span></figcaption>
+        <div class="stats">
+          <div class="stat">
+            <p class="stat__k">Command sensitivity, source</p>
+            <p class="stat__v">1.058</p>
+            <div class="gauge" style="--lo:1;--hi:1.08" aria-hidden="true">
+              <span class="gauge__mark gauge__mark--flag" style="--v:1.02"><i>flag &lt; 1.02</i></span>
+              <span class="gauge__mark gauge__mark--base" style="--v:1.044"><i>no recovery</i></span>
+              <span class="gauge__mark gauge__mark--ours" style="--v:1.058"><i>locked</i></span>
+            </div>
+            <p class="stat__t">RMSE with shuffled future commands over RMSE with the true ones, source validation, 7 seeds. The matched candidate without command recovery reaches 1.044 (4 seeds); this is a comparison of candidates, not an ablation.</p>
+          </div>
+          <div class="stat stat--open">
+            <p class="stat__k">Command sensitivity, target</p>
+            <p class="stat__v">not yet shown</p>
+            <p class="stat__t">On the pre-lock model, shuffling future commands moved target RMSE by less than 0.005. It has not been re-measured on the locked model: the first test to run.</p>
+          </div>
+          <div class="stat stat--pair">
+            <p class="stat__k">Coverage at nominal 90 %, target</p>
+            <p class="stat__v">0.953 <span class="stat__arrow">→</span> 0.874</p>
+            <p class="stat__t">Paired ablation, three seeds per arm: without RevIN, then with it. NLL 0.89 → 20.6. The locked seed alone has NLL 0.52; the pre-lock model covered 67 %.</p>
+          </div>
+        </div>
+        <p class="chart__cap">Command sensitivity is the ratio of RMSE under shuffled future commands to RMSE under the true ones: 1 means the commands are ignored, and below 1.02 a candidate is flagged during selection. Coverage is the share of targets inside the nominal 90 % predictive interval. Violet: the locked model; grey: the matched candidate without command recovery.</p>
+      </figure>
+    </div>
+
+    <ol class="notes">
+      <li>RevIN gains most on the channels whose level shifts across machines (Z-axis current RMSE 0.84 → 0.20). It costs calibration because a stationary context window (spindle stopped, constant power) shrinks the instance scale to √ε ≈ 3 × 10<sup>−3</sup>; the variance is de-normalized with that scale, so a start-up within the horizon costs hundreds of nats. The mean is de-normalized with the same scale, so RMSE is protected.</li>
+      <li>The target windows have been read by the pre-lock model (several diagnostic reads, outside selection), once by the locked model, and once by the declared RevIN ablation. No further target evaluation of this pipeline can be called sealed.</li>
+      <li>On the source machine ordinary supervised models are stronger (RSSM 0.759, MLP 0.771, locked candidate 0.822 on source validation). The claim is transfer under partial sensor overlap, not source forecasting.</li>
+    </ol>
+
+    <details class="fold">
+      <summary class="fold__sum">Full results table · paper Tables 2(a) and 3</summary>
+      <div class="tablewrap">
+        <table class="rt">
+          <caption class="rt__caption">RMSE in z units, lower is better. Source column: the official baselines are scored on the source test split (5,189 windows, 17 sensors); the world model is the seven-seed mean ± SD on source validation, and the scratch and pretrained rows are five-seed source validation, so the source column does not compare like with like. Target column: the 10 shared JOANNEUM channels (2,457 windows); the locked row is the single confirmatory pass, the RevIN row a second, declared read of three seeds with no selection on the target.</caption>
+          <thead>
+            <tr><th class="rt__th" scope="col">Setting</th><th class="rt__th rt__th--num" scope="col">Source RMSE</th><th class="rt__th rt__th--num" scope="col">Target zero-shot RMSE</th><th class="rt__th" scope="col">Notes</th></tr>
+          </thead>
+          <tbody>
+            <tr class="rt__group"><th class="rt__gh" colspan="4" scope="colgroup">Does pretraining help on the source machine?</th></tr>
+            <tr><th class="rt__rh" scope="row">Scratch</th><td class="rt__num">0.811 ± 0.022</td><td class="rt__num rt__num--none">—</td><td class="rt__note">five matched seeds</td></tr>
+            <tr><th class="rt__rh" scope="row">Pretrained body + fresh head</th><td class="rt__num">0.813 ± 0.022</td><td class="rt__num rt__num--none">—</td><td class="rt__note">p = 0.76 vs scratch</td></tr>
+            <tr><th class="rt__rh" scope="row">Complete pretrained checkpoint</th><td class="rt__num">0.812 ± 0.012</td><td class="rt__num rt__num--none">—</td><td class="rt__note">third matched control</td></tr>
+            <tr class="rt__group"><th class="rt__gh" colspan="4" scope="colgroup">Does it transfer to an unseen machine?</th></tr>
+            <tr><th class="rt__rh" scope="row">Persistence</th><td class="rt__num">1.135</td><td class="rt__num">0.654</td><td class="rt__note">trivial floor; 1.135 on source validation, 1.128 on the source test split</td></tr>
+            <tr><th class="rt__rh" scope="row">Linear drift</th><td class="rt__num">0.928</td><td class="rt__num rt__num--none">—</td><td class="rt__note">trivial reference</td></tr>
+            <tr><th class="rt__rh" scope="row">PatchTST (official, RevIN)</th><td class="rt__num">0.804</td><td class="rt__num">0.503</td><td class="rt__note">deterministic</td></tr>
+            <tr><th class="rt__rh" scope="row">iTransformer (official, RevIN)</th><td class="rt__num">0.822</td><td class="rt__num">0.498</td><td class="rt__note">deterministic</td></tr>
+            <tr class="rt__row--ours"><th class="rt__rh" scope="row">World model (locked, M03)</th><td class="rt__num">0.822 ± 0.009</td><td class="rt__num">0.546</td><td class="rt__note">probabilistic (mean and log-variance head); NLL 0.52; single declared pass</td></tr>
+            <tr class="rt__row--norm"><th class="rt__rh" scope="row">World model + RevIN (post-lock)</th><td class="rt__num">0.766 ± 0.001</td><td class="rt__num rt__num--best">0.495 ± 0.004</td><td class="rt__note">same model, instance normalization on; NLL 20.6; three seeds, diagnostic</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
   </section>
 
-  <!-- ================================= FIG 4 ================================= -->
-  <section class="sec" id="fig5">
+  <!-- ================================ 06 SCOPE =============================== -->
+  <section class="sec" id="scope" aria-labelledby="h-scope" data-reveal>
+    <!-- anchors of the previous page layout, kept so old links still land -->
+    <span class="alias" id="fig5"></span><span class="alias" id="limits"></span>
     <hr class="rule">
-    <h2 class="sec__head"><span class="sec__num">07</span>Adaptation with 10–20 % target support</h2>
+    <h2 class="sec__head" id="h-scope"><span class="sec__num">06</span>Adaptation and scope</h2>
+    <p class="lede">A few target windows help, on the pre-lock model. That curve is a diagnostic, not a confirmatory result.</p>
     <figure class="panel" data-fig="f5">
       <figcaption class="panel__bar">
-        <span class="panel__id">FIG. 6(b)</span>
+        <span class="panel__id">FIG. 8</span>
         <span class="panel__name">THWS → JOANNEUM few-shot adaptation (pre-lock model)</span>
-        <button class="panel__replay" type="button" data-replay="f5" aria-label="Replay the Figure 6(b) animation">Replay</button>
+        <span class="panel__src">paper Fig. 6(b)</span>
+        <button class="panel__replay" type="button" data-replay="f5" aria-label="Replay the Figure 8 animation">Replay</button>
       </figcaption>
       <div class="panel__body">
         <svg class="f5" viewBox="0 0 1080 466" role="img" focusable="false"
@@ -626,28 +956,24 @@
         </svg>
       </div>
       <p class="panel__hint">Scroll sideways to read the figure</p>
-      <p class="panel__cap">On the pre-lock model, zero-shot transfer gives RMSE 0.612 (MAE 0.401, R² = −0.244); 10 % support brings it to 0.540 with R² = 0.046, and 20 % to 0.520 (MAE 0.299, R² = 0.167).</p>
+      <p class="panel__cap">Support is the leading fraction of each target run; the predictor and head are updated for 50 steps and evaluated on the later, disjoint windows. Zero-shot on this model: MAE 0.401, R² = −0.244; at 10 %, R² = 0.046; at 20 %, MAE 0.299, R² = 0.167. RMSE in z units on the 10 shared channels, lower is better; red dashed: persistence from the sealed pass.</p>
     </figure>
-  </section>
 
-  <!-- =============================== LIMITATIONS ============================= -->
-  <section class="sec" id="limits">
-    <hr class="rule">
-    <h2 class="sec__head"><span class="sec__num">08</span>Scope of the evidence</h2>
     <div class="warn">
-      <p class="warn__head">What the numbers support today.</p>
+      <p class="warn__head">What the numbers support today</p>
       <ul class="warn__list">
-        <li class="warn__item"><strong>One transfer, measured cleanly.</strong> The results cover one source machine and one target machine with seven independent runs. They establish cross-machine transfer for this pair under partial sensor overlap; broader invariance claims wait for more machines.</li>
-        <li class="warn__item"><strong>The locked result is a single checkpoint.</strong> The target number comes from the configuration frozen on source data alone, evaluated once. The few-shot curve was measured before the lock and is shown as a diagnostic; re-running it on the locked model is the next step.</li>
-        <li class="warn__item"><strong>Baselines and ablations are single-seed</strong> at repository defaults. On the pre-lock model, shuffling future actions moved target RMSE by less than 0.005 and predictive intervals covered 67 % at a nominal 90 %; neither has been re-measured on the locked model, and run-level confidence intervals are pending. The full list is in the paper&rsquo;s Limitations section.</li>
+        <li class="warn__item"><strong>One transfer pair.</strong> One source machine, one target machine, seven independent target runs. Broader invariance claims wait for more machines.</li>
+        <li class="warn__item"><strong>One locked checkpoint, evaluated once.</strong> The target number is a single seed; run-level confidence intervals and the few-shot curve on the locked model are still to compute.</li>
+        <li class="warn__item"><strong>The latent objective is not isolated on the target.</strong> Every arm, scratch included, trains with the latent terms, so no target arm measures their contribution.</li>
+        <li class="warn__item"><strong>Predictive, not decision-theoretic.</strong> No policy, no planning, no closed loop: the commands are inputs, and downstream control is future work.</li>
       </ul>
     </div>
   </section>
 
   <!-- ================================== CITE ================================= -->
-  <section class="sec" id="cite">
+  <section class="sec" id="cite" aria-labelledby="h-cite">
     <hr class="rule">
-    <h2 class="sec__head"><span class="sec__num">09</span>Cite</h2>
+    <h2 class="sec__head" id="h-cite"><span class="sec__num">07</span>Cite</h2>
     <div class="cite">
       <div class="cite__bar">
         <span class="cite__label">BibTeX</span>
@@ -684,20 +1010,20 @@
         <p class="foot__p">Neither dataset is redistributed here. The MIT licence covers the code, not the data: see <a class="link" href="https://github.com/ostertagmatthieu-dev/saac-jepa/blob/main/docs/licensing.md">docs/licensing.md</a>.</p>
       </div>
       <div class="foot__col">
-        <h2 class="foot__h">Code</h2>
+        <h2 class="foot__h">Code and docs</h2>
         <p class="foot__p"><a class="link" href="https://github.com/ostertagmatthieu-dev/saac-jepa">github.com/ostertagmatthieu-dev/saac-jepa</a></p>
-        <p class="foot__p">Pipeline, configuration files, the twenty candidate specifications and the audit scripts. Released under the MIT license.</p>
+        <p class="foot__p">Pipeline, configuration files, the twenty candidate specifications and the audit scripts, under the MIT license. Plain-text pages: <a class="link" href="results.md">results</a>, <a class="link" href="protocol.md">protocol</a>, <a class="link" href="data.md">data</a>, <a class="link" href="reproduce.md">reproduce</a>, <a class="link" href="llms.txt">llms.txt</a>.</p>
       </div>
       <div class="foot__col">
         <h2 class="foot__h">Protocol and compute</h2>
-        <p class="foot__p">Source sessions split 42 / 11 / 9 (group-disjoint), giving 18,267 / 3,423 / 5,189 windows with zero overlap. A unit audit corrected three cross-machine mismatches before modelling: power W→kW, commanded feeds mm/s→mm/min (×60) and spindle deg/s→rpm (÷6). All experiments ran on one NVIDIA DGX Spark (single GB10 GPU), about six GPU-days in total. That compute was provided by Atos IT Services UK Limited, without which the project would not have been possible.</p>
+        <p class="foot__p">Source sessions split 42 / 11 / 9 (group-disjoint), with zero window overlap. A unit audit corrected three cross-machine mismatches before modelling: power W→kW, commanded feeds mm/s→mm/min (×60) and spindle deg/s→rpm (÷6). All experiments ran on one NVIDIA DGX Spark (single GB10 GPU), about six GPU-days in total. That compute was provided by Atos IT Services UK Limited, without which the project would not have been possible.</p>
       </div>
     </div>
     <!-- TODO (authors' decision, deliberately not made here): if you want an explicit
          licence for THIS PAGE and its figures — e.g. CC BY 4.0 — add it to the line
          below. The MIT licence named in the Code column and in the JSON-LD covers the
          software repository only, not the page, the figures or the paper. -->
-    <p class="foot__fine">Page and figures © 2026 the authors. Animated versions of the paper schematics; all reported numbers and figure numbers follow the preprint, so figures are not in page order.</p>
+    <p class="foot__fine">Page and figures © 2026 the authors. Figures are numbered in page order; each figure bar names the paper figure, table or section it comes from. Last updated <time datetime="2026-09-24">24 September 2026</time>, for arXiv 2609.16071v2.</p>
   </div>
 </footer>
 

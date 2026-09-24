@@ -41,6 +41,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- The project page is restructured for readers who know world models, in seven sections instead of
+  nine, with each headline number stated once in prose. §01 opens with three key-finding cards,
+  each a question, a one-line answer and an animated micro-bar chart; the abstract is folded
+  underneath. §02 shows the two sensor schemas as chip grids, the seven channels the target lacks
+  dropping out on scroll. §03 adds the formal object, the factorized model and the loss with its
+  locked weights (native MathML, no script), three caveats taken from the paper (surrogate loss,
+  product of per-horizon marginals, one-pass prediction), the model specification, and a table
+  placing the model among PLDM, EB-JEPA and LeWorldModel. §05 replaces the long results paragraph
+  with three responsive charts (zero-shot RMSE against persistence, R² by horizon, command
+  sensitivity and calibration) and three numbered notes; the full table is folded. Fig. 2 is badged
+  as a schematic. The page now says "commands" throughout, uses `f_θe`, labels the command-recovery
+  head, explains that NLL 0.52 is the locked seed and 0.89 the control arm of the paired ablation,
+  and counts three reads of the target, as the paper does (README and `docs/results.md` too).
+  Animations: signal packets synchronised with the latent pulse in the hero strip, a data flow
+  along Fig. 1's wires after it is built, and scroll reveals, all paused off screen and disabled
+  under reduced motion. Old section anchors still resolve.
+- Search and AI indexing: the `<title>` and social titles lead with the paper's keywords; the
+  JSON-LD becomes one `@graph` (article with abstract, keywords and datasets, source code, datasets,
+  authors by ORCID, and an FAQ that mirrors the visible key findings); Scholar tags gain ORCID,
+  dates and keywords; `llms.txt` summarizes the paper and links the Markdown docs; the sitemap lists
+  the PDF, `llms.txt` and the docs. `docs/UPDATING.md` records every place a number now lives and
+  adds a section on these surfaces.
 - The paper is retitled *World Models for Cross-Machine CNC Transfer under Partial Sensor Overlap*
   (revised arXiv version 2609.16071v2 of the same V1 paper, announced 2026-09-24), after Jean Ponce's review: the method acronym
   SAAC-JEPA leaves the paper and stays only as the code name of this repository. The new title is

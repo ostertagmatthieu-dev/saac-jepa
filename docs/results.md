@@ -8,7 +8,8 @@ unless stated otherwise. Two evaluation sets recur and they are not interchangea
   **The source column therefore does not compare like with like.**
 - **Target** — DS03, the 10 shared channels over 7 independent runs, **2,457 windows**.
 
-DS03 has been read exactly twice: the single sealed pass of the locked model, and the declared
+DS03 has been read three times: by the pre-lock model (the few-shot sweep, which entered neither
+the ranking nor the lock), in the single sealed pass of the locked model, and in the declared
 post-lock RevIN ablation described below. See [protocol.md](protocol.md) for how the lock works.
 
 ---
