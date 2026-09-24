@@ -1,0 +1,41 @@
+# World Models for Cross-Machine CNC Transfer under Partial Sensor Overlap
+
+> Project page of arXiv:2609.16071 (Bouaziz, Ostertag, Demasles, 2026). A JEPA-style, command-conditioned latent world model for CNC milling is trained on a source machine with 17 sensor channels, selected and locked on source data only, then evaluated zero-shot, once, on an unseen target machine that measures only 10 of those channels. Code name of the repository: SAAC-JEPA.
+
+Key facts, all RMSE in z units of the source normalizer, lower is better:
+
+- Source machine: THWS Spinner U5-620 five-axis machining centre, 62 NC-program sessions at 1 Hz, 17 sensor channels (currents, torques, powers, motor and ambient temperatures, DC-link voltage, modulation depth).
+- Target machine: FH JOANNEUM repository, 7 independent runs, 10 of the 17 channels (spindle and X/Y/Z currents, torques, spindle and Z power); 7 channels absent.
+- Commands (called actions in the world-model literature): spindle-speed and X/Y/Z feed setpoints issued by the numerical controller.
+- Model: context encoder over present-channel tokens with a presence mask and past commands, K = 32 s context; predictor fills horizons {1, 2, 4, 8, 16} s in one pass from the context latent and the mean future command of each horizon; EMA target encoder with stop-gradient; Gaussian head per horizon.
+- Loss: L_SSL = L_lat + 0.05 L_VICReg + 0.10 L_schema + 0.05 L_act (latent prediction, variance-covariance anti-collapse, schema consistency between channel subsets, multi-step command recovery acting as a weak inverse-dynamics term).
+- Finding 1: latent pretraining gives no in-domain gain; scratch 0.811 ± 0.022 vs pretrained body 0.813 ± 0.022 on source validation (five seeds, p = 0.76).
+- Finding 2: the locked model transfers zero-shot above persistence on the target, RMSE 0.546 vs 0.654, R² = 0.012, NLL 0.52, single declared pass.
+- Finding 3: official PatchTST (0.503) and iTransformer (0.498), single seed each without hyperparameter search, are ahead; input normalization (RevIN) is sufficient to explain the gap: in a post-lock three-seed ablation the same world model with RevIN reaches 0.495 ± 0.004, but the target NLL of the paired control arm, 0.89, rises to 20.6.
+- Limits: one source and one target machine; single locked checkpoint; command sensitivity on the target not yet measured on the locked model (source ratio 1.058 under command shuffling); no planning or closed-loop control.
+
+## Paper
+
+- [arXiv abstract page](https://arxiv.org/abs/2609.16071): version of record, 2609.16071v2 revised 2026-09-23
+- [PDF](https://ostertagmatthieu-dev.github.io/saac-jepa/paper.pdf): 23 pages
+- [DOI 10.48550/arXiv.2609.16071](https://doi.org/10.48550/arXiv.2609.16071)
+
+## Documentation
+
+- [Results](https://ostertagmatthieu-dev.github.io/saac-jepa/results.md): the reported numbers and the runs they come from
+- [Protocol](https://ostertagmatthieu-dev.github.io/saac-jepa/protocol.md): source-only model selection and the lock
+- [Data](https://ostertagmatthieu-dev.github.io/saac-jepa/data.md): datasets, channel mapping, unit audit
+- [Reproduce](https://ostertagmatthieu-dev.github.io/saac-jepa/reproduce.md): commands to rerun the pipeline
+- [Scripts](https://ostertagmatthieu-dev.github.io/saac-jepa/scripts.md): what each numbered script does
+
+## Code
+
+- [GitHub repository](https://github.com/ostertagmatthieu-dev/saac-jepa): MIT-licensed code, configurations of the twenty candidates, audit scripts
+
+## Optional
+
+- [Licensing](https://ostertagmatthieu-dev.github.io/saac-jepa/licensing.md): licences of the code, the paper and the two CC BY 4.0 datasets
+- [THWS dataset](https://doi.org/10.5281/zenodo.14094887)
+- [FH JOANNEUM dataset](https://doi.org/10.17632/gtvvwmz7r7.2)
+
+Cite as: Ayoub Louaye Bouaziz, Matthieu Ostertag, Anton Demasles. World Models for Cross-Machine CNC Transfer under Partial Sensor Overlap. arXiv:2609.16071, 2026.

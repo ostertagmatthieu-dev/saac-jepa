@@ -80,13 +80,13 @@ function periodic(rand, n) {
 
   const W = 404;                 // scroll period == pattern tile width == panel width
   const TOP = 52, BOT = 240;
-  const LANES = 21;              // 17 sensors + 4 action channels
+  const LANES = 21;              // 17 sensors + 4 command channels
   const pitch = (BOT - TOP) / (LANES - 1);
   const rand = mulberry32(20260906);
 
-  /* the four amber action lanes, evenly spread through the stack */
+  /* the four amber command lanes, evenly spread through the stack */
   const actSet = new Set([4, 9, 14, 19]);
-  /* which 7 of the 17 sensor lanes are absent on the target — action lanes excluded */
+  /* which 7 of the 17 sensor lanes are absent on the target — command lanes excluded */
   const absentSet = new Set([1, 3, 6, 8, 12, 16, 18]);
 
   function tracePath(y, amp, seed) {
@@ -120,7 +120,7 @@ function periodic(rand, n) {
   const geom = [];
   for (let i = 0; i < LANES; i++) {
     const y = TOP + i * pitch;
-    const isAct = actSet.has(i);                   // four amber action lanes
+    const isAct = actSet.has(i);                   // four amber command lanes
     geom.push({
       y, isAct,
       d: isAct ? stepPath(y, 2.8, 900 + i, 7) : tracePath(y, 3.0, 100 + i),
@@ -224,7 +224,7 @@ function periodic(rand, n) {
 })();
 
 /* ======================================================================== */
-/* 3. FIGURE 2 — action-conditioned candidate futures                       */
+/* 3. FIGURE 2 — command-conditioned candidate futures                      */
 /* ======================================================================== */
 (function fig2() {
   const root = document.getElementById("f2gen");
@@ -314,9 +314,9 @@ function periodic(rand, n) {
      clear of both step traces */
   el("rect", { class: "f2__panel", x: CX0, y: 360, width: HX1 - CX0, height: 100, rx: 2 }, root);
   let ct = el("text", { class: "f2__head", x: CX0 + 8, y: 379 }, root);
-  ct.textContent = "CONTROL · COMMANDED SPINDLE SPEED"; stage(ct, 0);
+  ct.textContent = "COMMAND · SPINDLE-SPEED SETPOINT"; stage(ct, 0);
 
-  /* past action */
+  /* past commands */
   (function () {
     const r = mulberry32(777);
     let d = "M" + (CX0 + 8) + " 432", y = 432;
@@ -328,7 +328,7 @@ function periodic(rand, n) {
     draw(el("path", { class: "f2__act", d: d }, root), 0.35);
   })();
 
-  /* two candidate action sequences */
+  /* two candidate command sequences */
   const stepUp = "M" + HX0 + " 432 L" + (HX0 + 40) + " 432 L" + (HX0 + 40) + " 412 L" + (HX1 - 8) + " 412";
   const stepDn = "M" + HX0 + " 432 L" + (HX0 + 40) + " 432 L" + (HX0 + 40) + " 452 L" + (HX1 - 8) + " 452";
   draw(el("path", { class: "f2__act", d: stepUp }, root), 1.25);
@@ -360,13 +360,19 @@ function periodic(rand, n) {
 /* ======================================================================== */
 (function playback() {
   const figs = document.querySelectorAll("[data-fig]");
+  const liveTimers = new Map();
   function play(fig) {
     if (reduced) return;                       // final static state already rendered
     const svg = fig.querySelector("svg");
     if (!svg) return;
-    svg.classList.remove("is-playing");
+    svg.classList.remove("is-playing", "is-live");
     void svg.getBoundingClientRect();          // force reflow so the animation restarts
     svg.classList.add("is-playing");
+    /* Fig. 1 keeps a slow data flow along its wires once it has been built */
+    if (fig.getAttribute("data-fig") === "f1") {
+      clearTimeout(liveTimers.get(fig));
+      liveTimers.set(fig, setTimeout(function () { svg.classList.add("is-live"); }, 4700));
+    }
   }
   if ("IntersectionObserver" in window && !reduced) {
     const io = new IntersectionObserver(function (entries) {
@@ -386,7 +392,56 @@ function periodic(rand, n) {
 })();
 
 /* ======================================================================== */
-/* 6. LINKS AND CITATION                                                    */
+/* 6. FIGURE 1 — data-flow overlay                                          */
+/* ======================================================================== */
+/* Copies of the main wires, drawn as moving dots once the figure is built.
+   The loop pauses whenever the figure is off screen. */
+(function fig1Flow() {
+  const layer = document.getElementById("f1flow");
+  if (!layer || reduced) return;
+  const svg = layer.ownerSVGElement;
+  svg.querySelectorAll(".f1__wires .f1__link").forEach(function (p) {
+    if (p.classList.contains("f1__link--thin") || p.classList.contains("f1__link--vic") ||
+        p.classList.contains("f1__link--sch")) return;
+    el("path", {
+      class: "f1__flowpath" + (p.classList.contains("f1__link--act") ? " f1__flowpath--act" : ""),
+      d: p.getAttribute("d")
+    }, layer);
+  });
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver(function (es) {
+      svg.classList.toggle("is-offscreen", !es[0].isIntersecting);
+    }).observe(svg);
+  }
+})();
+
+/* ======================================================================== */
+/* 7. SCROLL REVEAL — sections, findings, charts                            */
+/* ======================================================================== */
+/* CSS hides [data-reveal] content only under html.js; this adds .is-in once the
+   element scrolls into view. Reduced motion or no observer: show everything. */
+(function reveal() {
+  const items = document.querySelectorAll("[data-reveal]");
+  /* Nobody watches a page loaded hidden (background tab, crawler, headless
+     renderer), and an observer may never fire there: show it final at once. */
+  if (reduced || document.hidden || navigator.webdriver || !("IntersectionObserver" in window)) {
+    items.forEach(function (n) { n.classList.add("is-in"); });
+    return;
+  }
+  const io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) { e.target.classList.add("is-in"); io.unobserve(e.target); }
+    });
+  }, { threshold: 0, rootMargin: "0px 0px -8% 0px" });
+  items.forEach(function (n) { io.observe(n); });
+  /* a jump to an anchor or a print must never leave content hidden */
+  window.addEventListener("beforeprint", function () {
+    items.forEach(function (n) { n.classList.add("is-in"); });
+  });
+})();
+
+/* ======================================================================== */
+/* 8. LINKS AND CITATION                                                    */
 /* ======================================================================== */
 (function meta() {
   const bib = document.getElementById("bibtex");
