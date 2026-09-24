@@ -332,6 +332,10 @@ a person. Four surfaces carry that, and each one restates page content:
 | `llms.txt` | A plain-text summary for language models (llmstxt.org format) with the key numbers and links to the Markdown docs, which Pages serves as `text/markdown` | Section 3 numbers; the doc list when a `docs/*.md` file is added or renamed |
 | `sitemap.xml`, `robots.txt` | The page, the PDF, `llms.txt` and the Markdown docs, with `lastmod` | Bump `lastmod` when the page or the PDF changes |
 
+**Search Console.** The URL-prefix property `https://ostertagmatthieu-dev.github.io/saac-jepa/` is
+verified by the `google-site-verification` meta tag in `<head>`; removing the tag unverifies it.
+Bing Webmaster Tools imports the property from Search Console.
+
 **Root files are out of reach.** Crawlers read `robots.txt` (and a root `llms.txt`) only at
 `https://ostertagmatthieu-dev.github.io/`, which belongs to a separate user-site repository,
 `ostertagmatthieu-dev/ostertagmatthieu-dev.github.io`. The copies here document the intent.
