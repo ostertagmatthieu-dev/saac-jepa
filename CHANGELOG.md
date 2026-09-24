@@ -56,7 +56,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   and counts three reads of the target, as the paper does (README and `docs/results.md` too).
   Animations: signal packets synchronised with the latent pulse in the hero strip, a data flow
   along Fig. 1's wires after it is built, and scroll reveals, all paused off screen and disabled
-  under reduced motion. Old section anchors still resolve.
+  under reduced motion. Old section anchors still resolve. The compute acknowledgement is removed
+  from the page footer and the README, as the paper carries none.
 - Search and AI indexing: the `<title>` and social titles lead with the paper's keywords; the
   JSON-LD becomes one `@graph` (article with abstract, keywords and datasets, source code, datasets,
   authors by ORCID, and an FAQ that mirrors the visible key findings); Scholar tags gain ORCID,
