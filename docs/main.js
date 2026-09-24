@@ -13,7 +13,7 @@ const CONFIG = {
   // index.html carries the SAME BibTeX as static text inside #bibtex, so the page
   // works with JavaScript off. Edit BOTH, or the two will drift. See UPDATING.md.
   bibtex: [
-    "@misc{bouaziz2026schemaadaptiveactionconditionedjepacrossmachine,",
+    "@misc{bouaziz2026worldmodelscrossmachinecnc,",
     "  title         = {World Models for Cross-Machine CNC Transfer under Partial Sensor Overlap},",
     "  author        = {Ayoub Louaye Bouaziz and Matthieu Ostertag and Anton Demasles},",
     "  year          = {2026},",

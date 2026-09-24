@@ -155,7 +155,7 @@ docs/                  the project page served by GitHub Pages, the Markdown doc
 ## Citation
 
 ```bibtex
-@misc{bouaziz2026schemaadaptiveactionconditionedjepacrossmachine,
+@misc{bouaziz2026worldmodelscrossmachinecnc,
   title         = {World Models for Cross-Machine CNC Transfer under Partial Sensor Overlap},
   author        = {Ayoub Louaye Bouaziz and Matthieu Ostertag and Anton Demasles},
   year          = {2026},
