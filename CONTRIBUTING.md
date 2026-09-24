@@ -72,7 +72,7 @@ These are not style preferences. They are what keeps the published numbers meani
 If a change makes a headline number move, the number has to move everywhere at once.
 
 - `docs/index.html` is the source of truth for headline numbers and is served by GitHub Pages.
-- **[`docs/UPDATING.md` §2](docs/UPDATING.md) lists every place each headline number appears.**
+- **[`docs/UPDATING.md` §3](docs/UPDATING.md) lists every place each headline number appears.**
   If you touch a number that the project page states, update that inventory in the same pull
   request — otherwise the next person will change five of the six occurrences.
 - `README.md` and the pages under `docs/` must agree with the project page. Do not introduce a

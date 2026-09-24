@@ -3,7 +3,7 @@
 Every number on this page is in **z units of the source-train normalizer**, lower is better
 unless stated otherwise. Two evaluation sets recur and they are not interchangeable:
 
-- **Source** — DS01. The SAAC-JEPA rows are means over seeds on `source_val` (3,423 windows);
+- **Source** — DS01. The world-model rows are means over seeds on `source_val` (3,423 windows);
   the official baselines are scored on the `source_test` split (5,189 windows, 17 sensors).
   **The source column therefore does not compare like with like.**
 - **Target** — DS03, the 10 shared channels over 7 independent runs, **2,457 windows**.
@@ -35,8 +35,8 @@ clean-source forecasting over training from scratch. This is the P3-FIX gate's A
 | Linear drift | 0.928 | — | trivial reference |
 | PatchTST (official, RevIN) | 0.804 | 0.503 | deterministic, single run |
 | iTransformer (official, RevIN) | 0.822 | 0.498 | deterministic, single run |
-| **SAAC-JEPA (locked, M03)** | **0.822 ± 0.009** | **0.546** | probabilistic (mean and log-variance head); NLL 0.52; R² 0.012; single declared pass |
-| SAAC-JEPA + RevIN (post-lock) | 0.766 ± 0.001 | 0.495 ± 0.004 | same architecture, instance normalisation on; NLL 20.6; three seeds; diagnostic |
+| **World model (locked, M03)** | **0.822 ± 0.009** | **0.546** | probabilistic (mean and log-variance head); NLL 0.52; R² 0.012; single declared pass |
+| World model + RevIN (post-lock) | 0.766 ± 0.001 | 0.495 ± 0.004 | same architecture, instance normalisation on; NLL 20.6; three seeds; diagnostic |
 
 Row definitions:
 
@@ -47,10 +47,10 @@ Row definitions:
   `third_party/README.md`, driven through their own run scripts on our exported windows
   (`scripts/29` exports, `scripts/66` runs). Both ship RevIN-style instance normalisation.
   Single deterministic run each, repository defaults, no hyper-parameter sweep.
-- **SAAC-JEPA (locked, M03)** — `configs/search_v2/M03.yaml`, the candidate selected on source
+- **World model (locked, M03)** — `configs/search_v2/M03.yaml`, the candidate selected on source
   validation alone and frozen under a SHA-256 lock. Source figure is the seven-seed mean ± SD on
   source validation; target figure is the single confirmatory pass.
-- **SAAC-JEPA + RevIN (post-lock)** — `configs/revin/M03_revin.yaml`, byte-identical to M03 plus
+- **World model + RevIN (post-lock)** — `configs/revin/M03_revin.yaml`, byte-identical to M03 plus
   `model.revin.enabled: true`. Three seeds; the second, declared read of DS03.
 
 Two further source-validation references, for scale: **RSSM 0.759** and **MLP 0.771**, both

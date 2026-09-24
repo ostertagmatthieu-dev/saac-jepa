@@ -41,6 +41,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- The paper is retitled *World Models for Cross-Machine CNC Transfer under Partial Sensor Overlap*
+  (revised arXiv version 2609.16071v2 of the same V1 paper, announced 2026-09-24), after Jean Ponce's review: the method acronym
+  SAAC-JEPA leaves the paper and stays only as the code name of this repository. The new title is
+  applied to `CITATION.cff`, `pyproject.toml`, the package docstring, the README, the three BibTeX
+  copies and the project page; the page abstract mirrors the rewritten abstract, result rows read
+  "World model (locked, M03)", `docs/paper.pdf` is the build of 2609.16071v2 and `docs/og.png` shows the new
+  title. arXiv derives the BibTeX key from the title, so the key changes from
+  `bouaziz2026schemaadaptiveactionconditionedjepacrossmachine` to `bouaziz2026worldmodelscrossmachinecnc`, copied from the abs
+  page of 2609.16071v2. The identifier, the DOI `10.48550/arXiv.2609.16071` and the abs URL do not change:
+  arXiv mints one DOI per identifier, not per version.
 - `README.md`, `docs/data.md` and the project-page footer now state explicitly that the MIT licence
   covers the repository contents and reaches neither dataset, that neither dataset is
   redistributed here, and that both CC BY 4.0 licences oblige us to declare the ETL changes we
