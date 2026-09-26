@@ -4,10 +4,10 @@
    ========================================================================== */
 
 const CONFIG = {
-  // arXiv abs URL, announced 2026-09-13. index.html carries the same link on the
+  // arXiv DOI link (resolves to the abs page), announced 2026-09-13. index.html carries the same link on the
   // arXiv button and in #arxivNote, so the page still points at arXiv with JS off.
   // The PDF button is a plain relative link to paper.pdf and is not driven by CONFIG.
-  arxivUrl: "https://arxiv.org/abs/2609.16071",
+  arxivUrl: "https://doi.org/10.48550/arXiv.2609.16071",
   arxivPlaceholder: "arXiv: coming soon",
   codeUrl: "https://github.com/ostertagmatthieu-dev/saac-jepa",
   // index.html carries the SAME BibTeX as static text inside #bibtex, so the page
