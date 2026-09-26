@@ -18,7 +18,7 @@ TikZ sources and rendered figures under `paper/figures/`, and the result records
 Two clarifications, because MIT was written for software and this repository is not only software:
 
 - **`docs/paper.pdf` is the preprint.** It is redistributed here for convenience; the version of
-  record is [arXiv:2609.16071](https://arxiv.org/abs/2609.16071) and it carries whichever licence
+  record is [arXiv:2609.16071](https://doi.org/10.48550/arXiv.2609.16071) and it carries whichever licence
   was selected at submission on arXiv, not MIT.
 - **No trained weights are distributed.** `*.pt` / `*.pth` / `*.ckpt` are gitignored. A checkpoint
   trained on DS03 would inherit DS03's restriction (§2); none leaves this repository.

@@ -25,7 +25,10 @@ Three things outside the table went with the same sweep:
 
 - `docs/index.html` — the arXiv button (`#btnArxiv`) is a live link labelled `arXiv`; it no
   longer ships the muted `aria-disabled` "soon" state, so the page points at arXiv with
-  JavaScript off. `#arxivNote` in §07 Cite is an `<a>` to the abs URL.
+  JavaScript off. `#arxivNote` in §07 Cite is an `<a>` to the abs URL. Since 2026-09-26 the button, `#arxivNote`,
+  `CONFIG.arxivUrl` and the README badge point at the DOI link
+  `https://doi.org/10.48550/arXiv.2609.16071`, which resolves to the abs page; the BibTeX `url`,
+  `CITATION.cff` and `citation_abstract_html_url` keep the abs URL.
 - All three BibTeX copies now carry `url = {https://arxiv.org/abs/2609.16071}` instead of the
   project page, which stays reachable through the Code button, the README and `CITATION.cff`.
 - `CITATION.cff` gained `url` alongside the `identifiers` entry in `preferred-citation`.
