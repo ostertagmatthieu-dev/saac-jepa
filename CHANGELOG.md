@@ -41,6 +41,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- The project page no longer calls the pretraining objective a loss. Its four terms all contain a
+  stop-gradient, so the weighted sum L_SSL was not a function whose gradient training follows. The
+  "Loss" row of §03 becomes "Training": a per-step function J_k with the EMA weights and a frozen
+  copy of the current weights as explicit arguments, the AdamW step and the EMA update, read as a
+  semi-gradient iteration. The variance-covariance term is no longer called VICReg (it has no
+  invariance term) and is shown with half its weight, since the target half of the logged term
+  carries no gradient. The SSL validation value becomes a selection score, the surrogate caveat
+  and the figure 3 label follow, and `docs/llms.txt` and `docs/protocol.md` use the same wording.
+
 - The project page is restructured for readers who know world models, in seven sections instead of
   nine, with each headline number stated once in prose. §01 opens with three key-finding cards,
   each a question, a one-line answer and an animated micro-bar chart; the abstract is folded

@@ -591,7 +591,7 @@
             <text class="f1__lossin" x="872" y="381" text-anchor="middle">lat</text>
           </g>
 
-          <text class="f1__loss anim-in" style="--d:3.70s" x="388" y="272" text-anchor="end">L<tspan class="sb" dy="2.5">VICReg</tspan></text>
+          <text class="f1__loss anim-in" style="--d:3.70s" x="388" y="272" text-anchor="end">V<tspan dy="0">(z</tspan><tspan class="sb" dy="-4">c</tspan><tspan class="sb" dx="-4" dy="6.5">pool</tspan><tspan dy="-2.5">)</tspan></text>
           <text class="f1__sub f1__sub--free anim-in" style="--d:3.70s" x="388" y="290" text-anchor="end">variance–covariance, anti-collapse</text>
 
           <g class="f1__node anim-in" style="--d:4.18s">
@@ -603,7 +603,7 @@
         </svg>
       </div>
       <p class="panel__hint">Scroll sideways to read the figure</p>
-      <p class="panel__cap">One training step. The context encoder reads the present sensors, their presence mask and the past commands; the predictor fills five horizon slots in one pass from the context latent and the mean future command of each horizon; an EMA target encoder, behind a stop-gradient, gives the latents the predictions must match. Three auxiliary terms hold the representation in place. Colours: teal sensors, amber commands, violet latents, red losses, grey dashed the EMA copy of the encoder, green dashed the post-lock RevIN variant (paper Sec. 4.4 and App. H), not part of the locked model. Symbols: <i>x</i> sensor rows, <i>m</i> presence mask, <i>a</i> commands, <i>ā</i><sub>h</sub> mean command over (t, t+h], <i>z</i><sup>c</sup> context latent, <i>ẑ</i> predicted latent, <i>z̄</i> target latent, sg stop-gradient, ℋ = {1, 2, 4, 8, 16} s.</p>
+      <p class="panel__cap">One training step. The context encoder reads the present sensors, their presence mask and the past commands; the predictor fills five horizon slots in one pass from the context latent and the mean future command of each horizon; an EMA target encoder, behind a stop-gradient, gives the latents the predictions must match. Three auxiliary terms hold the representation in place. Colours: teal sensors, amber commands, violet latents, red training terms, grey dashed the EMA copy of the encoder, green dashed the post-lock RevIN variant (paper Sec. 4.4 and App. H), not part of the locked model. Symbols: <i>x</i> sensor rows, <i>m</i> presence mask, <i>a</i> commands, <i>ā</i><sub>h</sub> mean command over (t, t+h], <i>z</i><sup>c</sup> context latent, <i>ẑ</i> predicted latent, <i>z̄</i> target latent, sg stop-gradient (a frozen argument in the Training row below), ℋ = {1, 2, 4, 8, 16} s.</p>
     </figure>
 
     <h3 class="sub">What is modelled, and how it is trained</h3>
@@ -612,7 +612,7 @@
         <p class="formal__k">Object</p>
         <div class="formal__eq">
           <math display="block"><mrow><msub><mi>p</mi><mi>θ</mi></msub><mo stretchy="false">(</mo><msub><mi>x</mi><mrow><mi>t</mi><mo>+</mo><mn>1</mn><mo>:</mo><mi>t</mi><mo>+</mo><mi>H</mi></mrow></msub><mo>∣</mo><msub><mi>x</mi><mrow><mi>t</mi><mo>−</mo><mi>K</mi><mo>+</mo><mn>1</mn><mo>:</mo><mi>t</mi></mrow></msub><mo>,</mo><msub><mi>m</mi><mrow><mi>t</mi><mo>−</mo><mi>K</mi><mo>+</mo><mn>1</mn><mo>:</mo><mi>t</mi></mrow></msub><mo>,</mo><msub><mi>a</mi><mrow><mi>t</mi><mo>−</mo><mi>K</mi><mo>+</mo><mn>1</mn><mo>:</mo><mi>t</mi><mo>+</mo><mi>H</mi></mrow></msub><mo stretchy="false">)</mo></mrow></math>
-          <p class="formal__gl">Future sensor rows given the last K = 32 rows, their presence mask <i>m</i> and the commands <i>a</i>, past and planned. This is the object of interest, not the training loss.</p>
+          <p class="formal__gl">Future sensor rows given the last K = 32 rows, their presence mask <i>m</i> and the commands <i>a</i>, past and planned. This is the object of interest; pretraining does not fit it, fine-tuning does.</p>
         </div>
       </div>
       <div class="formal__row">
@@ -625,16 +625,19 @@
         </div>
       </div>
       <div class="formal__row">
-        <p class="formal__k">Loss</p>
+        <p class="formal__k">Training</p>
         <div class="formal__eq">
-          <math display="block"><mrow><msub><mi>ℒ</mi><mtext>SSL</mtext></msub><mo>=</mo><msub><mi>ℒ</mi><mtext>lat</mtext></msub><mo>+</mo><mn>0.05</mn><mspace width="0.15em"/><msub><mi>ℒ</mi><mtext>VICReg</mtext></msub><mo>+</mo><mn>0.10</mn><mspace width="0.15em"/><msub><mi>ℒ</mi><mtext>schema</mtext></msub><mo>+</mo><mn>0.05</mn><mspace width="0.15em"/><msub><mi>ℒ</mi><mtext>act</mtext></msub></mrow></math>
+          <math display="block"><mtable columnalign="right left"><mtr><mtd style="text-align:right;padding:0"><mrow><msub><mi>𝒥</mi><mi>k</mi></msub><mo stretchy="false">(</mo><mi>ϑ</mi><mo stretchy="false">)</mo><mo>=</mo></mrow></mtd><mtd style="text-align:left;padding:0"><mrow><msub><mi>ℒ</mi><mtext>lat</mtext></msub><mo stretchy="false">(</mo><mi>ϑ</mi><mo>;</mo><msub><mover><mi>θ</mi><mo>¯</mo></mover><mi>k</mi></msub><mo stretchy="false">)</mo><mo>+</mo><mfrac><mn>0.05</mn><mn>2</mn></mfrac><mspace width="0.1em"/><mi>V</mi><mo stretchy="false">(</mo><msubsup><mi>z</mi><mtext>pool</mtext><mi>c</mi></msubsup><mo stretchy="false">)</mo></mrow></mtd></mtr><mtr><mtd style="padding:0"></mtd><mtd style="text-align:left;padding:0"><mrow><mo lspace="0.22em" rspace="0.22em">+</mo><mn>0.10</mn><mspace width="0.15em"/><msub><mi>ℒ</mi><mtext>schema</mtext></msub><mo stretchy="false">(</mo><mi>ϑ</mi><mo>;</mo><msub><mi>ϑ</mi><mi>k</mi></msub><mo stretchy="false">)</mo><mo>+</mo><mn>0.05</mn><mspace width="0.15em"/><msub><mi>ℒ</mi><mtext>act</mtext></msub><mo stretchy="false">(</mo><mi>ϑ</mi><mo>;</mo><msub><mover><mi>θ</mi><mo>¯</mo></mover><mi>k</mi></msub><mo stretchy="false">)</mo></mrow></mtd></mtr></mtable></math>
+          <math display="block"><mrow><msub><mi>ϑ</mi><mrow><mi>k</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><mi>AdamW</mi><mo stretchy="false">(</mo><msub><mi>ϑ</mi><mi>k</mi></msub><mo>,</mo><mspace width="0.2em"/><mo>∇</mo><msub><mi>𝒥</mi><mi>k</mi></msub><mo stretchy="false">(</mo><msub><mi>ϑ</mi><mi>k</mi></msub><mo stretchy="false">)</mo><mo stretchy="false">)</mo></mrow></math>
+          <math display="block"><mrow><msub><mover><mi>θ</mi><mo>¯</mo></mover><mrow><mi>k</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><mi>τ</mi><mspace width="0.1em"/><msub><mover><mi>θ</mi><mo>¯</mo></mover><mi>k</mi></msub><mo>+</mo><mo stretchy="false">(</mo><mn>1</mn><mo>−</mo><mi>τ</mi><mo stretchy="false">)</mo><mspace width="0.1em"/><msub><mi>θ</mi><mrow><mi>e</mi><mo>,</mo><mi>k</mi><mo>+</mo><mn>1</mn></mrow></msub></mrow></math>
+          <p class="formal__gl">Pretraining is this iteration, not the minimization of one function. Each step is one AdamW step on 𝒥<sub>k</sub> (gradient norm clipped to 1) with its second arguments held fixed: the EMA weights θ̄<sub>k</sub> of the encoder, or a frozen copy ϑ<sub>k</sub> of the current weights (the stop-gradients of the code). ℒ<sub>lat</sub> and ℒ<sub>schema</sub> regress toward, and ℒ<sub>act</sub> reads, quantities computed by the network itself; they are fixed during the step but move with ϑ across steps, so the update is a partial gradient, in general the gradient of no single function: a semi-gradient iteration, as in BYOL or TD learning. It does not by itself exclude collapse: with shared weights and no stop-gradient, ℒ<sub>lat</sub> would be zero for any constant encoder, and the plain JEPA control, trained on ℒ<sub>lat</sub> alone, collapsed on all four seeds.</p>
           <ul class="formal__terms">
-            <li><b>ℒ<sub>lat</sub></b> smooth-L1 between each predicted latent and the stop-gradient EMA target latent, averaged over horizons.</li>
-            <li><b>ℒ<sub>VICReg</sub></b> variance hinge and covariance penalty (α = 25, β = 1), no invariance term; only the context half carries gradient.</li>
-            <li><b>ℒ<sub>schema</sub></b> the prediction from a further random channel subset (κ = 0.65) is pulled toward the detached prediction of the fuller view; with a whole-window channel dropout of 0.15, a channel is missing from the reduced view with probability ≈ 0.45, close to the 7/17 ≈ 0.41 the target lacks.</li>
-            <li><b>ℒ<sub>act</sub></b> a small head <i>r</i><sub>ω</sub> regresses the mean command <i>ā</i><sub>h</sub> from the context latent and the target latent: a weak, multi-step inverse-dynamics term.</li>
+            <li><b>ℒ<sub>lat</sub></b> smooth-L1 between each predicted latent <i>ẑ</i><sub>t+h</sub>, computed with ϑ, and the target latent <i>z̄</i><sub>t+h</sub> that the EMA encoder computes with θ̄, averaged over horizons.</li>
+            <li><b>V</b> variance hinge and covariance penalty (α = 25, β = 1) on the pooled context latent. Without an invariance term it is a variance–covariance regularizer, not VICReg (the search labels below still call it VICReg). Its weight is halved because the logged term averages it with the same statistics on the target latents, which depend on θ̄ only and carry no gradient.</li>
+            <li><b>ℒ<sub>schema</sub></b> the prediction from a further random channel subset (κ = 0.65), computed with ϑ, is pulled toward the prediction of the fuller view computed with the frozen copy ϑ<sub>k</sub>; with a whole-window channel dropout of 0.15, a channel is missing from the reduced view with probability ≈ 0.45, close to the 7/17 ≈ 0.41 the target lacks.</li>
+            <li><b>ℒ<sub>act</sub></b> a small head <i>r</i><sub>ω</sub> regresses the mean command <i>ā</i><sub>h</sub> from the context latent, computed with ϑ, and the target latent, computed with θ̄: a weak, multi-step inverse-dynamics term.</li>
           </ul>
-          <p class="formal__gl">λ<sub>lat</sub> = 1 is a normalization: in pretraining, a common rescaling of the four weights is absorbed by AdamW (up to its ε and the gradient clip), so three weights are free. Fine-tuning then adds the Gaussian negative log-likelihood of the head.</p>
+          <p class="formal__gl">Here ϑ = (θ<sub>e</sub>, φ, ω) are the weights trained in pretraining: the command head ω is trained there, the physical head ψ of θ receives no gradient. A low value of 𝒥<sub>k</sub> is not by itself evidence of a useful representation; collapse is monitored separately. The only loss on the object is the Gaussian negative log-likelihood of the head, added in fine-tuning, where the schema term moves to the physical output; that stage keeps the frozen-argument terms, so it is the same kind of iteration. The weight of ℒ<sub>lat</sub> is 1 by normalization: a common rescaling of the four weights rescales ∇𝒥<sub>k</sub>, which AdamW's normalized update absorbs (up to its ε and the gradient clip), so three weights are free.</p>
         </div>
       </div>
     </div>
@@ -642,7 +645,7 @@
     <div class="caveats">
       <p class="caveats__head">Read the equations carefully</p>
       <ul class="caveats__list">
-        <li>The self-supervised loss is a <strong>surrogate</strong> for the object, not a bound on its likelihood: during pretraining the head receives no gradient. Whether it helps is an empirical question, and on the source machine it does not (Q1).</li>
+        <li>Pretraining is only a <strong>surrogate</strong> for fitting the object, not a bound on its likelihood: during pretraining the head receives no gradient. Whether it helps is an empirical question, and on the source machine it does not (Q1).</li>
         <li>The model is a <strong>product of per-horizon marginals</strong>: horizons and channels are treated as conditionally independent given the context and commands, so it does not model their correlations.</li>
         <li>All horizons come from <strong>one pass</strong> with a causal slot mask; no predicted latent is fed back, so there is no autoregressive rollout, and the future commands enter only as nested means, not as a step-by-step profile.</li>
       </ul>
@@ -681,7 +684,7 @@
     <hr class="rule">
     <h2 class="sec__head" id="h-lock"><span class="sec__num">04</span>Selection without looking at the target</h2>
     <p class="lede">Twenty candidates were written down before any ran and ranked on source validation only. The target machine enters no decision before the lock.</p>
-    <p class="body">The composite score weights clean, schema-drop, masked and long-horizon RMSE, calibration and the SSL validation loss, each z-scored within the pool, and penalizes collapsed seeds and weak command use (RMSE with shuffled commands less than 1.02 times RMSE with true ones). When the provisional winner changed under confirmation, locking was refused and seeds were added. Two candidates collapsed: the plain JEPA control without anti-collapse regularization on all four seeds, and the largest model (d = 512, eight layers) on three of four.</p>
+    <p class="body">The composite score weights clean, schema-drop, masked and long-horizon RMSE, calibration and the SSL validation score, each z-scored within the pool, and penalizes collapsed seeds and weak command use (RMSE with shuffled commands less than 1.02 times RMSE with true ones). When the provisional winner changed under confirmation, locking was refused and seeds were added. Two candidates collapsed: the plain JEPA control without anti-collapse regularization on all four seeds, and the largest model (d = 512, eight layers) on three of four.</p>
     <figure class="panel" data-fig="f3">
       <figcaption class="panel__bar">
         <span class="panel__id">FIG. 4</span>
@@ -980,7 +983,7 @@
       <ul class="warn__list">
         <li class="warn__item"><strong>One transfer pair.</strong> One source machine, one target machine, seven independent target runs. Broader invariance claims wait for more machines.</li>
         <li class="warn__item"><strong>One locked checkpoint, evaluated once.</strong> The target number is a single seed; run-level confidence intervals and the few-shot curve on the locked model are still to compute.</li>
-        <li class="warn__item"><strong>The latent objective is not isolated on the target.</strong> Every arm, scratch included, trains with the latent terms, so no target arm measures their contribution.</li>
+        <li class="warn__item"><strong>The latent terms are not isolated on the target.</strong> Every arm, scratch included, trains with the latent terms, so no target arm measures their contribution.</li>
         <li class="warn__item"><strong>Predictive, not decision-theoretic.</strong> No policy, no planning, no closed loop: the commands are inputs, and downstream control is future work.</li>
       </ul>
     </div>
