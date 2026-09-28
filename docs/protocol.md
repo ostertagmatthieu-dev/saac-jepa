@@ -69,7 +69,7 @@ that emits a constant (`mu_std ≈ 0` against the target's own spread — the di
 script 62 calls the P3 symptom). The fix moves the regularisers to the right latents
 (`jepa.vicreg_placement: context_target`, which raised target-encoder effective rank to about
 **58 %**), forces `jepa.physical_weight = 0` during pure SSL so no gradient reaches the head,
-selects the pretraining checkpoint on a **held-out SSL objective** rather than training loss,
+selects the pretraining checkpoint on a **held-out SSL validation score** rather than training-batch values,
 and makes `--head fresh` the default fine-tuning path so the pretraining comparison is not
 confounded by a head that was never trained on the forecasting objective.
 
