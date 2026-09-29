@@ -34,7 +34,8 @@ Three things outside the table went with the same sweep:
 - `CITATION.cff` gained `url` alongside the `identifiers` entry in `preferred-citation`.
 - The three BibTeX copies were then realigned on arXiv's own export (the "Export BibTeX
   Citation" link on the abs page): `@misc`, arXiv's citation key
-  `bouaziz2026schemaadaptiveactionconditionedjepacrossmachine`, no `journal` field, plus our
+  `bouaziz2026schemaadaptiveactionconditionedjepacrossmachine` (v1 title; since the 2609.16071v2
+  retitle it is `bouaziz2026worldmodelscrossmachinecnc`, see Section 2, row 17), no `journal` field, plus our
   `doi`. Keep the key when the identifier changes, since papers that already cite it depend on
   it; only `eprint`, `doi` and `url` move. If a journal version replaces the preprint, switch
   the entry to `@article` with the real `journal` and keep the same key.
@@ -111,7 +112,13 @@ The icons come from `favicon.svg` the same way (32×32 and 180×180).
 
 ---
 
-## 2. Changing the paper title
+## 2. Changing the paper title — last applied 2026-09-24, `arXiv:2609.16071v2`
+
+**Done for 2609.16071v2.** The v1 title *Schema-Adaptive Action-Conditioned JEPA for
+Cross-Machine CNC Transfer under Partial Sensor Overlap* became *World Models for
+Cross-Machine CNC Transfer under Partial Sensor Overlap* (v2 submitted 2026-09-23, announced
+2026-09-24), and all 21 rows below are applied — see the retitle entry in `CHANGELOG.md`. The
+table is kept as the map of where the title lives, for any later retitle.
 
 The title is two strings. The **full title** is one casing, verbatim as it appears on
 arXiv — every surface that quotes the whole title (BibTeX, `citation_title`, the JSON-LD
@@ -145,8 +152,8 @@ not change any of `eprint`, `doi` or `url` anywhere in the repository.
 | 14 | `docs/index.html` | JSON-LD `ScholarlyArticle.name` — the full title. |
 | 15 | `docs/index.html` | Masthead `<h1 class="masthead__title">` — the full title. Keep whatever inner markup pattern (line breaks, spans) the current title already uses. |
 | 16 | `docs/404.html` | The prose sentence naming the paper — the full title. |
-| 17 | The BibTeX **key** (`bouaziz2026...` in all three copies) | Unchanged until 2609.16071v2 is announced — arXiv derives the key from the title, so it will change too. Once v2 is live, copy the new key verbatim from the abs page's "Export BibTeX Citation" link into all three copies (rows 6–8 above), and record the retired key in `CHANGELOG.md`, following the precedent already there for the `eprint`/`doi`/`url` swap. |
-| 18 | `docs/paper.pdf` | Unchanged until 2609.16071v2 is announced. Then replace it in place with that version's PDF — keep it under 1024 KB, since the `check-added-large-files` pre-commit hook rejects anything larger. `citation_pdf_url` and the PDF button both point at this file and do not need editing. |
+| 17 | The BibTeX **key** (`bouaziz2026...` in all three copies) | Unchanged until the revised arXiv version is announced — arXiv derives the key from the title, so it changes too. Once that version is live, copy the new key verbatim from the abs page's "Export BibTeX Citation" link into all three copies (rows 6–8 above), and record the retired key in `CHANGELOG.md`, following the precedent already there for the `eprint`/`doi`/`url` swap. |
+| 18 | `docs/paper.pdf` | Unchanged until the revised arXiv version is announced. Then replace it in place with that version's PDF — keep it under 1024 KB, since the `check-added-large-files` pre-commit hook rejects anything larger. `citation_pdf_url` and the PDF button both point at this file and do not need editing. |
 | 19 | `docs/og.png` | The card renders the title as text, so it must be re-rendered after any title change (see "Re-rendering `og.png`" under Section 1). |
 | 20 | `CHANGELOG.md` | `[Unreleased]` entry recording the retitle. |
 | 21 | Section 3, "Where every headline number lives" | Only if the abstract itself changes as part of the retitle — a title-only change does not touch it. |
@@ -159,9 +166,9 @@ bare code name `SAAC-JEPA` wherever it stands alone (README h1, `og:site_name`, 
 `404.html` `<title>`, masthead eyebrow).
 
 **Order of operations.** Edit the strings above on a branch first. Submit the revised
-arXiv version, 2609.16071v2. Only after arXiv announces it: update the BibTeX key (row 17), `docs/paper.pdf`
+arXiv version. Only after arXiv announces it: update the BibTeX key (row 17), `docs/paper.pdf`
 (row 18), `docs/og.png` (row 19) and `CHANGELOG.md` (row 20). Merge last. GitHub Pages
-publishes `main` immediately on merge, so merging with the strings changed but before 2609.16071v2
+publishes `main` immediately on merge, so merging with the strings changed but before the revised version
 is announced puts a `citation_title` on the live page that does not match arXiv yet —
 Google Scholar can cluster that as a second, duplicate record of the paper.
 
@@ -183,17 +190,23 @@ console.log("BibTeX DRIFTED");for(const[n,s]of[["docs/index.html",html],["docs/m
 If HTML entities creep into `docs/index.html` (e.g. `&amp;`), decode them before comparing
 — the regexes above assume plain text.
 
-### Finishing the retitle once 2609.16071v2 is announced
+### Finishing the retitle once the revised version is announced — done for 2609.16071v2
 
 **Naming.** V1 and V2 name the research concepts of the paper (its Figure 7); the paper itself
 is the V1 paper. Its arXiv versions are written with the identifier, 2609.16071v1 and
 2609.16071v2 (the revised version), never as a bare "v2".
 
-Everything that does not depend on arXiv is already on the branch: the new title on every
-surface, `docs/paper.pdf` (the build of 2609.16071v2), `docs/og.png` (re-rendered with the new title) and a
-`CHANGELOG.md` entry with two placeholders, `@REVISION_DATE@` and `@NEW_KEY@`. Once 2609.16071v2 is announced:
+**Done.** 2609.16071v2 was announced on 2026-09-24 and closed out with the steps below: the
+key is now `bouaziz2026worldmodelscrossmachinecnc` in all three BibTeX copies and the
+`CHANGELOG.md` placeholders are filled. The steps are kept as the procedure for a later
+revision. `.github/scripts/apply_arxiv_revision.sh` hard-codes the v1 key as `OLD_KEY`, so
+update that line before reusing it.
 
-1. Open <https://arxiv.org/abs/2609.16071>, check that it lists version 2 with the new title, and copy
+For that, put everything that does not depend on arXiv on the branch first: the new title on every
+surface, `docs/paper.pdf` (the build of the revised version), `docs/og.png` (re-rendered with the new title) and a
+`CHANGELOG.md` entry with two placeholders, `@REVISION_DATE@` and `@NEW_KEY@`. Once the revised version is announced:
+
+1. Open <https://arxiv.org/abs/2609.16071>, check that it lists the revised version with the new title, and copy
    the key from *Export BibTeX Citation*.
 2. Run
    ```sh
@@ -206,8 +219,6 @@ surface, `docs/paper.pdf` (the build of 2609.16071v2), `docs/og.png` (re-rendere
 3. Review `git diff`, commit, push, take the pull request out of draft and merge.
 4. After Pages deploys, check the live `citation_title`, and re-scrape the card
    (LinkedIn Post Inspector, X card validator) so the old `og.png` is evicted.
-
-The script can be deleted after this retitle; the steps above remain the procedure.
 
 ---
 
