@@ -32,6 +32,10 @@ Key facts, all RMSE in z units of the source normalizer, lower is better:
 
 - [GitHub repository](https://github.com/ostertagmatthieu-dev/saac-jepa): MIT-licensed code, configurations of the twenty candidates, audit scripts
 
+## Demo
+
+- [Hugging Face Space](https://huggingface.co/spaces/mostertag/saac-jepa-world-model): the locked model running in the browser (ONNX) on the target machine, with sensors that can be hidden and commands that can be edited
+
 ## Optional
 
 - [Licensing](https://ostertagmatthieu-dev.github.io/saac-jepa/licensing.md): licences of the code, the paper and the two CC BY 4.0 datasets
