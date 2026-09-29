@@ -1,0 +1,8 @@
+# Cog configuration for the Replicate model ostertagmatthieu-dev/saac-jepa-world-model.
+# Build context is this directory only. Fetch the weights first (see README.md):
+#   python fetch_weights.py && cog push r8.im/ostertagmatthieu-dev/saac-jepa-world-model
+build:
+  gpu: false
+  python_version: "3.12"
+  python_requirements: requirements.txt
+run: "predict.py:Predictor"

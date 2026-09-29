@@ -2,7 +2,7 @@ PY ?= python
 UV ?= uv
 RUFF ?= uvx ruff@0.14.0
 SYNTH := data/synthetic_ds01_ds03.csv
-FORMAT_PATHS := src/cncjepa/__init__.py tests/conftest.py tests/test_smoke.py tests/test_version.py
+FORMAT_PATHS := src/cncjepa/__init__.py tests/conftest.py tests/test_smoke.py tests/test_version.py replicate/predict.py replicate/fetch_weights.py
 
 .PHONY: help setup data-synth smoke test test-fast lint format-check review reproduce-dry figures-zip clean
 

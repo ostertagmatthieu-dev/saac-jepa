@@ -9,6 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- The locked model on Replicate, [ostertagmatthieu-dev/saac-jepa-world-model](https://replicate.com/ostertagmatthieu-dev/saac-jepa-world-model),
+  packaged with Cog in `replicate/` and linked from a README badge, the `## Demo` section, the
+  project-page footer and `docs/llms.txt`. It serves the same ONNX export as the Space on CPU. A
+  JSON window goes in (any subset of the 17 sensors over 32 s, the four commands over the next
+  16 s, optional hidden sensors) and a mean, standard deviation and interval per sensor and horizon
+  come out. `fetch_weights.py` pins the Space revision and the SHA-256 of every artefact, and the
+  container checks the locked hashes again at startup. Through the predictor, the 2,457 target
+  windows give RMSE 0.545579 and MAE 0.352358, the sealed values, and the five PyTorch reference
+  windows of the Space agree within 6·10⁻⁶. No dataset content goes into the image.
+
 - An interactive demo on Hugging Face Spaces,
   [mostertag/saac-jepa-world-model](https://huggingface.co/spaces/mostertag/saac-jepa-world-model),
   linked from a README badge and a `## Demo` section, from a Demo button in the project-page hero
