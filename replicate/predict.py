@@ -129,9 +129,9 @@ class Predictor(BaseRunner):
 
     def run(
         self,
+        # One string literal: Cog reads these descriptions statically and keeps implicit concatenation verbatim.
         window: str = Input(
-            description="JSON object with 32 s of sensor context and the commands for the next "
-            "16 s, at 1 Hz. See the README for the format."
+            description="JSON window: 32 s of sensors and the next 16 s of commands, at 1 Hz (see README)."
         ),
         coverage: float = Input(
             description="Coverage of the central prediction interval (Gaussian head).", default=0.9, ge=0.5, le=0.99
