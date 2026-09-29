@@ -35,6 +35,7 @@ Key facts, all RMSE in z units of the source normalizer, lower is better:
 ## Demo
 
 - [Hugging Face Space](https://huggingface.co/spaces/mostertag/saac-jepa-world-model): the locked model running in the browser (ONNX) on the target machine, with sensors that can be hidden and commands that can be edited
+- [Replicate](https://replicate.com/ostertagmatthieu-dev/saac-jepa-world-model): the same ONNX model behind an API; one JSON window in, per-sensor forecasts and intervals at +1 to +16 s out
 
 ## Optional
 

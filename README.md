@@ -8,6 +8,7 @@ A from-scratch PyTorch world model trained on one CNC machine (17 sensors) whose
   <a href="https://doi.org/10.48550/arXiv.2609.16071"><img src="https://img.shields.io/badge/arXiv-2609.16071-b31b1b?logo=arxiv&logoColor=white" alt="arXiv:2609.16071"></a>
   <a href="https://ostertagmatthieu-dev.github.io/saac-jepa/"><img src="https://img.shields.io/badge/project-page-0F1B2D" alt="Project page"></a>
   <a href="https://huggingface.co/spaces/mostertag/saac-jepa-world-model"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20demo-Hugging%20Face%20Space-FFD21E" alt="Demo on Hugging Face Spaces"></a>
+  <a href="https://replicate.com/ostertagmatthieu-dev/saac-jepa-world-model"><img src="https://img.shields.io/badge/API-Replicate-000000" alt="API on Replicate"></a>
   <a href="https://ostertagmatthieu-dev.github.io/saac-jepa/paper.pdf"><img src="https://img.shields.io/badge/paper-PDF-b31b1b" alt="Paper PDF"></a>
   <a href="https://github.com/ostertagmatthieu-dev/saac-jepa/actions/workflows/ci.yml"><img src="https://github.com/ostertagmatthieu-dev/saac-jepa/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <img src="https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-3776AB?logo=python&logoColor=white" alt="Python 3.10 | 3.11 | 3.12">
@@ -63,6 +64,8 @@ Missing or absent sensors carry separate value, presence and schema indicators, 
 ## Demo
 
 [Try the locked model in your browser](https://huggingface.co/spaces/mostertag/saac-jepa-world-model). The Hugging Face Space runs the sealed M03 checkpoint, exported to ONNX, on the target machine. You can pick any of the 2,457 target windows, hide any of the 10 shared sensors, scale the future spindle and feed commands, and compare the forecast and its 90 % interval with the truth and with persistence. Before the ONNX file was published, it was checked against PyTorch on every target window (max |Δ| 3.2·10⁻⁵). The page can re-run the whole sealed evaluation client-side, and it reproduces RMSE 0.545579 and MAE 0.352358. The SHA-256 hashes of the checkpoint, config and normalizers match the lock file.
+
+The same ONNX model is also served [on Replicate](https://replicate.com/ostertagmatthieu-dev/saac-jepa-world-model), for calls from code. It takes one window as JSON (32 s of any subset of the 17 sensors, the four commands for the next 16 s, and optionally sensors to hide) and returns the mean, standard deviation and interval of each sensor at +1, 2, 4, 8 and 16 s. The container checks the locked hashes when it starts. Run through the predictor, the 2,457 target windows give the sealed RMSE 0.545579 and MAE 0.352358. The packaging and the input format are in [replicate/](replicate/README.md).
 
 ## Quickstart
 

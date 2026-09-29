@@ -56,3 +56,7 @@ env/
 
 # Scratch page used to render docs/og.png (see docs/UPDATING.md)
 /docs/og-source.html
+
+# Replicate: artefacts fetched by replicate/fetch_weights.py, and Cog build state
+/replicate/weights/
+/replicate/.cog/
