@@ -7,6 +7,7 @@ A from-scratch PyTorch world model trained on one CNC machine (17 sensors) whose
 <p align="center">
   <a href="https://doi.org/10.48550/arXiv.2609.16071"><img src="https://img.shields.io/badge/arXiv-2609.16071-b31b1b?logo=arxiv&logoColor=white" alt="arXiv:2609.16071"></a>
   <a href="https://ostertagmatthieu-dev.github.io/saac-jepa/"><img src="https://img.shields.io/badge/project-page-0F1B2D" alt="Project page"></a>
+  <a href="https://huggingface.co/spaces/mostertag/saac-jepa-world-model"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20demo-Hugging%20Face%20Space-FFD21E" alt="Demo on Hugging Face Spaces"></a>
   <a href="https://ostertagmatthieu-dev.github.io/saac-jepa/paper.pdf"><img src="https://img.shields.io/badge/paper-PDF-b31b1b" alt="Paper PDF"></a>
   <a href="https://github.com/ostertagmatthieu-dev/saac-jepa/actions/workflows/ci.yml"><img src="https://github.com/ostertagmatthieu-dev/saac-jepa/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <img src="https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-3776AB?logo=python&logoColor=white" alt="Python 3.10 | 3.11 | 3.12">
@@ -58,6 +59,10 @@ Missing or absent sensors carry separate value, presence and schema indicators, 
 <p align="center"><img src="paper/figures/fig4_masking_actions_en.png" width="640" alt="The five masking modes with the winning channel mode boxed, and the three action-injection mechanisms: token, FiLM and cross-attention, with their measured RMSE."></p>
 
 </details>
+
+## Demo
+
+[Try the locked model in your browser](https://huggingface.co/spaces/mostertag/saac-jepa-world-model). The Hugging Face Space runs the sealed M03 checkpoint, exported to ONNX, on the target machine. You can pick any of the 2,457 target windows, hide any of the 10 shared sensors, scale the future spindle and feed commands, and compare the forecast and its 90 % interval with the truth and with persistence. Before the ONNX file was published, it was checked against PyTorch on every target window (max |Δ| 3.2·10⁻⁵). The page can re-run the whole sealed evaluation client-side, and it reproduces RMSE 0.545579 and MAE 0.352358. The SHA-256 hashes of the checkpoint, config and normalizers match the lock file.
 
 ## Quickstart
 
@@ -181,6 +186,7 @@ Code and everything else tracked in this repository are released under the MIT l
 - THWS five-axis CNC milling dataset (source, DS01): [10.5281/zenodo.14094887](https://doi.org/10.5281/zenodo.14094887), CC BY 4.0 — commercial use permitted with attribution.
 - FH JOANNEUM CNC machining repository (target, DS03): [10.17632/gtvvwmz7r7.2](https://doi.org/10.17632/gtvvwmz7r7.2), CC BY 4.0 — commercial use permitted with attribution. The non-commercial terms sometimes cited for it belong to the accompanying *Data in Brief* article, not to the deposit.
 - Neither dataset is redistributed here: `data/` is gitignored and `paper/results/` holds aggregate metrics, not rows. Both are used with the unit, resampling and segmentation changes listed in [docs/licensing.md](docs/licensing.md).
+- The [demo Space](https://huggingface.co/spaces/mostertag/saac-jepa-world-model) is a separate repository. It does redistribute a derived 1 Hz copy of the seven DS03 runs, with attribution and the changes listed, as CC BY 4.0 allows. DS01 is not included there either.
 - Official baseline repositories are pinned to specific commits in [third_party/README.md](third_party/README.md); the clones themselves are not redistributed here. PatchTST is Apache-2.0, iTransformer MIT, and SimMTM declares no license at all.
 
 Full map of what each license covers, the attribution obligations and what is still to confirm:

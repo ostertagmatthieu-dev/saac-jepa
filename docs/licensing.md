@@ -29,6 +29,8 @@ Two clarifications, because MIT was written for software and this repository is 
 **redistributes no dataset content**; what it ships are aggregate result records (RMSE, R²,
 calibration, per-seed metrics), which are measurements about the data, not the data.
 
+The [demo Space](https://huggingface.co/spaces/mostertag/saac-jepa-world-model) is a separate repository and the one exception. It ships `data/ds03.json`, a derived 1 Hz copy of the seven DS03 runs, needed to run the locked model on the target machine in the browser. The copy carries the attribution and declares its changes: channels renamed, spindle and Z power scaled by 0.001, and the 2 ms controller cycle resampled to 1 Hz. CC BY 4.0 permits this. DS01 is not redistributed there either.
+
 | | Source (DS01) | Target (DS03) |
 |---|---|---|
 | Dataset | THWS five-axis CNC milling | FH JOANNEUM CNC machining data repository |

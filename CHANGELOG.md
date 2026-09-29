@@ -9,6 +9,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- An interactive demo on Hugging Face Spaces,
+  [mostertag/saac-jepa-world-model](https://huggingface.co/spaces/mostertag/saac-jepa-world-model),
+  linked from a README badge and a `## Demo` section, from a Demo button in the project-page hero
+  and its footer, and from `docs/llms.txt`. The Space serves the sealed M03 checkpoint (seed 0,
+  SHA-256 `ceb88ac2…`), exported to ONNX and run in the browser: pick a target window, hide
+  shared sensors, scale the future commands, and compare the forecast with the truth and with
+  persistence. Before the export was published it was checked against PyTorch on all 2,457
+  target windows, including windows with hidden sensors, and its outputs stay within
+  3.2·10⁻⁵ of PyTorch. The page re-runs the sealed target evaluation client-side and reproduces
+  RMSE 0.545579 and MAE 0.352358. The Space redistributes a derived 1 Hz copy of DS03 under
+  CC BY 4.0; `docs/licensing.md` and the README's data section record that exception.
+
 - A `SECURITY.md` that describes what a security report means for research code: only `main` is
   supported (the project is pre-release at `0.1.0` with no tags), reports go through GitHub's
   private advisory form rather than a public issue, and the scope section names the real hazard,
