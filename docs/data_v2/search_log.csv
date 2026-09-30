@@ -97,3 +97,6 @@ layer,api,query_id,query,hits_total,returned,date,note
 "L5","radar","kit-files","RADAR getFolderContent for 10.35097/1398","11","11","2026-09-16","file list read; downloads gated by RADAR terms (not accepted)"
 "sample","mendeley","w35nf2fw5m","HTTP Range 0-2 MB of 10kW.json","n/a","1","2026-09-16","signal list verified (78 fields/row)"
 "sample","figshare","28589216","FeatureAndMetadata_Milling.csv (1.8 MB, full file within the 2 MB approval)","n/a","1","2026-09-16","column names verified (per-cycle aggregates)"
+"L1","datacite","r3-fanuc","(Fanuc OR FOCAS) AND (milling OR turning OR machining OR ""machine tool"") AND Dataset","1","1","2026-09-30","round 3, added after review: only the Nottingham robotic-drilling set, already listed"
+"L1","datacite","r3-jp-us","(Mazak OR Okuma OR Doosan OR ""Brother Speedio"" OR Haas) AND (milling OR turning OR machining OR CNC) AND Dataset","14","14","2026-09-30","round 3: added Ochudlo et al. 2026a and 2026b (Mazak VARIAXIS i-600) and Trabesinger et al. 2023; Pimushkin 2026 excluded (error maps)"
+"L1","datacite","r3-heidenhain","(Heidenhain OR iTNC OR ""TNC 640"") AND (milling OR machining OR CNC) AND Dataset","1","1","2026-09-30","round 3: one unrelated thesis record"

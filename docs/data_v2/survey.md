@@ -1,6 +1,8 @@
 # SAAC-JEPA V2 — public data survey
 
-State of the search: **2026-09-16**. Machine-readable companions: [candidates.csv](candidates.csv) (one row per machine × dataset) and [search_log.csv](search_log.csv) (every query with its hit count). The rows, levels and roles below are generated from one data file, so the CSV and this page agree by construction.
+State of the search: **2026-09-16**. Revised **2026-09-30** after review: eight points were raised on the pull request, and §14 lists what each one changed. The main change is that the recommended sealed target moved from Ströbel et al. (2025b) to Ströbel et al. (2025a), because a channel list inferred from a sibling dataset no longer earns verified levels.
+
+Machine-readable companions: [candidates.csv](candidates.csv) (one row per machine × dataset) and [search_log.csv](search_log.csv) (every query with its hit count). The CSV and this page carry the same levels, scores and roles.
 
 This is a planning document for V2. It reads metadata, data papers and file headers only. No dataset was downloaded in full and no statistic was computed on any candidate, so every candidate can still serve as a sealed target.
 
@@ -10,12 +12,12 @@ This is a planning document for V2. It reads metadata, data papers and file head
 
 - **The V1 transfer stays inside one machine family.** The THWS source (Martinez et al., 2025) was recorded on a Spinner U5-620 and the FH JOANNEUM target (Brillinger et al., 2025) on a Spinner U5-630. Both machines run Siemens 840D sl, and the JOANNEUM export uses the same SINUMERIK Edge signal addresses as the other Sinumerik candidates [S03, S04, S21]. V1 transfers across machines of one builder and one controller family. Other builders and controllers are untested.
 - **The JOANNEUM target (Brillinger et al., 2025) is no longer sealed.** It was read twice (the locked pass and the RevIN ablation) [S01]. V2 needs a new target that nobody on the team has opened.
-- **The search found 53 candidate rows covering 47 machine identities.** Of these, 35 are unseen machine tools in Tier 1–2, and Tier 1 alone spans seven controller families: Siemens, Heidenhain, Fagor, Hurco, Haas, ISG and a Rockwell collector. 16 further sources are excluded with a reason. The search stopped at saturation: the last two query rounds brought no new source or target candidate.
-- **Recommended sealed target: KIT DMG Mori CMX 600 V (Ströbel et al., 2025b).**
-  - 54 runs under CC BY 4.0.
-  - The same SINUMERIK Edge export as Ströbel et al. (2025a), whose signal list is verified. All 10 transfer channels and the commanded speeds are therefore expected; the list is inferred and must be confirmed before sealing.
-  - Paired-test power is 0.95 for d = 0.5 with 54 runs. V1 had 0.20 with 7 runs (§2).
-  - KIT DMC 60 H (Ströbel et al., 2025a, 32 runs) is the replication target.
+- **The search found 56 candidate rows covering 49 machine identities.** Of these, 37 are unseen machine tools in Tier 1–2, and Tier 1 alone spans eight controller families: Siemens, Heidenhain, Fagor, Hurco, Haas, Mazak, ISG and a Rockwell collector. 17 further sources are excluded with a reason. The structured vocabulary reached saturation in round 2; the narrow vendor queries of round 3 still added three rows, so saturation is claimed for the vocabulary, not for the vendor names (§3).
+- **Recommended sealed target: KIT DMC 60 H (Ströbel et al., 2025a).**
+  - 32 experiments under CC BY 4.0, about six hours, runs of 99 to 1,191 s.
+  - Its SINUMERIK Edge signal list is verified in the data paper: the 10 transfer channels and the commanded speeds [S06].
+  - Paired-test power is 0.99 for d = 0.8 and 0.79 for d = 0.5 with 32 runs. V1 had 0.43 and 0.20 with 7 runs (§2).
+  - **First replication target: KIT CMX 600 V (Ströbel et al., 2025b), 54 runs** — conditional. Its channel list is inferred from its sibling dataset and its run durations are undocumented, so §4's evidence cap keeps it at `T?` until the RADAR documentation is read. Confirmed, it becomes the stronger target of the two on unit count.
 - **Recommended new sources.**
   - The JOANNEUM Spinner U5-630, extended with 23 never-read runs (Abdul Hadi, 2021).
   - A large SINUMERIK machine that also logs the motor temperatures of the THWS source (Sáinz de la Maza et al., 2025).
@@ -31,7 +33,7 @@ This is a planning document for V2. It reads metadata, data papers and file head
 - **The main risks.**
   - Channel semantics across vendors (load %, target torque, clamp-on currents).
   - The 1 Hz grid, which removes short-run datasets.
-  - NC-ND licences on four KIT datasets.
+  - NC or NC-ND licences on four KIT datasets: Ströbel et al. (2023a, 2024, 2025c) are CC BY-NC-ND 4.0, while Ströbel et al. (2023b) is CC BY-NC 4.0, so transformed data may be shared for non-commercial use.
   - KIT download terms that a person must accept.
 
 ## 2. What V2 needs
@@ -42,7 +44,7 @@ Research questions, derived from paper §7–§8:
 |---|---|---|
 | RQ1 | Which public machines let training span several machines, so invariance is measured rather than assumed (§7 i)? | **S** source |
 | RQ2 | Which unseen machine can be a new sealed target with enough statistical power? | **T** target |
-| RQ3 | Which data vary the commands on purpose, to re-test action use? V1 found that shuffling actions moved target RMSE by < 0.005 (§8). | **A** action bench |
+| RQ3 | Which data vary the commands on purpose, to measure action use on a new machine? On the pre-lock model, shuffling the future actions moved target RMSE by < 0.005, and that was never re-measured on the locked model (§8). On source validation the post-lock ablation does measure a shuffle/true ratio of 1.064 ± 0.024 for the control arm and 1.179 ± 0.001 with RevIN, so the action channel is not inert on the source machine [S63]. The open question is the target machine, not the source. | **A** action bench |
 | RQ4 | Which data link actions to a measured outcome, for planning and off-line policy evaluation (§7 iii–iv, App. F)? | **P** planning |
 | — | Sensor-only series without actions, for representation pretraining. | **X** |
 
@@ -56,7 +58,7 @@ Minimum requirements (gates) per role:
 | P | Actions plus a measured outcome (wear, quality, deformation, root cause) |
 | X | Continuous series without actions |
 
-Why 15 units: a Node port of `scripts/09_transfer_power_analysis.py` [S60] uses the same method: 20,000 Monte-Carlo draws, paired t-test, two-sided α = 0.05.
+Why 15 units: **15 is the smallest n whose power reaches 0.8 at d = 0.8** in the table below (0.83 at n = 15, 0.62 at n = 10). Change the assumed effect size and the gate moves with it: at d = 0.5 the same rule would ask for about 34 units. The table comes from a Node port of `scripts/09_transfer_power_analysis.py` [S60], with the same method: 20,000 Monte-Carlo draws, paired t-test, two-sided α = 0.05.
 
 | Independent units | Power at d = 0.8 | Power at d = 0.5 | Smallest exact sign-flip p |
 |---|---|---|---|
@@ -73,14 +75,17 @@ The search ran in five layers. Every query and its hit count is in [search_log.c
 
 | Layer | What was searched | Volume |
 |---|---|---|
-| L1 API | DataCite, 10 queries in EN/DE/FR plus 3 publisher snowballs (KIT, LUIS, DaRUS); OpenAIRE, 10 queries; MDPI *Data* through Crossref, 3 queries | 562 DataCite hits → 269 unique titles → 145 keyword-relevant → ≈ 55 metadata records read |
+| L1 API | DataCite, 10 queries in EN/DE/FR plus 3 publisher snowballs (KIT, LUIS, DaRUS); OpenAIRE, 20 queries; figshare, 11 queries; Zenodo, 21 queries; MDPI *Data* through Crossref, 3 queries | DataCite carried the layer: 562 hits → 269 unique titles → 145 keyword-relevant → ≈ 55 metadata records read. OpenAIRE returned on 12 of 20 queries (8 of the structured `q01`–`q10` set answered `ERR`), figshare returned nothing usable on all 11, and all 21 Zenodo queries failed. See `search_log.csv` |
 | L2 data papers | *Data in Brief* and *Scientific Data* 2015–2026 through Europe PMC | 127 unique papers |
 | L3 snowball | OpenAlex, forward and backward citations of 8 seed data papers (Martinez et al., 2025; Brillinger et al., 2025; Ströbel et al., 2025a; Denkena et al., 2023; Abdul Hadi, 2021; Schmitt & Engelmann, 2024; Kim et al., 2026; Peralta Abadia et al., 2025) | 43 citing works, 51 references |
 | L4 portals and lists | KAMP, NIST SMS Test Bed, NASA PCoE, PHM Society / IEEE DataPort, three curated lists | 7 checks |
 | L5 web | ≈ 20 searches (EN/KO), including Kaggle; Kaggle API licence checks | — |
 | Round 2 | 5 DataCite queries on controller vocabulary (Edge, NCU, Heidenhain/Fanuc/Haas…, OPC UA, drive currents, digital twin) | no new S/T candidate |
+| Round 3 (2026-09-30) | 3 narrow vendor queries added after review: Fanuc/FOCAS, Mazak/Okuma/Haas/Doosan/Brother, Heidenhain, each joined with milling / turning / machining / CNC | see the vendor coverage note below |
 
-**Stopping rule.** The search stops after two consecutive rounds without a new source or target candidate. Round 2 and the final L5 round met that rule.
+**Stopping rule.** The search stops after two consecutive rounds without a new source or target candidate. Round 2 and the final L5 round met that rule for the structured vocabulary.
+
+**How far the vendor claim reaches.** The round-2 query that carried the vendor names (`r2-b`: Heidenhain, TNC, Fanuc, Okuma, Mazak, Haas, Hurco) matched 9,229 DataCite records and only the first 100 were read, because bare vendor names also match surnames and unrelated text. One hundred records out of 9,229 cannot establish absence, so round 3 re-ran the vendor names joined with machining terms. The §1 statement about Fanuc, Mazak and Okuma therefore reads: **no such dataset surfaced in the records read**, which is weaker than "none exists".
 
 **Evidence levels.** Each row states one of the following:
 - **Repository:** the DataCite, Zenodo, Mendeley, KIT or Kaggle API record.
@@ -126,7 +131,9 @@ Anything absent from those sources is written **n.d.**, never guessed.
 | A | rg .35, ac .25, ov .15, wn .10, li .15 |
 | P | oc .35, ac .25, rg .15, un .15, li .10 |
 
-**Sensitivity analysis.** Every weight is multiplied by an independent U(0.5, 1.5) draw, 2,000 times. The table in §6 reports how often each top-5 member stays in the top 5.
+**Evidence cap.** A level states what the sources establish, not what the dataset probably holds. When a field is inferred rather than read — typically a channel list taken from a sibling dataset published by the same group with the same export tool — the inference caps the levels it feeds: `ov` at 1 ("1–2 or unverified") and `ac` at 2. The cap is lifted by reading the dataset's own documentation, and the `confidence` column of the CSV names the evidence behind every row. This rule applies today to Ströbel et al. (2025b) alone, and it is what moved the recommended target (§6, §14).
+
+**Sensitivity analysis.** Every weight is multiplied by an independent U(0.5, 1.5) draw, 2,000 times. The table in §6 reports how often each top-5 member stays in the top 5, and lists every row tied at the fifth score.
 
 ## 5. Comparison table
 
@@ -144,7 +151,7 @@ Anything absent from those sources is written **n.d.**, never guessed.
 | Reference | Machine (controller) | Dataset · DOI | Licence | Canon. ch. | Actions | Regime | Rate · usable at 1 Hz | Units | Outcomes | Levels | Roles | Evidence |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
 | **Ströbel et al. 2025a** | Deckel Maho DMC 60 H (3-axis horizontal, retrofitted) (Siemens SINUMERIK 840D + SINUMERIK Edge) | KIT Multimodal Dataset 1 (process monitoring / anomalies) · [10.35097/hvvwn1kfwf7qt48z](https://doi.org/10.35097/hvvwn1kfwf7qt48z) | CC BY 4.0 | 10 | direct (CMD_SPEED per axis and spindle) | varied parts, tools, strategies, depths and widths of cut; 3 materials | 500 Hz · many (runs 99-1,191 s) | 32 experiments (paper) / 33 (repository) | 8 anomaly types incl. tool wear, chatter | 3/3/2/3/3/2/3/3/1 | S T A? | S05, S06 |
-| **Ströbel et al. 2025b** | DMG Mori CMX 600 V (3-axis vertical) (Siemens SINUMERIK 840D + SINUMERIK Edge) | KIT Multimodal Dataset 2 · [10.35097/vnnu3n9z7ndsnhfd](https://doi.org/10.35097/vnnu3n9z7ndsnhfd) | CC BY 4.0 | 10 | direct (CMD_SPEED, same app as Ströbel et al. (2025a)) | industrial components, tools and strategies; 3 materials | 500 Hz · n.d. (likely many) | 54 experiments | labelled pictures | 3/3/2/1/3/2/3/2/1 | S? T? A? | S07, S06 |
+| **Ströbel et al. 2025b** | DMG Mori CMX 600 V (3-axis vertical) (Siemens SINUMERIK 840D + SINUMERIK Edge) | KIT Multimodal Dataset 2 · [10.35097/vnnu3n9z7ndsnhfd](https://doi.org/10.35097/vnnu3n9z7ndsnhfd) | CC BY 4.0 | 10 | direct (CMD_SPEED, same app as Ströbel et al. (2025a)) | industrial components, tools and strategies; 3 materials | 500 Hz · n.d. (likely many) | 54 experiments | labelled pictures | 1/2/2/1/3/2/3/2/1 | S? T? A? | S07, S06 |
 | **Ströbel et al. 2023a** | DMG Mori CMX 600 V (Siemens Industrial Edge (SINUMERIK)) | KIT training and validation dataset 1 (time-series prediction) · [10.35097/1462](https://doi.org/10.35097/1462) | CC BY-NC-ND 4.0 🟠 | 0 | n.d. (NC-driven) | train part + validation part, steel and aluminium, with/without workpiece (aircut) | 500 Hz · n.d. | several recordings (n.d.) | none | 1/1/2/1/1/0/1/2/2 | — | S08 |
 | **Ströbel et al. 2023b** | Deckel Maho DMC 60 H (Siemens Industrial Edge (retrofit)) | KIT training and validation dataset 2 (same series as dataset 1) · [10.35097/1738](https://doi.org/10.35097/1738) | CC BY-NC 4.0 🟠 | 0 | n.d. (NC-driven) | same experimental series as Ströbel et al. (2023a), built for cross-machine transfer | 500 Hz · n.d. | several recordings (n.d.) | none | 1/1/2/1/1/0/1/2/2 | — | S09 |
 | **Ströbel et al. 2024** | CMX 600 V and DMC 60 H (Siemens Industrial Edge) | KIT training and validation dataset 3 (standardised CSV + simulated inputs) · [10.35097/fefwiljideoropmh](https://doi.org/10.35097/fefwiljideoropmh) | CC BY-NC-ND 4.0 🟠 | 0 | n.d. | training part and validation part, steel and aluminium, aircut | 500 Hz · n.d. | n.d. | none | 1/1/2/1/1/0/1/2/3 | — | S10 |
@@ -167,6 +174,8 @@ Anything absent from those sources is written **n.d.**, never guessed.
 | **Sáinz de la Maza et al. 2025** | Large 5-axis machining centre, RLLLR (84 kW head, C table), model n.d. (Siemens SINUMERIK 840D sl) | Large scale machine tool axes heating data · [10.5281/zenodo.16579804](https://doi.org/10.5281/zenodo.16579804) | CC BY 4.0 | 10 | derivable (actual speeds, positions) | programmed heating cycles (details n.d.) | 1 Hz · likely many (1 Hz native) | 3 days | thermal deformation (IDS), temperatures | 3/2/1/2/1/3/3/2/3 | S P | S27 |
 | **Dominguez Caballero et al. 2023** | DMG Mori DMU 40 eVo linear (5-axis) (n.d.) | Sensor signals for machine tool and process health assessment · [10.15131/shef.data.24125715.v1](https://doi.org/10.15131/shef.data.24125715.v1) | CC BY 4.0 | 0 | feed and spindle override reductions (6-10 %) in the fingerprint routine | interventions: heavy/unbalanced tool, override, misalignment, cracks, wear; spindle 5,000 / 12,000 rpm | n.d. Hz · n.d. | 24 workpieces + routine repeats | fault class labels | 0/1/2/1/3/2/3/2/1 | — | S28, S62 |
 | **Piecuch & Żabiński 2025** | Haas VF-1 (3-axis) (Haas + Beckhoff C6920 acquisition) | Open milling dataset for tool life (Rzeszów) · [10.6084/m9.figshare.28589216](https://doi.org/10.6084/m9.figshare.28589216) | CC BY 4.0 | 4 | cycle metadata only (ADOC, RDOC) | ADOC 5/10 mm × RDOC 4.5/8 mm, optimal and non-optimal | 500 (currents) Hz · n.d. | 14 tools, 968 cycles | tool life to failure | 2/1/2/1/2/3/3/3/1 | P | S29 |
+| **Ochudlo et al. 2026a** | Mazak VARIAXIS i-600 (5-axis) (n.d. (Mazak; axis data stream)) | Dataset for model predictive force control in five-axis positional milling using a table dynamometer · [10.18154/rwth-2026-03847](https://doi.org/10.18154/rwth-2026-03847) | not stated in the record 🟠 | 0 | direct (controller inputs recorded) | closed-loop force-control experiments on 42CrMo4 | n.d. Hz · n.d. | n.d. | tracking of the commanded force | 0/3/2/1/1/1/1/2/2 | A? | S64 |
+| **Ochudlo et al. 2026b** | Mazak VARIAXIS i-600 (5-axis) (n.d. (Mazak; axis data stream)) | Dataset for potential of model predictive force control in five-axis positional milling considering tool wear · [10.18154/rwth-2026-05233](https://doi.org/10.18154/rwth-2026-05233) | not stated in the record 🟠 | 0 | direct (controller inputs recorded) | designed comparison: model predictive force control against feedrate scheduling, new against severely worn tool | n.d. Hz · n.d. | n.d. | tool condition (new / severely worn) | 0/3/3/1/1/2/1/2/2 | A | S64 |
 
 ### Tier 2 — mostly external sensors
 
@@ -190,6 +199,7 @@ Anything absent from those sources is written **n.d.**, never guessed.
 | **Haber Guerra et al. 2022** | GAMHE 5.0 pilot line machines (n.d.) (n.d.) | AI for quality control: micro/macro milling · [10.5281/zenodo.6303449](https://doi.org/10.5281/zenodo.6303449) | CC BY 4.0 | 0 | cutting parameters | n.d. | n.d. Hz · n.d. | n.d. | surface roughness | 0/1/1/1/1/3/3/1/2 | P | S50 |
 | **CNC Solutions et al. 2025** | CNC machines at 2 sites (CNC Solutions, LMS Patras) (n.d.) | i-CNC chatter vibration dataset · [10.5281/zenodo.15308467](https://doi.org/10.5281/zenodo.15308467) | CC BY 4.0 | 0 | absent | trial events | n.d. Hz · n.d. | 2 files | chatter indicator (model-generated) | 0/0/0/1/0/1/3/1/3 | X | S51 |
 | **Denkena et al. 2024** | IFW lathe (model n.d.) (n.d.) | Anomaly detection for hybrid workpieces using DTW · [10.25835/ph65zrpv](https://doi.org/10.25835/ph65zrpv) | CC BY-NC 3.0 🟠 | 0 | n.d. | error-free runs vs artificial grooves | n.d. Hz · n.d. | n.d. | groove location labels | 0/0/1/1/1/2/1/1/2 | X | S46 |
+| **Trabesinger et al. 2023** | n.d. (Montanuniversität / TU Graz MCL) (n.d.) | TUGMCL_BasicMilling (preliminary version 0.1.0) · [10.5281/zenodo.7753180](https://doi.org/10.5281/zenodo.7753180) | Open Access; licence id not readable during the outage 🟠 | 0 | G-code (commanded path) | four basic milling operations | 500 Hz · n.d. | 4 operations | none | 0/1/1/1/1/0/1/1/2 | — | S65 |
 
 ### Tier 3 — adjacent domains
 
@@ -209,17 +219,20 @@ Anything absent from those sources is written **n.d.**, never guessed.
 
 ## 6. Role rankings and weight sensitivity
 
-| Role | Pool | Top 5 (score, share of 2,000 weight draws in which the row stays top 5) |
+Every row tied at the fifth score is listed, so a tie is visible as a tie rather than resolved silently.
+
+| Role | Pool | Top 5, with every row tied at the fifth score (score, share of 2,000 weight draws in which the row stays top 5) |
 |---|---|---|
-| S | 13 | **Ströbel et al. 2025a** 2.80 (100 %) · **Abdul Hadi 2021** 2.70 (100 %) · **Sáinz de la Maza et al. 2025** 2.50 (100 %) · **Sun n.d.** 2.40 (100 %) · **Ströbel et al. 2025b** 2.30 (99 %) |
-| T | 3 | **Ströbel et al. 2025a** 3.00 (100 %) · **Ströbel et al. 2025b** 2.70 (100 %) · **Sun n.d.** 2.60 (100 %) |
-| A | 17 | **Sun n.d.** 2.80 (100 %) · **Ströbel et al. 2025a** 2.65 (98 %) · **Abdul Hadi 2021** 2.55 (88 %) · **ISW Stuttgart 2025** 2.50 (82 %) · **Ströbel et al. 2025b** 2.45 (48 %) |
-| P | 18 | **Peralta Abadia et al. 2025** 2.75 (100 %) · **Mehling et al. 2025** 2.75 (100 %) · **Villoria et al. 2026** 2.70 (100 %) · **Harigovind et al. 2025** 2.50 (100 %) · **Piecuch & Żabiński 2025** 2.20 (12 %) |
+| S | 13 | **Ströbel et al. 2025a** 2.80 (100 %) · **Abdul Hadi 2021** 2.70 (100 %) · **Sáinz de la Maza et al. 2025** 2.50 (100 %) · **Sun n.d.** 2.40 (100 %) · **Denkena et al. 2023 · M1** 2.00 (81 %) |
+| T | 3 | **Ströbel et al. 2025a** 3.00 (100 %) · **Sun n.d.** 2.60 (100 %) · **Ströbel et al. 2025b** 2.00 (100 %) |
+| A | 19 | **Sun n.d.** 2.80 (100 %) · **Ströbel et al. 2025a** 2.65 (98 %) · **Abdul Hadi 2021** 2.55 (88 %) · **ISW Stuttgart 2025** 2.50 (100 %) · **Peralta Abadia et al. 2025** 2.45 (72 %) |
+| P | 18 | **Peralta Abadia et al. 2025** 2.75 (100 %) · **Mehling et al. 2025** 2.75 (100 %) · **Villoria et al. 2026** 2.70 (100 %) · **Harigovind et al. 2025** 2.50 (100 %) · **four-way tie at 2.20**: Denkena et al. 2026 (36 %), Vicomtech n.d. (33 %), Piecuch & Żabiński 2025 (12 %), Schibsdat 2026 (0 %) |
 
+**The P fifth place is a tie, not a rank.** Four rows score exactly 2.20 under the §4 weights, so which one appears fifth is an artefact of the sort order. The stability shares of those four (36 %, 33 %, 12 %, 0 %) measure how often a tie-break holds, not how firm a rank is. §9 picks its planning rows on role fit rather than on this score: Denkena et al. (2023, M1–M3) scores 2.00 but is the only public set with measured wear on three machines under one process, which is what a cross-machine planning study needs.
 
-**Ströbel et al. (2025a, 2025b) also top the S and A rankings.** V2-A still keeps them as targets, because they are the only unseen machines with the full transfer set and ≥ 15 runs. Without them, the S ranking starts with Abdul Hadi (2021), Sáinz de la Maza et al. (2025), Sun (n.d.) and Kim et al. (2026), and the A ranking with Sun (n.d.), Abdul Hadi (2021) and ISW Stuttgart (2025).
+**Ströbel et al. (2025a) also tops the S and A rankings.** V2-A still keeps it as the target, because it is the only unseen machine with a *verified* full transfer set and ≥ 15 runs. Without it, the S ranking starts with Abdul Hadi (2021), Sáinz de la Maza et al. (2025) and Sun (n.d.), and the A ranking with Sun (n.d.), Abdul Hadi (2021) and ISW Stuttgart (2025).
 
-The T pool holds three rows. Ströbel et al. (2025a) is the only one with a documented duration today. Ströbel et al. (2025b) moves from `T?` to `T` once its run durations are read from the RADAR documentation. Sun (n.d.) is a weak target: wax workpieces, runs of 46–233 s, and faulty readings flagged by its authors.
+**The T pool holds three rows, and the order changed at the 2026-09-30 revision.** Ströbel et al. (2025b) has 54 runs against 32, but its channel list is inferred from its sibling dataset and its run durations are undocumented, so §4's evidence cap puts it at `ov = 1`, `ac = 2` and a score of 2.00. It stays `T?` and becomes the first replication target once the RADAR documentation confirms the signals and the durations. Sun (n.d.) scores 2.60 on verified levels but is a weak target in practice: wax workpieces, runs of 46–233 s, and faulty readings flagged by its authors.
 
 ## 7. Channel overlap across machines
 
@@ -259,6 +272,8 @@ Two readings of the matrix:
 5. **KIT runs cross-machine designs on purpose.** Ströbel et al. (2023a, 2023b) are the same experimental series on two machines, published "to enable a study of the transferability of models between machines" [S09]. They make a clean machine-shift control, but under NC / NC-ND licences.
 6. **The 1 Hz grid is a filter in its own right.** MU-TCM (9 of the 10 transfer channels, Fagor, clean speed × feed plan) has 4–36 s cuts, and JUST has 1 s samples, so neither yields a 48 s window at 1 Hz. A 10 Hz arm without the THWS source is the only way to use them.
 7. **KIT RADAR, KAMP and IEEE DataPort each gate access** (terms, account, subscription). These steps need a human decision and cannot be scripted.
+8. **Narrow vendor queries pay off, and they change the vendor claim** (added 2026-09-30). Joining the vendor names with machining terms returned 1 record for Fanuc or FOCAS (the Nottingham robotic-drilling set, already listed), 14 for the Mazak / Okuma / Doosan / Brother / Haas group and 1 for Heidenhain. Two Mazak datasets came out of it: Ochudlo et al. (2026a, 2026b) on a Mazak VARIAXIS i-600, with axis kinematics, process forces and **all inputs and outputs of a closed-loop force controller**, including a run with a new and a severely worn tool. They carry no canonical channel and no licence in their record, but they are the first commanded-force data in this survey. A third row, Trabesinger et al. (2023), publishes 500 Hz signals next to the G-code that produced them.
+9. **The action channel is not inert on the source machine** (added 2026-09-30). The < 0.005 figure that motivates RQ3 is the pre-lock, target-side result. On source validation the post-lock ablation measures a shuffle/true ratio of 1.064 ± 0.024 for the control arm and 1.179 ± 0.001 with RevIN [S63]. The open question is therefore whether that sensitivity survives the transfer, not whether the model ignores actions everywhere.
 
 ## 9. Recommended V2 data configuration
 
@@ -267,11 +282,11 @@ Two readings of the matrix:
 | Part | Rows | Why |
 |---|---|---|
 | Sources (training and source-only selection) | Martinez et al. (2025); Brillinger et al. (2025) with Abdul Hadi (2021) and Wuwer & Brillinger (2021); Sáinz de la Maza et al. (2025); Kim et al. (2026); Sun (n.d.); Denkena et al. (2023, M1–M3) (conditional on durations) | Up to 10 machines and ≥ 4 controller families (Siemens, Heidenhain, Hurco WinMax, Haas NGC); canonical and load-% channels overlap |
-| Sealed target T1 | **Ströbel et al. (2025b)** KIT CMX 600 V | 54 runs, CC BY, full transfer set, commanded speeds; never opened |
-| Replication target T2 | **Ströbel et al. (2025a)** KIT DMC 60 H | 32 runs, CC BY; opened only after the T1 pass |
+| Sealed target T1 | **Ströbel et al. (2025a)** KIT DMC 60 H | 32 runs, about six hours, CC BY; the only unseen machine whose transfer channels and commanded speeds are verified in a data paper; never opened |
+| Replication target T2, conditional | **Ströbel et al. (2025b)** KIT CMX 600 V | 54 runs, CC BY. Its channel list is inferred and its run durations are undocumented, so it stays `T?`: read the RADAR documentation first. If both are confirmed, seal it as well and read it only after the T1 pass; if they are not, it drops to a source |
 | Kept out of training | Ströbel et al. (2023a, 2023b, 2024, 2025c) and Schlagenhauf et al. (2023) | Same KIT lab and machines as T1/T2 |
 | Action bench | Abdul Hadi (2021), Sun (n.d.); Peralta Abadia et al. (2025) (10 Hz arm); ISW Stuttgart (2025) (axis level) | Designed or stepped commands |
-| Planning / causal | Peralta Abadia et al. (2025), Denkena et al. (2023, M1–M3), Denkena et al. (2026), Mehling et al. (2025) | Measured outcomes; causal ground truth |
+| Planning / causal | Peralta Abadia et al. (2025), Denkena et al. (2023, M1–M3), Denkena et al. (2026), Mehling et al. (2025) | Measured outcomes; causal ground truth. Chosen on role fit, not on the P score: Denkena et al. (2023) scores 2.00 but is the only public set with measured wear on three machines under one process, and Denkena et al. (2026) sits in the four-way tie at 2.20 (§6) |
 
 **Sealing procedure for T1 and T2.**
 1. Download the files.
@@ -279,7 +294,7 @@ Two readings of the matrix:
 3. Run a schema-only check that prints column names, row counts and timestamp monotonicity, and no values.
 4. Leave every other file closed until the V2 lock, as the V1 protocol did.
 
-The same-lab link between T1 and T2 means that T2 replicates the machine effect, not the lab effect.
+The same-lab link between T1 and T2 means that T2 replicates the machine effect, not the lab effect. Until the T2 conditions are checked, the plan has one sealed target, not two, and §10 keeps that check at the top of the list.
 
 **ETL effort.**
 
@@ -311,7 +326,9 @@ The same-lab link between T1 and T2 means that T2 replicates the machine effect,
 
 ## 10. Open unknowns (to close before the V2 lock)
 
-- [ ] Ströbel et al. (2025b): per-run durations and the confirmed signal list (RADAR documentation).
+- [ ] **Ströbel et al. (2025b): per-run durations and the confirmed signal list (RADAR documentation).** This is the first item: it decides whether the plan has one sealed target or two (§9).
+- [ ] Ochudlo et al. (2026a, 2026b): licence, which the RWTH record does not state, and the signal names of the axis data stream.
+- [ ] Trabesinger et al. (2023): the list of the 500 Hz signals, absent from the record.
 - [ ] Ströbel et al. (2025a, 2025b): units of `POWER` and `CMD_SPEED`, checked against the unit corrections applied to the JOANNEUM target.
 - [ ] Schlagenhauf et al. (2023): machine identity (MDPI *Data* 7(12):175).
 - [ ] Denkena et al. (2023, M1–M3): file durations and the tool split per machine (`filelist.csv`).
@@ -346,6 +363,7 @@ The same-lab link between T1 and T2 means that T2 replicates the machine effect,
 | "CNC machining quality prediction ... 2 TB dataset" (PHM 2022) | no public download found | IEEE Xplore 9808708 |
 | Yan et al. actionable world models (arXiv 2503.01411) | injection moulding; no public data stated | S57 |
 | HAAS Studio reproducibility package (Zenodo 20771475) | unrelated (work-organisation study) | DataCite |
+| Geometric error maps of three machining centres, Pimushkin (2026), 10.17632/82x238xrsf.1 | interferometer error maps and reconstruction code, not process time series (fails G2), although it does cover a HAAS VF-3 | DataCite |
 
 ## 12. Audit of this table
 
@@ -355,6 +373,8 @@ A seeded draw of 20 % of the 52 candidate rows present at audit time (11 rows; D
 - **One cell with weak support.** The Li Y. (2021) machine name "DMU" appears only in a user comment on the IEEE DataPort page. It is now marked as such.
 - **Error rate:** 1 / 55 = 1.8 %.
 - **Separate correction from the plan stage:** a model-written page summary had given the licence of an arXiv paper as the licence of a dataset.
+
+The three rows added on 2026-09-30 (Ochudlo et al., 2026a, 2026b; Trabesinger et al., 2023) come from their DataCite records and were not part of that sample.
 
 **Link check (2026-09-16).** 73 URLs and DOIs were checked. 55 answered 200 or 206. The other 18 are DOIs that resolve at doi.org, but whose landing pages either block scripted clients (figshare, Dataverse and ORDA answered 202; IEEE DataPort answered 403) or were unavailable (Zenodo was in its 504 outage; NIST and TUHH ended on a redirect). All 18 DOIs were confirmed as registered through the DataCite API during the search.
 
@@ -413,6 +433,9 @@ A seeded draw of 20 % of the 52 candidate rows present at audit time (11 rows; D
 - Hedberg, T., Luce, M., Barnard Feeney, A., Helu, M. (2016). *Volatile data stream (VDS) for the Smart Manufacturing Systems (SMS) Test Bed using MTConnect*. NIST. https://doi.org/10.18434/t4fk54
 - Korea AI Manufacturing Platform (n.d.). *Manufacturing AI datasets (CNC)*. kamp-ai.kr (registration). https://www.kamp-ai.kr/
 - Denkena, B., Bergmann, B., Klemme, H., Handrup, M. (2024). *Anomaly detection method for hybrid workpieces using dynamic time warping*. LUIS (Leibniz Universität Hannover). https://doi.org/10.25835/ph65zrpv
+- Ochudlo, P. M., Rüppel, A. K., Schmidt, L., Bergs, T., Vallery, H. (2026a). *Dataset for model predictive force control in five-axis positional milling using a table dynamometer*. RWTH Aachen University. https://doi.org/10.18154/rwth-2026-03847
+- Ochudlo, P. M., Rüppel, A. K., Plum, F., Bergs, T., Vallery, H. (2026b). *Dataset for potential of model predictive force control in five-axis positional milling considering tool wear*. RWTH Aachen University. https://doi.org/10.18154/rwth-2026-05233
+- Trabesinger, S., Mücke, M., Hanna, L., Klünsner, T., Hagendorfer, E. (2023). *TUGMCL_BasicMilling*. Zenodo. https://doi.org/10.5281/zenodo.7753180
 
 ### Evidence records cited in the tables
 
@@ -480,8 +503,26 @@ A seeded draw of 20 % of the 52 candidate rows present at audit time (11 rows; D
 | S60 | Repository scripts/09_transfer_power_analysis.py (paired-test power proxy) | [scripts/09_transfer_power_analysis.py](../../scripts/09_transfer_power_analysis.py) |
 | S61 | Kaggle API metadata for excluded Kaggle tables (ziya07, adorigueto) | <https://www.kaggle.com/datasets/ziya07/multi-sensor-cnc-tool-wear-dataset> |
 | S62 | Sheffield companion paper abstract, 10.1177/0954405420960892 | <https://doi.org/10.1177/0954405420960892> |
+| S63 | Repository `docs/results.md` §6, action conditioning: pre-lock target shuffle < 0.005; post-lock source-validation shuffle/true 1.064 ± 0.024 and 1.179 ± 0.001 | [docs/results.md](../results.md) |
+| S64 | DataCite records, RWTH Aachen model-predictive force-control datasets on a Mazak VARIAXIS i-600 | <https://doi.org/10.18154/rwth-2026-03847> |
+| S65 | DataCite record, TUGMCL_BasicMilling (500 Hz signals with the G-code that produced them) | <https://doi.org/10.5281/zenodo.7753180> |
 
-All web sources were accessed on 2026-09-16.
+Sources S01–S62 were accessed on 2026-09-16; S63–S65 on 2026-09-30.
+
+## 14. Revision log
+
+Eight points were raised in review on 2026-09-18. Each is listed with what it changed.
+
+| # | Point | Change |
+|---|---|---|
+| 1 | `ov = 3` and `ac = 3` on an inferred channel list contradicted the §4 rubric, and that row was the sealed target | §4 gains an explicit evidence cap. Ströbel et al. (2025b) moves to `ov = 1`, `ac = 2`, T score 2.00, and **the recommended target moves to Ströbel et al. (2025a)** (§1, §6, §9) |
+| 2 | §9 stated T1 unconditionally while the rest of the document kept it at `T?` | §9 now names the verified target as T1 and the inferred one as a conditional T2, with the condition and the fallback written out |
+| 3 | The saturation claim rested on 100 of 9,229 hits for the one query carrying the vendor names | §3 says what that query can and cannot support, round 3 adds three narrow vendor queries, and §1 states "no such dataset surfaced in the records read". Round 3 added three rows, including the first Mazak data |
+| 4 | L1 coverage was stated larger and cleaner than `search_log.csv` supports | §3 now reports what each API returned: OpenAIRE 12 of 20 queries, figshare 0 of 11, Zenodo 0 of 21 |
+| 5 | The P fifth place is a four-way tie reported as one row, and §9 picked other rows | §6 lists every row tied at the fifth score, explains that the stability share measures a tie-break, and §9 states why its planning rows are chosen on role fit |
+| 6 | "Why 15 units" gave the method, not the criterion | §2 states the rule: the smallest n whose power reaches 0.8 at d = 0.8, and what the gate becomes at d = 0.5 |
+| 7 | One of the four KIT datasets is CC BY-NC, not NC-ND | §1 separates them: Ströbel et al. (2023b) is CC BY-NC, so transformed data may be shared non-commercially |
+| 8 | RQ3 cited the pre-lock shuffle result only | RQ3 and finding 9 add the post-lock source-validation ratios from `docs/results.md` [S63] |
 
 ## Appendix — data dictionary of `candidates.csv`
 
