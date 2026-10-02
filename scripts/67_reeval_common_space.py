@@ -35,7 +35,7 @@ from cncjepa.normalization import Normalizer
 from cncjepa.pipeline import prepare, loaders_from_ds
 from cncjepa.factory import build_jepa
 from cncjepa.trainers import evaluate_jepa  # noqa: F401  (kept import parity with _val_bundle)
-from cncjepa.utils import device_from_arg, set_seed, count_parameters
+from cncjepa.utils import device_from_arg, set_seed, count_parameters,torch_load_checkpoint
 
 KEY_COMPONENTS=('clean_rmse','schema_drop_rmse','masked_rmse','long_horizon_rmse',
                 'calibration_penalty','action_sensitivity')
@@ -72,7 +72,7 @@ for run in a.runs:
     metric_affine=sn.affine_to(ref_sn)
 
     model=build_jepa(cfg,True); n_params=count_parameters(model)
-    ft_best=torch.load(out/'finetune'/'best.pt',map_location='cpu',weights_only=False)
+    ft_best=torch_load_checkpoint(out/'finetune'/'best.pt',map_location='cpu')
     model.load_state_dict(ft_best['model'],strict=False); model.to(dev).eval()
 
     B=compute_validation_bundle(model,cfg,dev,ld,ld_msk,ld_sch,ds,metric_affine=metric_affine)

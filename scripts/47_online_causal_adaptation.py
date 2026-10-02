@@ -8,10 +8,10 @@ from torch.utils.data import DataLoader
 from cncjepa.factory import build_jepa
 from cncjepa.adaptation import set_trainable
 from cncjepa.metrics import rmse
-from cncjepa.utils import device_from_arg
+from cncjepa.utils import device_from_arg,torch_load_checkpoint
 p=argparse.ArgumentParser(); p.add_argument('--config',default='configs/base.yaml'); p.add_argument('--ckpt',default='outputs/jepa_finetune/best.pt'); p.add_argument('--device',default='auto'); p.add_argument('--out',default='outputs/online_adaptation.json'); a=p.parse_args(); c=load_config(a.config); _,sp,_,sn,an=prepare(c,training_mask=False); dev=device_from_arg(a.device); rep={}
 for rid,g in sp['target_all'].groupby(c['schema']['run'],sort=False):
- ds=WindowDataset(g,c,sn,an,training=False); ld=DataLoader(ds,batch_size=1,shuffle=False,collate_fn=collate); m=build_jepa(c,True); m.load_state_dict(torch.load(a.ckpt,map_location='cpu')['model'],strict=False); m.to(dev); set_trainable(m,'predictor'); opt=torch.optim.AdamW([p for p in m.parameters() if p.requires_grad],lr=5e-5); ys=[]; ps=[]; ms=[]
+ ds=WindowDataset(g,c,sn,an,training=False); ld=DataLoader(ds,batch_size=1,shuffle=False,collate_fn=collate); m=build_jepa(c,True); m.load_state_dict(torch_load_checkpoint(a.ckpt,map_location='cpu')['model'],strict=False); m.to(dev); set_trainable(m,'predictor'); opt=torch.optim.AdamW([p for p in m.parameters() if p.requires_grad],lr=5e-5); ys=[]; ps=[]; ms=[]
  for b in ld:
   b=batch_to(b,dev); m.eval()
   with torch.no_grad(): o=m(b['x'],b['past_actions'],b['future_actions'],b['present'],b['schema'],y=None)
