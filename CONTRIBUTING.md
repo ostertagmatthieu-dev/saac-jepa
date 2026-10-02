@@ -72,7 +72,7 @@ These are not style preferences. They are what keeps the published numbers meani
 If a change makes a headline number move, the number has to move everywhere at once.
 
 - `docs/index.html` is the source of truth for headline numbers and is served by GitHub Pages.
-- **[`docs/UPDATING.md` §2](docs/UPDATING.md) lists every place each headline number appears.**
+- **[`docs/UPDATING.md` §3](docs/UPDATING.md) lists every place each headline number appears.**
   If you touch a number that the project page states, update that inventory in the same pull
   request — otherwise the next person will change five of the six occurrences.
 - `README.md` and the pages under `docs/` must agree with the project page. Do not introduce a
@@ -80,10 +80,20 @@ If a change makes a headline number move, the number has to move everywhere at o
 - Uncertainty travels with the number. `0.546` is one sealed pass; `0.822 ± 0.009` is seven
   seeds. Write the seed count when there is one.
 
+## The project page
+
+`docs/` is served by GitHub Pages exactly as committed, and part of it is generated from
+sources. After editing `docs/main.js` or `docs/styles.css`, run `make site` and commit what it
+rewrites (`docs/main.min.js` and the marked `<!-- build:… -->` regions of `docs/index.html`)
+together with your edit. Never edit those generated parts by hand; CI runs `make site-check`
+and fails when they are stale. The page also carries a Content-Security-Policy with Trusted
+Types: no inline `<script>`, no `on…=` attributes, no `innerHTML`. See
+[`docs/UPDATING.md` §6](docs/UPDATING.md).
+
 ## Pull requests
 
 - One logical change per pull request.
-- Run `make lint` and `make test` before opening it.
+- Run `make lint` and `make test` before opening it, and `make site-check` if you touched `docs/`.
 - **Add a `CHANGELOG.md` entry** under `## [Unreleased]`, in the Keep a Changelog category that
   fits (Added / Changed / Deprecated / Removed / Fixed / Security).
 - Fill in the pull-request template. If the change is scientific, link the issue where the

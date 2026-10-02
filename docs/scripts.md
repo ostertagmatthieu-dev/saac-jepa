@@ -108,7 +108,7 @@ Scripts 41, 43, 44, 64 and `_search_common.py` are target-blind by construction,
 | 47 | `47_online_causal_adaptation.py` | Causal online adaptation | `--ckpt` |
 | 48 | `48_predict_any_input.py` | Predict a new input, with an optional support set | `--ckpt --input` (required) |
 | 49 | `49_predict_variable_sensor_schema.py` | Inference with a variable known sensor subset | `--ckpt --input` (required) |
-| 50 | `50_novelty_component_factorial.py` | Component-factorial experiment for SAAC-JEPA | `--out` |
+| 50 | `50_novelty_component_factorial.py` | Component-factorial experiment for the world model | `--out` |
 
 ## 51–59 · Paper and reviewer outputs
 

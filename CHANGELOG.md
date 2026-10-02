@@ -15,6 +15,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   inside what the restricted unpickler accepts, so a numpy scalar smuggled into a metrics row
   fails in CI rather than at somebody's `--ckpt` argument.
 
+- A build for the project page, `tools/site/build.py` (`make site`; `make site-check` writes nothing
+  and fails when anything is stale). It inlines `docs/fonts/faces.css` and `docs/styles.css`,
+  minified, into one `<style>` in `docs/index.html`, minifies `docs/main.js` into
+  `docs/main.min.js`, loaded with a content-hash query string, and writes the Content-Security-Policy
+  with the loader's hash. Generated markup stays between `<!-- build:… -->` markers; `main.js` and
+  `styles.css` remain the hand-edited sources. The check also compares the three BibTeX copies,
+  validates the JSON-LD, and requires the four "last modified" dates to agree.
+- A `site` job in CI that runs `make site-check` and `node --check` on both scripts. The lint job
+  calls `make format-check`, so the list of formatted files lives only in the Makefile.
+- A "Pause animations" button under the hero strip that stops its scrolling loop and the CSS
+  animations (WCAG 2.2.2); it stays hidden when the visitor asks for reduced motion.
+- Three read-only WebMCP tools on the project page (`get_citation`, `get_links`,
+  `get_key_results`) for in-browser agents; browsers without WebMCP ignore them.
+- `docs/UPDATING.md` §6: the build, the security policy, the fonts pipeline, the GitHub Pages
+  limits and how to enable the WebMCP origin trial.
+
+- The locked model on Replicate, [ostertagmatthieu-dev/saac-jepa-world-model](https://replicate.com/ostertagmatthieu-dev/saac-jepa-world-model),
+  packaged with Cog in `replicate/` and linked from a README badge, the `## Demo` section, the
+  project-page footer and `docs/llms.txt`. It serves the same ONNX export as the Space on CPU. A
+  JSON window goes in (any subset of the 17 sensors over 32 s, the four commands over the next
+  16 s, optional hidden sensors) and a mean, standard deviation and interval per sensor and horizon
+  come out. `fetch_weights.py` pins the Space revision and the SHA-256 of every artefact, and the
+  container checks the locked hashes again at startup. Through the predictor, the 2,457 target
+  windows give RMSE 0.545579 and MAE 0.352358, the sealed values, and the five PyTorch reference
+  windows of the Space agree within 6·10⁻⁶. No dataset content goes into the image.
+
+- An interactive demo on Hugging Face Spaces,
+  [mostertag/saac-jepa-world-model](https://huggingface.co/spaces/mostertag/saac-jepa-world-model),
+  linked from a README badge and a `## Demo` section, from a Demo button in the project-page hero
+  and its footer, and from `docs/llms.txt`. The Space serves the sealed M03 checkpoint (seed 0,
+  SHA-256 `ceb88ac2…`), exported to ONNX and run in the browser: pick a target window, hide
+  shared sensors, scale the future commands, and compare the forecast with the truth and with
+  persistence. Before the export was published it was checked against PyTorch on all 2,457
+  target windows, including windows with hidden sensors, and its outputs stay within
+  3.2·10⁻⁵ of PyTorch. The page re-runs the sealed target evaluation client-side and reproduces
+  RMSE 0.545579 and MAE 0.352358. The Space redistributes a derived 1 Hz copy of DS03 under
+  CC BY 4.0; `docs/licensing.md` and the README's data section record that exception.
+
 - A `SECURITY.md` that describes what a security report means for research code: only `main` is
   supported (the project is pre-release at `0.1.0` with no tags), reports go through GitHub's
   private advisory form rather than a public issue, and the scope section names the hazards that
@@ -53,6 +91,63 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   which torch happened to be installed. `CNCJEPA_TRUST_CHECKPOINT=1` restores the old
   unrestricted behaviour for a checkpoint you produced yourself.
 
+- The project page serves its own fonts instead of loading Google Fonts: four OFL subsets of
+  Barlow Condensed, Source Serif 4 and JetBrains Mono (about 77 KiB in all, against roughly
+  388 KiB before), renamed SAAC Display, SAAC Serif and SAAC Mono, with metric-matched fallback
+  faces so the swap moves no text. `tools/site/fonts.py` (`make fonts`) builds them reproducibly
+  from pinned upstream files, and the check fails when the page uses a character a subset lacks.
+- The page arrives as one HTML response with all its CSS inline; the two fonts of the
+  above-the-fold text are preloaded and `main.min.js` loads after the content is parsed.
+- Scroll reveals no longer hide content unless the script can reveal it: without JavaScript,
+  with reduced motion, in a background tab or in a crawler, everything is visible.
+- Structured data: the `FAQPage` is removed (Google requires FAQ markup to match questions and
+  answers shown as such, and the key-finding cards are not an FAQ), the two `Dataset` nodes gain
+  `identifier`, `isAccessibleForFree` and `includedInDataCatalog` (DS03 also `version`),
+  `dateModified` follows the page, and the JSON-LD block moves to the end of `<body>`.
+  `docs/UPDATING.md` §3 is re-baselined for the copies the FAQ answers held.
+
+- The project page no longer calls the pretraining objective a loss. Its four terms all contain a
+  stop-gradient, so the weighted sum L_SSL was not a function whose gradient training follows. The
+  "Loss" row of §03 becomes "Training": a per-step function J_k with the EMA weights and a frozen
+  copy of the current weights as explicit arguments, the AdamW step and the EMA update, read as a
+  semi-gradient iteration. The variance-covariance term is no longer called VICReg (it has no
+  invariance term) and is shown with half its weight, since the target half of the logged term
+  carries no gradient. The SSL validation value becomes a selection score, the surrogate caveat
+  and the figure 3 label follow, and `docs/llms.txt` and `docs/protocol.md` use the same wording.
+
+- The project page is restructured for readers who know world models, in seven sections instead of
+  nine, with each headline number stated once in prose. §01 opens with three key-finding cards,
+  each a question, a one-line answer and an animated micro-bar chart; the abstract is folded
+  underneath. §02 shows the two sensor schemas as chip grids, the seven channels the target lacks
+  dropping out on scroll. §03 adds the formal object, the factorized model and the loss with its
+  locked weights (native MathML, no script), three caveats taken from the paper (surrogate loss,
+  product of per-horizon marginals, one-pass prediction), the model specification, and a table
+  placing the model among PLDM, EB-JEPA and LeWorldModel. §05 replaces the long results paragraph
+  with three responsive charts (zero-shot RMSE against persistence, R² by horizon, command
+  sensitivity and calibration) and three numbered notes; the full table is folded. Fig. 2 is badged
+  as a schematic. The page now says "commands" throughout, uses `f_θe`, labels the command-recovery
+  head, explains that NLL 0.52 is the locked seed and 0.89 the control arm of the paired ablation,
+  and counts three reads of the target, as the paper does (README and `docs/results.md` too).
+  Animations: signal packets synchronised with the latent pulse in the hero strip, a data flow
+  along Fig. 1's wires after it is built, and scroll reveals, all paused off screen and disabled
+  under reduced motion. Old section anchors still resolve. The compute acknowledgement is removed
+  from the page footer and the README, as the paper carries none.
+- Search and AI indexing: the `<title>` and social titles lead with the paper's keywords; the
+  JSON-LD becomes one `@graph` (article with abstract, keywords and datasets, source code, datasets,
+  authors by ORCID, and an FAQ that mirrors the visible key findings); Scholar tags gain ORCID,
+  dates and keywords; `llms.txt` summarizes the paper and links the Markdown docs; the sitemap lists
+  the PDF, `llms.txt` and the docs. `docs/UPDATING.md` records every place a number now lives and
+  adds a section on these surfaces.
+- The paper is retitled *World Models for Cross-Machine CNC Transfer under Partial Sensor Overlap*
+  (revised arXiv version 2609.16071v2 of the same V1 paper, announced 2026-09-24), after Jean Ponce's review: the method acronym
+  SAAC-JEPA leaves the paper and stays only as the code name of this repository. The new title is
+  applied to `CITATION.cff`, `pyproject.toml`, the package docstring, the README, the three BibTeX
+  copies and the project page; the page abstract mirrors the rewritten abstract, result rows read
+  "World model (locked, M03)", `docs/paper.pdf` is the build of 2609.16071v2 and `docs/og.png` shows the new
+  title. arXiv derives the BibTeX key from the title, so the key changes from
+  `bouaziz2026schemaadaptiveactionconditionedjepacrossmachine` to `bouaziz2026worldmodelscrossmachinecnc`, copied from the abs
+  page of 2609.16071v2. The identifier, the DOI `10.48550/arXiv.2609.16071` and the abs URL do not change:
+  arXiv mints one DOI per identifier, not per version.
 - `README.md`, `docs/data.md` and the project-page footer now state explicitly that the MIT licence
   covers the repository contents and reaches neither dataset, that neither dataset is
   redistributed here, and that both CC BY 4.0 licences oblige us to declare the ETL changes we
@@ -76,6 +171,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `docs/index.html` — Google Scholar `citation_arxiv_id`, the JSON-LD `identifier`, the
   static BibTeX copy, the arXiv button and the cite note). The three BibTeX copies now
   cite `url = {https://arxiv.org/abs/2609.16071}` instead of the project page.
+
+### Fixed
+
+- Accessibility of the project page: section numbers are hidden from screen readers so headings
+  read as their titles, the key-finding questions and boxed notes are headings, wide figures and
+  tables become focusable named regions only when they actually scroll, low-contrast text
+  colours are darkened, and "Copy BibTeX" reports its outcome through a live region.
+
+### Security
+
+- The project page carries a Content-Security-Policy (as a `<meta>`, since GitHub Pages sends no
+  custom headers) with Trusted Types: the only script allowed is a hashed one-line loader, which
+  inserts `main.min.js` through the single permitted policy; everything else is same-origin, with
+  no plugins, `<base>` or form submission. `docs/404.html` gets its own policy with no script.
 
 ## [0.1.0] - 2026-09-11
 

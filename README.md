@@ -1,12 +1,14 @@
 # SAAC-JEPA
 
-**Schema-Adaptive Action-Conditioned JEPA for cross-machine CNC transfer under partial sensor overlap.**
+**World Models for Cross-Machine CNC Transfer under Partial Sensor Overlap.**
 
 A from-scratch PyTorch world model trained on one CNC machine (17 sensors) whose locked checkpoint was evaluated once on a second machine that shares only 10 of them, under a leakage-audited protocol.
 
 <p align="center">
-  <a href="https://arxiv.org/abs/2609.16071"><img src="https://img.shields.io/badge/arXiv-2609.16071-b31b1b?logo=arxiv&logoColor=white" alt="arXiv:2609.16071"></a>
+  <a href="https://doi.org/10.48550/arXiv.2609.16071"><img src="https://img.shields.io/badge/arXiv-2609.16071-b31b1b?logo=arxiv&logoColor=white" alt="arXiv:2609.16071"></a>
   <a href="https://ostertagmatthieu-dev.github.io/saac-jepa/"><img src="https://img.shields.io/badge/project-page-0F1B2D" alt="Project page"></a>
+  <a href="https://huggingface.co/spaces/mostertag/saac-jepa-world-model"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20demo-Hugging%20Face%20Space-FFD21E" alt="Demo on Hugging Face Spaces"></a>
+  <a href="https://replicate.com/ostertagmatthieu-dev/saac-jepa-world-model"><img src="https://img.shields.io/badge/API-Replicate-000000" alt="API on Replicate"></a>
   <a href="https://ostertagmatthieu-dev.github.io/saac-jepa/paper.pdf"><img src="https://img.shields.io/badge/paper-PDF-b31b1b" alt="Paper PDF"></a>
   <a href="https://github.com/ostertagmatthieu-dev/saac-jepa/actions/workflows/ci.yml"><img src="https://github.com/ostertagmatthieu-dev/saac-jepa/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <img src="https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-3776AB?logo=python&logoColor=white" alt="Python 3.10 | 3.11 | 3.12">
@@ -14,14 +16,16 @@ A from-scratch PyTorch world model trained on one CNC machine (17 sensors) whose
 </p>
 
 <p align="center">
-  <img src="paper/figures/fig1_saacjepa_architecture_en.png" width="720" alt="SAAC-JEPA training graph: masked sensors and past actions encode to a context latent; future actions condition a direct multi-horizon predictor whose latents are matched through a stop-gradient to an EMA target encoder, with variance-covariance, schema-consistency and action-recovery terms."><br>
+  <img src="paper/figures/fig1_saacjepa_architecture_en.png" width="720" alt="World model training graph: masked sensors and past actions encode to a context latent; future actions condition a direct multi-horizon predictor whose latents are matched through a stop-gradient to an EMA target encoder, with variance-covariance, schema-consistency and action-recovery terms."><br>
   <sub>Figure 1. Dashed green RevIN blocks mark the post-lock variant (paper App. H), not the locked model.</sub>
 </p>
 
 ## What is this
 
+SAAC-JEPA is the code name of this repository and its releases; the paper calls the model simply the world model.
+
 - **Problem.** A CNC world model trained on one machine has to keep working on another whose sensing interface is not the one it was trained on. Source: THWS Spinner U5-620, 17 canonical channels, 62 NC-program sessions at 1 Hz. Target: the FH JOANNEUM repository, 7 independent runs, 10 of those channels.
-- **Method.** An action-conditioned JEPA with a flexible sensor encoder: value, presence and schema indicators let one model accept any subset of a known sensor vocabulary. Context `K = 32 s`, direct prediction at `{1, 2, 4, 8, 16} s`, actions are spindle speed and the commanded X/Y/Z feeds.
+- **Method.** A command-conditioned JEPA with a flexible sensor encoder: value, presence and schema indicators let one model accept any subset of a known sensor vocabulary. Context `K = 32 s`, direct prediction at `{1, 2, 4, 8, 16} s`, actions are spindle speed and the commanded X/Y/Z feeds.
 - **Protocol.** Group-disjoint session splits, train-only normalizers, leakage audits, deterministic validation masks, a 20-candidate architecture search scored on source validation alone, a lock that was refused once for instability, a SHA-256 lock, and a single sealed pass on the target machine.
 - **Framing.** An audited transfer case study, not a SOTA claim. Official RevIN-equipped PatchTST and iTransformer still win on raw zero-shot RMSE, and a post-lock ablation shows why.
 
@@ -32,10 +36,10 @@ A from-scratch PyTorch world model trained on one CNC machine (17 sensors) whose
 | Persistence | 1.135 | 0.654 | — | trivial floor; source = validation split (1.128 on the source test split) |
 | PatchTST (official, RevIN) | 0.804 | 0.503 | — | deterministic, single run; source = test split |
 | iTransformer (official, RevIN) | 0.822 | 0.498 | — | deterministic, single run; source = test split |
-| **SAAC-JEPA (locked, M03)** | **0.822 ± 0.009** (7 seeds) | **0.546** | 0.52 | single sealed pass; R² 0.012; source = validation mean |
-| **SAAC-JEPA + RevIN (post-lock)** | **0.766 ± 0.001** (3 seeds) | **0.495 ± 0.004** (3 seeds) | 20.6 | second declared read; calibration collapses |
+| **World model (locked, M03)** | **0.822 ± 0.009** (7 seeds) | **0.546** | 0.52 | single sealed pass; R² 0.012; source = validation mean |
+| **World model + RevIN (post-lock)** | **0.766 ± 0.001** (3 seeds) | **0.495 ± 0.004** (3 seeds) | 20.6 | second declared read; calibration collapses |
 
-<sub>RMSE in z units of the source-train normalizer, lower is better. Target = the 10 shared JOANNEUM channels over 7 runs, 2,457 windows. <b>The source column is not like-for-like</b>: the official baselines are scored on the source test split (5,189 windows, 17 sensors), the SAAC-JEPA rows are source-validation means over seeds. Pre-lock few-shot curve: 0.612 / 0.611 / 0.540 / 0.520 at 0 / 5 / 10 / 20 % target support. DS03 has been read exactly twice — the sealed locked pass and the declared post-lock ablation. Full definitions, per-horizon R², calibration and the RevIN ablation: <a href="docs/results.md">docs/results.md</a>.</sub>
+<sub>RMSE in z units of the source-train normalizer, lower is better. Target = the 10 shared JOANNEUM channels over 7 runs, 2,457 windows. <b>The source column is not like-for-like</b>: the official baselines are scored on the source test split (5,189 windows, 17 sensors), the world-model rows are source-validation means over seeds. Pre-lock few-shot curve: 0.612 / 0.611 / 0.540 / 0.520 at 0 / 5 / 10 / 20 % target support. DS03 has been read three times — by the pre-lock model (few-shot sweep, outside selection), in the single sealed pass of the locked model, and in the declared post-lock ablation. Full definitions, per-horizon R², calibration and the RevIN ablation: <a href="docs/results.md">docs/results.md</a>.</sub>
 
 ## Method in five lines
 
@@ -56,6 +60,12 @@ Missing or absent sensors carry separate value, presence and schema indicators, 
 <p align="center"><img src="paper/figures/fig4_masking_actions_en.png" width="640" alt="The five masking modes with the winning channel mode boxed, and the three action-injection mechanisms: token, FiLM and cross-attention, with their measured RMSE."></p>
 
 </details>
+
+## Demo
+
+[Try the locked model in your browser](https://huggingface.co/spaces/mostertag/saac-jepa-world-model). The Hugging Face Space runs the sealed M03 checkpoint, exported to ONNX, on the target machine. You can pick any of the 2,457 target windows, hide any of the 10 shared sensors, scale the future spindle and feed commands, and compare the forecast and its 90 % interval with the truth and with persistence. Before the ONNX file was published, it was checked against PyTorch on every target window (max |Δ| 3.2·10⁻⁵). The page can re-run the whole sealed evaluation client-side, and it reproduces RMSE 0.545579 and MAE 0.352358. The SHA-256 hashes of the checkpoint, config and normalizers match the lock file.
+
+The same ONNX model is also served [on Replicate](https://replicate.com/ostertagmatthieu-dev/saac-jepa-world-model), for calls from code. It takes one window as JSON (32 s of any subset of the 17 sensors, the four commands for the next 16 s, and optionally sensors to hide) and returns the mean, standard deviation and interval of each sensor at +1, 2, 4, 8 and 16 s. The container checks the locked hashes when it starts. Run through the predictor, the 2,457 target windows give the sealed RMSE 0.545579 and MAE 0.352358. The packaging and the input format are in [replicate/](replicate/README.md).
 
 ## Quickstart
 
@@ -132,7 +142,9 @@ tests/                 protocol invariants, smoke, version
 examples/              make_synthetic_ds01_ds03.py
 third_party/           pinned official baseline repos (gitignored clones) + cnc_adapter/
 paper/                 figures/ (TikZ sources, PDF and PNG), results/revin_ablation/
-docs/                  the project page served by GitHub Pages, the Markdown docs, internal/
+docs/                  the project page served by GitHub Pages (main.min.js and the inline CSS
+                       in index.html are generated by make site), the Markdown docs, internal/
+tools/site/            build.py (make site) and fonts.py (make fonts), the page build
 ```
 
 ## Documentation
@@ -153,8 +165,8 @@ docs/                  the project page served by GitHub Pages, the Markdown doc
 ## Citation
 
 ```bibtex
-@misc{bouaziz2026schemaadaptiveactionconditionedjepacrossmachine,
-  title         = {Schema-Adaptive Action-Conditioned JEPA for Cross-Machine CNC Transfer under Partial Sensor Overlap},
+@misc{bouaziz2026worldmodelscrossmachinecnc,
+  title         = {World Models for Cross-Machine CNC Transfer under Partial Sensor Overlap},
   author        = {Ayoub Louaye Bouaziz and Matthieu Ostertag and Anton Demasles},
   year          = {2026},
   eprint        = {2609.16071},
@@ -169,11 +181,7 @@ Or use GitHub's "Cite this repository" button, which reads [CITATION.cff](CITATI
 
 ## Limitations
 
-The results cover one source machine and one target machine with seven independent runs: they establish cross-machine transfer for this pair under partial sensor overlap, and nothing broader. No amount of architecture search fixes that — more machines or an external dataset would. The locked target number is a single checkpoint evaluated once; the three-seed control arm of the post-lock ablation gives 0.555 ± 0.015 on the same windows, which is the spread to keep in mind around it. On the source machine, plain supervised baselines are ahead as well (RSSM 0.759 and MLP 0.771 on source validation against 0.822). The model does not beat the official RevIN-equipped forecasters on raw zero-shot RMSE, and the post-lock ablation attributes that gap to normalization rather than architecture — at the cost of target calibration, which collapses. Per horizon the locked model explains variance only at 1–4 s and falls below the pooled target-mean predictor at 8 and 16 s. Several diagnostics were measured before the lock and have not been re-measured on the locked model: the few-shot curve, the action-shuffle sensitivity (which moved target RMSE by less than 0.005), and interval coverage (67 % empirical at a nominal 90 %). Baselines and ablations are single-seed at repository defaults unless a seed count is stated. The paper makes no SOTA claim.
-
-## Acknowledgments
-
-This work was made possible by compute provided by Atos IT Services UK Limited. Every experiment reported here ran on hardware they made available; without it the project would not have been feasible.
+The results cover one source machine and one target machine with seven independent runs: they establish cross-machine transfer for this pair under partial sensor overlap, and nothing broader. No amount of architecture search fixes that — more machines or an external dataset would. The locked target number is a single checkpoint evaluated once; the three-seed control arm of the post-lock ablation gives 0.555 ± 0.015 on the same windows, which is the spread to keep in mind around it. On the source machine, plain supervised baselines are ahead as well (RSSM 0.759 and MLP 0.771 on source validation against 0.822). The model does not beat the official RevIN-equipped forecasters on raw zero-shot RMSE, and the post-lock ablation attributes that gap to normalization rather than architecture — at the cost of target calibration, which collapses. Per horizon the locked model explains variance only at 1–4 s and falls below the pooled target-mean predictor at 8 and 16 s. Several diagnostics were measured before the lock and have not been re-measured on the locked model: the few-shot curve, the command-shuffle sensitivity (which moved target RMSE by less than 0.005), and interval coverage (67 % empirical at a nominal 90 %). Baselines and ablations are single-seed at repository defaults unless a seed count is stated. The paper makes no SOTA claim.
 
 ## Data and license
 
@@ -183,6 +191,7 @@ Code and everything else tracked in this repository are released under the MIT l
 - THWS five-axis CNC milling dataset (source, DS01): [10.5281/zenodo.14094887](https://doi.org/10.5281/zenodo.14094887), CC BY 4.0 — commercial use permitted with attribution.
 - FH JOANNEUM CNC machining repository (target, DS03): [10.17632/gtvvwmz7r7.2](https://doi.org/10.17632/gtvvwmz7r7.2), CC BY 4.0 — commercial use permitted with attribution. The non-commercial terms sometimes cited for it belong to the accompanying *Data in Brief* article, not to the deposit.
 - Neither dataset is redistributed here: `data/` is gitignored and `paper/results/` holds aggregate metrics, not rows. Both are used with the unit, resampling and segmentation changes listed in [docs/licensing.md](docs/licensing.md).
+- The [demo Space](https://huggingface.co/spaces/mostertag/saac-jepa-world-model) is a separate repository. It does redistribute a derived 1 Hz copy of the seven DS03 runs, with attribution and the changes listed, as CC BY 4.0 allows. DS01 is not included there either.
 - Official baseline repositories are pinned to specific commits in [third_party/README.md](third_party/README.md); the clones themselves are not redistributed here. PatchTST is Apache-2.0, iTransformer MIT, and SimMTM declares no license at all.
 
 Full map of what each license covers, the attribution obligations and what is still to confirm:
