@@ -1,16 +1,24 @@
 # Updating the project page
 
-This page is three hand-written files — `index.html`, `styles.css`, `main.js` — plus
-`paper.pdf`, `og.png`, the three icons and the indexing files `llms.txt`, `sitemap.xml` and
-`robots.txt` (Section 5). There is no build step: what is committed is
-what GitHub Pages serves.
+The page is built from hand-written sources — `index.html`, `styles.css`, `main.js` and the
+self-hosted fonts in `fonts/` — plus `paper.pdf`, `og.png`, the three icons and the indexing
+files `llms.txt`, `sitemap.xml` and `robots.txt` (Section 5). GitHub Pages serves what is
+committed and runs no build of its own, so the generated parts are committed too.
+`make site` (`tools/site/build.py`) writes `main.min.js` and rewrites three marked regions of
+`index.html`: the inline CSS (`fonts/faces.css` and `styles.css`, minified) between
+`<!-- build:css -->` markers, the Content-Security-Policy with the hash of the loader between
+`<!-- build:csp -->` markers, and the loader that runs `main.min.js` between
+`<!-- build:loader -->` markers; it also puts the hash of `404.html`'s `<style>` into that
+page's CSP. Edit `main.js` and `styles.css`, never `main.min.js` or a marked region, run
+`make site` after every edit of either, and commit what it wrote. CI runs `make site-check`
+and fails if you forgot. Section 6 covers the build, the security policy and the fonts.
 
 Two things make it easy to leave the page half-edited, and both are covered below:
 
 1. **The arXiv identifier lives in every file listed in Section 1** (nine edits across `main.js`, `index.html`, `CITATION.cff`, `README.md` and `CHANGELOG.md`) — applied, see the note there.
 2. **Every headline number appears more than once**, because the same figure is stated
    in a key-finding card, in a chart and its `aria-label`, inside an SVG, in the results
-   table, in the FAQ answers of the JSON-LD and in `llms.txt`. Section 3.
+   table and in `llms.txt`. Section 3.
 
 ---
 
@@ -59,8 +67,8 @@ rows of the table above** when the identifier changes again:
 
 | # | File | What to change |
 |---|------|----------------|
-| 1 | `docs/main.js` | `CONFIG.arxivUrl` — replace `null` with the abs URL, e.g. `"https://arxiv.org/abs/2609.01234"`. This alone un-mutes the arXiv button and swaps the `#arxivNote` placeholder for the real URL. |
-| 2 | `docs/main.js` | `CONFIG.bibtex` — replace `eprint = {ARXIV-ID}` with the real identifier and delete the `note = {arXiv identifier to be added after announcement}` line. |
+| 1 | `docs/main.js` + `docs/index.html` | `CONFIG.arxivUrl` — the paper's DOI or abs URL, e.g. `"https://doi.org/10.48550/arXiv.2609.01234"`; it feeds the copied BibTeX and the WebMCP `get_links` tool. The arXiv button `#btnArxiv` and the `#arxivNote` link are static `href`s in `index.html`: change both by hand to the same URL. Then run `make site`. |
+| 2 | `docs/main.js` | `CONFIG.bibtex` — replace `eprint = {ARXIV-ID}` with the real identifier and delete the `note = {arXiv identifier to be added after announcement}` line. Then run `make site`. |
 | 3 | `docs/index.html` | The `<pre id="bibtex">` block in §07 Cite carries the **same BibTeX as static text** so the page cites correctly with JavaScript off. Apply change 2 here as well, character for character. |
 | 4 | `docs/index.html` | `<head>`: uncomment / add `<meta name="citation_arxiv_id" content="XXXX.XXXXX">` at the marked TODO, next to the other `citation_*` tags. Google Scholar reads this one. |
 | 5 | `docs/index.html` | `<head>`: add the `identifier` entry to the JSON-LD `ScholarlyArticle`, at the marked TODO: `"identifier": { "@type": "PropertyValue", "propertyID": "arXiv", "value": "arXiv:XXXX.XXXXX" }` |
@@ -87,23 +95,31 @@ Also:
 
   `README.md` carries a third copy of the same BibTeX entry; the check above does not see it. Use
   the three-way check in [Section 2](#2-changing-the-paper-title) instead, which includes `README.md`.
+  `make site-check` runs that three-way comparison too, line by line, and CI fails on a drift.
 
 ### Re-rendering `og.png`
 
-`og-source.html` is a scratch file and is deliberately **not** committed. To regenerate
-the social card, recreate a 1200×630 page that pulls in `styles.css`, the masthead
-`<p class="masthead__eyebrow">` and `<h1 class="masthead__title">` markup copied
-verbatim from `index.html` (the card renders the title as text — a page built from the
-hero strip alone drops it), the hero `<figure class="strip" id="strip">` markup also
-copied verbatim, and `main.js` (which draws the traces). The page needs network access
-for the Google Fonts `<link>` tags in `index.html`'s `<head>`, or the card renders in
-fallback fonts. Then:
+`og-source.html` is a scratch file in `docs/` and is deliberately **not** committed. To
+regenerate the social card, recreate a 1200×630 page whose `<head>` links the sources, not
+the build: `<link rel="stylesheet" href="fonts/faces.css">`, then
+`<link rel="stylesheet" href="styles.css">`, then `<script src="main.js" defer></script>`
+(which draws the traces). `fonts/faces.css` names the woff2 files relative to itself, so the
+link works from any page in `docs/`; `index.html` inlines its own copy and has nothing to copy
+from its `<head>`. The body is the masthead `<p class="masthead__eyebrow">` and
+`<h1 class="masthead__title">` markup copied verbatim from `index.html` (the card renders the
+title as text — a page built from the hero strip alone drops it), and the hero
+`<figure class="strip" id="strip">` markup, also copied verbatim except for the
+`<button id="motionToggle">` inside it, which `main.js` would show on the card. Load the page
+over HTTP, not from a `file://` URL, so the fonts load as they do on the live page; no network
+access is needed. Then:
 
 ```sh
+python3 -m http.server 8767 --directory docs &
 "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new \
   --hide-scrollbars --virtual-time-budget=6000 \
   --screenshot=docs/og.png --window-size=1200,630 \
-  file://$PWD/docs/og-source.html
+  http://localhost:8767/og-source.html
+kill %1
 sips -g pixelWidth -g pixelHeight docs/og.png   # must read 1200 x 630
 ```
 
@@ -142,7 +158,7 @@ not change any of `eprint`, `doi` or `url` anywhere in the repository.
 | 4 | `src/cncjepa/__init__.py` | Module docstring, first line — `"""SAAC-JEPA: <full title>.` Keep the rest of the docstring intact; wrap the line if it would exceed `[tool.ruff] line-length` (`E501` is currently ignored for `src/cncjepa/**`, but keep it reasonable anyway). |
 | 5 | `README.md` | Bold subtitle under the `# SAAC-JEPA` h1 — the full title. |
 | 6 | `README.md` | BibTeX block in `## Citation`, the `title = {...}` line — the full title. Copy 1 of 3. |
-| 7 | `docs/main.js` | `CONFIG.bibtex`, the `title         = {...}` line — the full title, character for character. Copy 2 of 3. |
+| 7 | `docs/main.js` | `CONFIG.bibtex`, the `title         = {...}` line — the full title, character for character. Copy 2 of 3. Then run `make site`, which rebuilds `main.min.js`. |
 | 8 | `docs/index.html` | `<pre id="bibtex">` in §07 Cite, the `title         = {...}` line — the full title, character for character. Copy 3 of 3. |
 | 9 | `docs/index.html` | `<title>` in `<head>` — `<short title> · SAAC-JEPA`. |
 | 10 | `docs/index.html` | `<meta property="og:title">` — `<short title> · SAAC-JEPA`. |
@@ -188,7 +204,11 @@ console.log("BibTeX DRIFTED");for(const[n,s]of[["docs/index.html",html],["docs/m
 ```
 
 If HTML entities creep into `docs/index.html` (e.g. `&amp;`), decode them before comparing
-— the regexes above assume plain text.
+— the regexes above assume plain text. `make site-check` extracts the three copies the same
+way, decodes the entities, and names the first line that differs; it is part of CI.
+
+`.github/scripts/apply_arxiv_revision.sh` edits `docs/main.js`, so run `make site` after it and
+commit `main.min.js` and `index.html` with the rest.
 
 ### Finishing the retitle once the revised version is announced — done for 2609.16071v2
 
@@ -235,17 +255,17 @@ below cover the page only.
 
 | Number | Occurrences | Every location |
 |---|---|---|
-| **0.546** — locked model, zero-shot target RMSE | 7 | FAQ answer 2 (JSON-LD) · card Q2 `aria-label` · card Q2 micro-bar value · Fig. 4 `<text class="f3__big">` · Fig. 5 `aria-label` · Fig. 5 row "World model, locked" · results table, `World model (locked, M03)` target cell |
-| **0.654** — persistence, target RMSE | 8 | FAQ answer 2 · card Q2 `aria-label` · card Q2 micro-bar value · Fig. 5 `aria-label` · Fig. 5 row "Persistence" · results table, `Persistence` target cell · Fig. 8 `<desc>` · Fig. 8 reference-line label |
+| **0.546** — locked model, zero-shot target RMSE | 6 | card Q2 `aria-label` · card Q2 micro-bar value · Fig. 4 `<text class="f3__big">` · Fig. 5 `aria-label` · Fig. 5 row "World model, locked" · results table, `World model (locked, M03)` target cell |
+| **0.654** — persistence, target RMSE | 7 | card Q2 `aria-label` · card Q2 micro-bar value · Fig. 5 `aria-label` · Fig. 5 row "Persistence" · results table, `Persistence` target cell · Fig. 8 `<desc>` · Fig. 8 reference-line label |
 | **0.612** — pre-lock model, zero-shot target RMSE | 2 | Fig. 8 `<desc>` · Fig. 8 data-point label at 0 % support |
 | **0.520** — pre-lock model at 20 % target support | 2 | Fig. 8 `<desc>` · Fig. 8 data-point label at 20 % support |
-| **0.811** — scratch, source RMSE | 4 | FAQ answer 1 (`0.811 ± 0.022`) · card Q1 `aria-label` · card Q1 micro-bar value · results table, `Scratch` source cell |
-| **0.813** — pretrained body, source RMSE | 4 | FAQ answer 1 · card Q1 `aria-label` · card Q1 micro-bar value · results table, `Pretrained body + fresh head` source cell |
+| **0.811** — scratch, source RMSE | 3 | card Q1 `aria-label` · card Q1 micro-bar value · results table, `Scratch` source cell |
+| **0.813** — pretrained body, source RMSE | 3 | card Q1 `aria-label` · card Q1 micro-bar value · results table, `Pretrained body + fresh head` source cell |
 | **0.822 ± 0.009** — locked model, source-validation RMSE | 2 | Fig. 4 `7 SEEDS` box · results table, `World model (locked, M03)` source cell |
-| **0.503** — PatchTST, target zero-shot RMSE | 6 | FAQ answer 3 · card Q3 `aria-label` · card Q3 micro-bar value · Fig. 5 `aria-label` · Fig. 5 row "PatchTST" · results table |
-| **0.498** — iTransformer, target zero-shot RMSE | 6 | FAQ answer 3 · card Q3 `aria-label` · card Q3 micro-bar value · Fig. 5 `aria-label` · Fig. 5 row "iTransformer" · results table |
-| **0.495 ± 0.004** — World model + RevIN, target zero-shot RMSE (three seeds, post-lock) | 3 | FAQ answer 3 · Fig. 5 row "World model + RevIN" · results table. The bare `0.495` also sits in card Q3 (`aria-label` and micro-bar value) and in the Fig. 5 `aria-label`. |
-| **20.6** — World model + RevIN, target NLL | 5 | FAQ answer 3 · card Q3 answer · Fig. 5 row sub-label · Fig. 7 calibration tile · results table note |
+| **0.503** — PatchTST, target zero-shot RMSE | 5 | card Q3 `aria-label` · card Q3 micro-bar value · Fig. 5 `aria-label` · Fig. 5 row "PatchTST" · results table |
+| **0.498** — iTransformer, target zero-shot RMSE | 5 | card Q3 `aria-label` · card Q3 micro-bar value · Fig. 5 `aria-label` · Fig. 5 row "iTransformer" · results table |
+| **0.495 ± 0.004** — World model + RevIN, target zero-shot RMSE (three seeds, post-lock) | 2 | Fig. 5 row "World model + RevIN" · results table. The bare `0.495` also sits in card Q3 (`aria-label` and micro-bar value) and in the Fig. 5 `aria-label`. |
+| **20.6** — World model + RevIN, target NLL | 4 | card Q3 answer · Fig. 5 row sub-label · Fig. 7 calibration tile · results table note |
 
 Chart positions are written without the leading zero (`style="--v:.654"`), so they do not
 match these greps: when a number changes, update its `--v` too — micro-bars in §01,
@@ -282,8 +302,8 @@ those tags, the results-table fold summary and the in-text references (“Fig. 7
 These appear only once or twice and are listed here so they are not forgotten:
 `0.611` and `0.540` (Fig. 8 points and `<desc>`), `0.766 ± 0.001` (RevIN source cell),
 `0.812 ± 0.012`, `1.135`, `1.128`, `0.928`, `0.804`, `0.759`, `0.771` (note 3), the
-per-horizon R² in Fig. 6 (bars, values and `aria-label`), `R² = 0.012` (card Q2, Fig. 4,
-FAQ), `NLL 0.52` (Fig. 5, Fig. 4, table), `0.89`, `0.953`, `0.874` and `67 %` (Fig. 7
+per-horizon R² in Fig. 6 (bars, values and `aria-label`), `0.012` (card Q2, inside its `data-k`
+span, and Fig. 4), `NLL 0.52` (Fig. 5, Fig. 4, table), `0.89`, `0.953`, `0.874` and `67 %` (Fig. 7
 calibration tile), `1.058`, `1.044` and `1.02` (Fig. 7 gauge, §04 text, `llms.txt`),
 the model specification strip in §03, and the window counts in the §02 fact strip.
 
@@ -299,9 +319,12 @@ grep -o -F -- '0.495 ± 0.004' index.html | wc -l
 grep -o -F -- '20.6' index.html | wc -l
 ```
 
-Expected: `7 8 2 2 4 4 6 6`, then `2`, `3`, `5`. (Re-baselined 2026-09-24 for the page
-redesign: key-finding cards, charts with `aria-label`s and FAQ answers in the JSON-LD each
-restate the headline numbers; the per-number rows above list every place.)
+Expected: `6 7 2 2 3 3 5 5`, then `2`, `2`, `4`. (Re-baselined 2026-10-02, when the
+`FAQPage` left the JSON-LD and took one copy of most numbers with it — see Section 5; the
+2026-09-24 baseline was `7 8 2 2 4 4 6 6`, `2`, `3`, `5`. Key-finding cards and charts with
+`aria-label`s each restate the headline numbers; the per-number rows above list every place.)
+`make site-check` fails if a generated region of `index.html` (inline CSS, CSP, loader) ever
+contains one of these strings, so the counts only ever see hand-written text.
 
 ### FIG. 3 RevIN block
 
@@ -316,9 +339,11 @@ marks the RevIN row in Fig. 5, card Q3 and the results table. The hero strip and
 ## 4. Smoke test before pushing
 
 ```sh
+make site-check            # generated parts current, BibTeX, JSON-LD, dates and fonts consistent
 node --check docs/main.js
 python3 -m http.server 8767 --directory docs
 # then open http://localhost:8767/ and check:
+#  - the console shows no Content-Security-Policy or Trusted Types error
 #  - the hero strip scrolls, and stops when scrolled out of view or the tab is hidden
 #  - each figure animates once on scroll-in, and Replay re-runs it; Fig. 3 then keeps a
 #    slow dotted flow along its wires, paused off screen
@@ -341,10 +366,10 @@ a person. Four surfaces carry that, and each one restates page content:
 
 | Surface | What it holds | Keep in sync with |
 |---|---|---|
-| JSON-LD `@graph` in `<head>` | `ScholarlyArticle` (abstract, keywords, `sameAs` arXiv and DOI, `isBasedOn` the two datasets), `SoftwareSourceCode`, two `Dataset`s, three `Person`s by ORCID, and a `FAQPage` | The five FAQ answers must stay **visible** on the page — the three key-finding cards and §02 — or they break Google's structured-data policy. Update an answer whenever its card or number changes. |
+| JSON-LD `@graph` at the end of `<body>` | `ScholarlyArticle` (abstract, keywords, `sameAs` arXiv and DOI, `isBasedOn` the two datasets, `dateModified`), `SoftwareSourceCode`, two `Dataset`s (with `identifier`, `license`, `isAccessibleForFree` and `includedInDataCatalog` Zenodo / Mendeley Data; DS03 also its `version`), three `Person`s by ORCID | Every statement restates something visible on the page. There is **no `FAQPage`, on purpose**: Google's policy requires FAQ markup to match questions and answers shown as such on the page, and the key-finding cards are not an FAQ. Do not add one back; `make site-check` fails if one appears, and also if an `{"@id": …}` reference points at no node of the graph. |
 | `citation_*` meta tags | Google Scholar's reading of the paper: title, authors with ORCID, dates, arXiv id, DOI, PDF URL | Section 2 (title) and the author list |
 | `llms.txt` | A plain-text summary for language models (llmstxt.org format) with the key numbers and links to the Markdown docs, which Pages serves as `text/markdown` | Section 3 numbers; the doc list when a `docs/*.md` file is added or renamed |
-| `sitemap.xml`, `robots.txt` | The page, the PDF, `llms.txt` and the Markdown docs, with `lastmod` | Bump `lastmod` when the page or the PDF changes |
+| `sitemap.xml`, `robots.txt` | The page, the PDF, `llms.txt` and the Markdown docs, with `lastmod` | Bump `lastmod` when the page or the PDF changes. The page's `lastmod`, the JSON-LD `dateModified`, `<meta property="article:modified_time">` and the footer `<time datetime>` move together: `make site-check` fails unless their dates agree. |
 
 **Search Console.** The URL-prefix property `https://ostertagmatthieu-dev.github.io/saac-jepa/` is
 verified by the `google-site-verification` meta tag in `<head>`; removing the tag unverifies it.
@@ -356,7 +381,9 @@ Bing Webmaster Tools imports the property from Search Console.
 To make them effective, create that repository with a `robots.txt` that names this sitemap,
 or submit the sitemap directly in Google Search Console and Bing Webmaster Tools.
 
-**Check after any edit of `<head>`:**
+**Check after any edit of `<head>` or the JSON-LD.** The JSON-LD sits at the end of `<body>`,
+after the loader; the regex below finds it wherever it is. `make site-check` runs the same
+parse, plus the `FAQPage` and `@id` checks above:
 
 ```sh
 python3 - <<'PY'
@@ -369,3 +396,138 @@ PY
 
 Then paste the live URL into <https://search.google.com/test/rich-results> and
 <https://validator.schema.org/>.
+
+---
+
+## 6. Performance, security and platform limits
+
+### What `make site` generates
+
+`tools/site/build.py` reads `main.js`, `styles.css` and `fonts/fonts.lock.json` and writes:
+
+| Output | Contents |
+|---|---|
+| `main.min.js` | `main.js` minified, under a one-line "do not edit" banner. |
+| `index.html`, `<!-- build:csp -->` | The Content-Security-Policy `<meta>`, directly after `<meta charset>`. |
+| `index.html`, `<!-- build:css -->` | `<link rel="preload">` for the two fonts of the largest text above the fold (SAAC Display 700 for the title, SAAC Serif for the deck), then one `<style>` holding `fonts/faces.css` (re-rendered from the lock with `fonts/` in front of each file name) and `styles.css`, both minified. |
+| `index.html`, `<!-- build:loader -->` | One line of inline script at the end of `<body>`, above the JSON-LD: it loads `main.min.js?v=<first 8 hex of its sha256>` once everything above it is parsed. |
+| `404.html`, `<!-- build:csp -->` | That page's own CSP, with the hash of its inline `<style>`. |
+
+Nothing outside the marked regions is ever rewritten. The page arrives as one HTML response
+that carries all its CSS: no stylesheet request blocks the first paint, and the fonts start
+downloading from the preload links before the CSS is even parsed. The `?v=` value changes
+whenever `main.min.js` does, which matters because Pages caches every file for ten minutes
+(below).
+
+The minifiers (`rcssmin`, `rjsmin`) are pinned to exact versions in the script header and
+locked in `tools/site/build.py.lock`; the build always uses their pure-Python implementation,
+so a Mac and CI produce the same bytes, and two runs of `make site` produce identical files.
+`make site` writes first and then runs the checks below; it exits 1 if one fails, so it succeeds
+exactly when `make site-check` would. `make site-check` writes nothing and fails when an output
+is stale or a check fails:
+
+- each marker pair appears exactly once, the CSP region directly follows `<meta charset>`, and
+  the loader sits after the footer and before the JSON-LD;
+- the three BibTeX copies agree line by line (Section 2);
+- the JSON-LD parses, holds no `FAQPage`, and every `{"@id": …}` reference resolves (Section 5);
+- the four "last modified" dates agree (Section 5);
+- no generated region contains a Section 3 headline number;
+- `fonts/` matches its lock, covers every character the page uses, and stays under the size cap.
+
+### Content-Security-Policy and Trusted Types
+
+GitHub Pages cannot send response headers, so the policy is a `<meta http-equiv>`. A `<meta>`
+policy governs only what comes after it, which is why it must stay the first element after
+`<meta charset>`. What it allows:
+
+- **Scripts:** only the loader, identified by its sha256 hash, and the one script it inserts
+  (`'strict-dynamic'` passes trust to scripts a trusted script creates). `https:` and
+  `'unsafe-inline'` are fallbacks for browsers older than CSP 3; current browsers ignore both
+  once a hash is present. The JSON-LD block is data (`type="application/ld+json"`), not script,
+  and is not affected.
+- **Everything else:** same origin only — styles, fonts, images, `fetch`. No plugins
+  (`object-src 'none'`), no `<base>` (`base-uri 'none'`), no form submission
+  (`form-action 'none'`).
+- **Trusted Types:** `require-trusted-types-for 'script'` makes the browser refuse plain strings
+  at the DOM's script-injection sinks (`innerHTML`, `insertAdjacentHTML`, `document.write`,
+  `eval`, `new Function`, `setTimeout` with a string, `script.src`, …). `trusted-types saac`
+  allows exactly one policy, which the loader creates and which accepts exactly
+  `main.min.js?v=…`. `main.js` builds the page with `createElementNS`, `setAttribute`,
+  `classList` and `textContent`, none of which is a sink.
+
+The hashes are generated. Any edit of `main.js` changes `main.min.js`, hence the `?v=` value,
+the loader and the hash in the CSP; `make site` updates all four together, and `make site-check`
+catches a forgotten run. Never edit a hash by hand. Consequences for editors:
+
+- **Never add an inline `<script>` or an `on…=` attribute** (`onclick`, `onload`, …) or a
+  `javascript:` URL. The browser blocks them, and the only trace is a console error. Put code in
+  `main.js`, attach handlers with `addEventListener`, and run `make site`.
+- **Do not use `innerHTML` and the other sinks above in `main.js`.** Under Trusted Types they
+  throw. Build nodes and set `textContent`.
+- **Inline `style="…"` attributes are fine.** More than a hundred elements carry custom properties
+  that way, which is why `style-src` keeps `'unsafe-inline'`; adding a style hash or nonce would
+  switch `'unsafe-inline'` off and break them.
+- **Nothing loads from another origin today**, and the policy relies on that. An image must be a
+  file in `docs/` (`data:` URIs are blocked by `img-src 'self'`); a third-party font, embed,
+  iframe or API call needs a change to `index_csp()` in `tools/site/build.py`, made deliberately.
+- `404.html` has its own policy: no script at all, its `<style>` by hash. Edit that style, then
+  run `make site`.
+
+### Fonts
+
+`fonts/` holds four woff2 subsets, about 77 KiB together: SAAC Display 600 and 700 (Barlow
+Condensed), SAAC Serif (Source Serif 4) and SAAC Mono (JetBrains Mono), renamed as the OFL
+requires, plus fallback faces over fonts visitors already have, scaled so the swap to the web
+font moves no text. `fonts/README.md` records sources, modifications and licences. Each subset
+keeps Basic Latin, Latin-1, general punctuation, the simple arrows and the minus sign, plus every
+other character the page uses (text in `index.html`, string literals in `main.js`, CSS
+`content:`), so ordinary copy edits need no rebuild.
+
+Run `make fonts` when an edit brings in a character outside a subset: a Greek letter, a math
+symbol, an accented capital. `make site` and `make site-check` then fail with "the page uses N
+character(s) its source font has but the subset lacks". `make fonts` downloads the pinned
+upstream files the first time (each checked against its sha256, cached under
+`~/.cache/saac-jepa-fonts`), rewrites the woff2 files, `faces.css`, `fonts.lock.json` and
+`fonts/README.md`, and stops if the four files together exceed the 120,000-byte cap. Then run
+`make site`, because the inline CSS comes from the lock. Never edit `faces.css` by hand; its
+`url()`s are relative to `fonts/`, so a scratch page can link it (the `og.png` recipe does).
+
+### GitHub Pages limits
+
+These come from the host and cannot be fixed in this repository; only a move to another host,
+or a CDN in front of Pages, would change them:
+
+- **Every file is served with `Cache-Control: max-age=600`.** Fonts and `main.min.js` cannot be
+  cached as immutable. The `?v=` value makes a new page fetch the new script at once (a page
+  cached before the change may still pull the newer script, as Pages ignores the query
+  string); after ten minutes the browser revalidates the fonts, usually with a cheap `304`.
+- **HSTS without `includeSubDomains` or `preload`.** The header is GitHub's, and so is the
+  decision.
+- **No `Cross-Origin-Opener-Policy`** (or any other cross-origin isolation header).
+- **No `X-Frame-Options`, and `frame-ancestors` is ignored in a `<meta>` CSP**, so any site can
+  frame the page. The page has no action a framing site could trick a visitor into.
+- **CSP only through `<meta>`:** no reporting (`report-uri` and `report-to` are ignored there,
+  so a violation shows only in the visitor's console), no `sandbox`, no `frame-ancestors`.
+
+### WebMCP
+
+Section 10 of `main.js` offers three read-only tools to in-browser agents through WebMCP
+(`document.modelContext` or `navigator.modelContext`): `get_citation` returns
+`CONFIG.bibtex`, `get_links` the arXiv, DOI, PDF, code and demo links plus `CONFIG.datasets`,
+and `get_key_results` every element carrying `data-k` (key), `data-k-label` (description) and
+its visible text (value). A new headline number reaches the tool once its element has those two
+attributes. Browsers without WebMCP skip the block.
+
+Chrome ships WebMCP as an origin trial (the trial page lists the Chrome versions it covers and
+when the token expires). To switch it on
+for visitors, register at <https://developer.chrome.com/origintrials> for the origin
+`https://ostertagmatthieu-dev.github.io` (one token covers every Pages site under that origin),
+then add the token to `<head>`, next to the `google-site-verification` tag and outside every
+build region:
+
+```html
+<meta http-equiv="origin-trial" content="TOKEN">
+```
+
+No rebuild is needed for that line, but run `make site-check` before pushing. The token expires
+with the trial; remove the tag then.

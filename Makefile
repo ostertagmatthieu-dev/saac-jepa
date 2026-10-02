@@ -2,9 +2,9 @@ PY ?= python
 UV ?= uv
 RUFF ?= uvx ruff@0.14.0
 SYNTH := data/synthetic_ds01_ds03.csv
-FORMAT_PATHS := src/cncjepa/__init__.py tests/conftest.py tests/test_smoke.py tests/test_version.py replicate/predict.py replicate/fetch_weights.py
+FORMAT_PATHS := src/cncjepa/__init__.py tests/conftest.py tests/test_smoke.py tests/test_version.py replicate/predict.py replicate/fetch_weights.py tools/site/build.py tools/site/fonts.py
 
-.PHONY: help setup data-synth smoke test test-fast lint format-check review reproduce-dry figures-zip clean
+.PHONY: help setup data-synth smoke test test-fast lint format-check review reproduce-dry figures-zip site site-check fonts clean
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*## ' $(MAKEFILE_LIST) | sed 's/:.*## /\t/'
@@ -43,6 +43,15 @@ reproduce-dry: ## Dry-run the full reproduction pipeline
 
 figures-zip: ## Package the paper's TikZ figures into zip archives
 	cd paper/figures && zip -q ../figures_meta_tikz_en.zip meta_style.tex fig?_*_en.tex && zip -q ../figures_meta_tikz.zip meta_style.tex $$(ls fig?_*.tex | grep -v _en)
+
+site: ## Rebuild the generated parts of the project page (docs/main.min.js, inline CSS, CSP, loader)
+	$(UV) run --locked --script tools/site/build.py
+
+site-check: ## Fail if the generated parts of the project page are stale or the page is inconsistent
+	$(UV) run --locked --script tools/site/build.py --check
+
+fonts: ## Rebuild the webfont subsets in docs/fonts/ from pinned upstream sources (network on first run)
+	$(UV) run --locked --script tools/site/fonts.py build
 
 clean: ## Remove generated artifacts and caches
 	rm -rf outputs/smoke_pre outputs/smoke_ft outputs/smoke_eval.json $(SYNTH) .pytest_cache .ruff_cache paper/figures_meta_tikz*.zip dist build

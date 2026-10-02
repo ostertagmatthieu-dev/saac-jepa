@@ -1,0 +1,9 @@
+# The site build hashes and byte-compares these files (tools/site/build.py --check):
+# keep them LF on every checkout so a Windows autocrlf clone does not look stale.
+docs/*.html text eol=lf
+docs/*.css text eol=lf
+docs/*.js text eol=lf
+docs/fonts/*.css text eol=lf
+docs/fonts/*.json text eol=lf
+README.md text eol=lf
+*.woff2 binary
