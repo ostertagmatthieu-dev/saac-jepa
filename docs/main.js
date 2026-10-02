@@ -607,19 +607,29 @@ function periodic(rand, n) {
     regions.forEach(function (n) { markRegion(n, true); });
     return;
   }
-  /* The callback runs after layout, so reading the sizes costs nothing; all
+  /* The callback runs after layout, so reading the sizes is normally free; all
      reads come before any write so the attribute changes cannot force a second
      layout. The content is observed too, since a late font can widen it while
-     the box keeps its size. */
-  const ro = new ResizeObserver(function () {
-    const flags = [];
-    regions.forEach(function (n) { flags.push(n.scrollWidth > n.clientWidth); });
-    regions.forEach(function (n, i) { markRegion(n, flags[i]); });
-  });
-  regions.forEach(function (n) {
-    ro.observe(n);
-    if (n.firstElementChild) ro.observe(n.firstElementChild);
-  });
+     the box keeps its size. Watching starts once the page has loaded and gone
+     idle: during load, other observers and the font swap keep invalidating
+     layout, and a read in that window would force one. */
+  function watch() {
+    const ro = new ResizeObserver(function () {
+      const flags = [];
+      regions.forEach(function (n) { flags.push(n.scrollWidth > n.clientWidth); });
+      regions.forEach(function (n, i) { markRegion(n, flags[i]); });
+    });
+    regions.forEach(function (n) {
+      ro.observe(n);
+      if (n.firstElementChild) ro.observe(n.firstElementChild);
+    });
+  }
+  function whenIdle() {
+    if ("requestIdleCallback" in window) requestIdleCallback(watch, { timeout: 2000 });
+    else setTimeout(watch, 200);
+  }
+  if (document.readyState === "complete") whenIdle();
+  else window.addEventListener("load", whenIdle);
 })();
 
 /* ======================================================================== */
