@@ -181,6 +181,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 
+- `third_party/cnc_adapter/predict_cnc.py`, the prediction harness for the official PatchTST,
+  iTransformer and SimMTM baselines, was the one `torch.load` left outside the
+  `torch_load_checkpoint` sweep, and it passed `weights_only=False` outright. It now goes
+  through the same door. Nothing it reads needs more: the only file it loads is the
+  `checkpoint.pth` that each repository's `EarlyStopping` writes as a bare
+  `model.state_dict()`, and all three, built from the arguments
+  `scripts/66_run_official_baselines.py` passes, load identically under `weights_only=True` on
+  torch 2.3.1 and 2.14.1. The harness puts `src/` on its own `sys.path`, since script 66 can
+  run it under a `--python` that does not have the package installed.
+
 - The project page carries a Content-Security-Policy (as a `<meta>`, since GitHub Pages sends no
   custom headers) with Trusted Types: the only script allowed is a hashed one-line loader, which
   inserts `main.min.js` through the single permitted policy; everything else is same-origin, with

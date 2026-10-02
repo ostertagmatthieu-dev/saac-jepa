@@ -34,8 +34,12 @@ from torch.utils.data import DataLoader
 
 sys.path.insert(0, str(Path.cwd()))  # repo modules (models/, layers/, utils/)
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))  # cnc_adapter package
+# cncjepa by path, not by install: script 66's --python may name an env without it. The
+# only package under src/ is cncjepa, so this cannot shadow the repo's utils/layers/models.
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
 
 from cnc_adapter.cnc_dataset import Dataset_CNC  # noqa: E402
+from cncjepa.utils import torch_load_checkpoint  # noqa: E402
 
 
 def build_model(kind, cfg):
@@ -94,8 +98,9 @@ def main():
                           else a.device)
     model = build_model(a.kind, cfg)
     if not a.smoke:
-        state = torch.load(a.ckpt, map_location="cpu", weights_only=False)
-        # All three repos' EarlyStopping saves a bare state_dict. SimMTM's PRETRAIN
+        state = torch_load_checkpoint(a.ckpt, map_location="cpu")
+        # All three repos' EarlyStopping saves a bare state_dict -- an OrderedDict of
+        # tensors, which the weights_only=True loader accepts as is. SimMTM's PRETRAIN
         # checkpoint is wrapped as {'epoch', 'model_state_dict'}, but that one is loaded
         # by the repo's own transfer_weights() during fine-tuning, never here. Unwrap the
         # known wrappers anyway, and load strictly so a silent key mismatch is impossible.
