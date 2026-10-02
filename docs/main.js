@@ -8,7 +8,6 @@ const CONFIG = {
   // arXiv button and in #arxivNote, so the page still points at arXiv with JS off.
   // The PDF button is a plain relative link to paper.pdf and is not driven by CONFIG.
   arxivUrl: "https://doi.org/10.48550/arXiv.2609.16071",
-  arxivPlaceholder: "arXiv: coming soon",
   codeUrl: "https://github.com/ostertagmatthieu-dev/saac-jepa",
   // index.html carries the SAME BibTeX as static text inside #bibtex, so the page
   // works with JavaScript off. Edit BOTH, or the two will drift. See UPDATING.md.
@@ -23,11 +22,28 @@ const CONFIG = {
     "  doi           = {10.48550/arXiv.2609.16071},",
     "  url           = {https://arxiv.org/abs/2609.16071}",
     "}"
-  ].join("\n")
+  ].join("\n"),
+  datasets: [
+    "https://doi.org/10.5281/zenodo.14094887",
+    "https://doi.org/10.17632/gtvvwmz7r7.2"
+  ]
 };
 
 const SVGNS = "http://www.w3.org/2000/svg";
-const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const reducedQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+let reduced = reducedQuery.matches;
+/* set by the "Pause animations" button (WCAG 2.2.2), read by the hero loop */
+let userPaused = false;
+
+/* Sections that must react when the visitor flips the OS reduced-motion setting
+   register here. Listeners run in registration order, so the first one below
+   updates "reduced" before any section reads it. Older Safari only has
+   addListener. */
+function onReducedChange(fn) {
+  if (reducedQuery.addEventListener) reducedQuery.addEventListener("change", fn);
+  else if (reducedQuery.addListener) reducedQuery.addListener(fn);
+}
+onReducedChange(function () { reduced = reducedQuery.matches; });
 
 function el(tag, attrs, parent) {
   const n = document.createElementNS(SVGNS, tag);
@@ -82,7 +98,6 @@ function periodic(rand, n) {
   const TOP = 52, BOT = 240;
   const LANES = 21;              // 17 sensors + 4 command channels
   const pitch = (BOT - TOP) / (LANES - 1);
-  const rand = mulberry32(20260906);
 
   /* the four amber command lanes, evenly spread through the stack */
   const actSet = new Set([4, 9, 14, 19]);
@@ -103,68 +118,94 @@ function periodic(rand, n) {
     }
     return d;
   }
+  /* Returns the path data and its exact length. The lane only has horizontal
+     and vertical runs: the horizontal ones add up to one tile width, and the
+     vertical ones are the level changes, summed from the same 2-decimal values
+     written into d. That avoids measuring the path in the DOM, which would
+     force a layout. */
   function stepPath(y, amp, seed, segs) {
     const r = mulberry32(seed);
     const lv = [];
     for (let i = 0; i < segs; i++) lv.push((Math.round(r() * 3) / 3) * 2 - 1);
-    let d = "M0 " + (y + lv[0] * amp).toFixed(2);
+    const ys = lv.map(function (l) { return (y + l * amp).toFixed(2); });
+    let d = "M0 " + ys[0];
+    let len = W;
     for (let k = 0; k < segs; k++) {
       const x = ((k + 1) * W) / segs;
-      const cur = lv[k % segs], nxt = lv[(k + 1) % segs];
-      d += "L" + x.toFixed(1) + " " + (y + cur * amp).toFixed(2);
-      d += "L" + x.toFixed(1) + " " + (y + nxt * amp).toFixed(2);
+      const nk = (k + 1) % segs;
+      d += "L" + x.toFixed(1) + " " + ys[k];
+      d += "L" + x.toFixed(1) + " " + ys[nk];
+      len += Math.abs(Number(ys[nk]) - Number(ys[k]));
     }
-    return d;
+    return { d: d, len: len };
   }
 
   const geom = [];
   for (let i = 0; i < LANES; i++) {
     const y = TOP + i * pitch;
     const isAct = actSet.has(i);                   // four amber command lanes
+    const step = isAct ? stepPath(y, 2.8, 900 + i, 7) : null;
     geom.push({
       y, isAct,
-      d: isAct ? stepPath(y, 2.8, 900 + i, 7) : tracePath(y, 3.0, 100 + i),
+      d: isAct ? step.d : tracePath(y, 3.0, 100 + i),
+      len: isAct ? step.len : 0,
       absent: !isAct && absentSet.has(i)
     });
   }
 
   function paint(group, filter) {
-    geom.forEach(function (g) {
-      if (!filter(g)) return;
-      const p = el("path", {
-        class: "strip__trace" + (g.isAct ? " strip__trace--act" : ""),
-        d: g.d
+    const lanes = geom.filter(filter);
+    /* Every plain trace is a self-contained "M…" subpath, so one <path> draws
+       them all and the strip needs a fraction of the DOM nodes. The lanes are
+       further apart than their amplitude, so nothing overlaps. */
+    const plain = lanes.filter(function (g) { return !g.isAct; });
+    if (plain.length) {
+      el("path", {
+        class: "strip__trace",
+        d: plain.map(function (g) { return g.d; }).join("")
       }, group);
-      if (g.isAct) {
-        /* A tile restarts the dash phase at every seam, so round the 6/3 dash
-           period to an exact divisor of this lane's length — the dashes then
-           line up across tile boundaries. */
-        const L = p.getTotalLength();
-        const n = Math.max(1, Math.round(L / 9));
-        p.style.strokeDasharray =
-          ((L / n) * (2 / 3)).toFixed(3) + " " + ((L / n) / 3).toFixed(3);
-      }
+    }
+    /* Command lanes keep their own <path>, since pathLength is per element. A
+       tile restarts the dash phase at every seam, so pathLength is a whole
+       number of 9-unit dash periods (the CSS 6 3 pattern): the browser scales
+       the dashes to fit the lane exactly and they line up across tile
+       boundaries. */
+    lanes.forEach(function (g) {
+      if (!g.isAct) return;
+      el("path", {
+        class: "strip__trace strip__trace--act",
+        d: g.d,
+        pathLength: 9 * Math.max(1, Math.round(g.len / 9))
+      }, group);
     });
   }
   paint(srcFlow, function () { return true; });
   paint(tgtFlow, function (g) { return !g.absent; });
   paint(tgtFade, function (g) { return g.absent; });
-  geom.forEach(function (g) {
-    if (!g.absent) return;
-    el("path", { class: "strip__trace strip__trace--flat", d: "M660 " + g.y + " H 1064" }, tgtAbs);
-  });
+  /* the seven flat "absent" lines are one path as well */
+  if (tgtAbs) {
+    el("path", {
+      class: "strip__trace strip__trace--flat",
+      d: geom.filter(function (g) { return g.absent; }).map(function (g) {
+        return "M660 " + g.y + " H 1064";
+      }).join("")
+    }, tgtAbs);
+  }
 
   /* scroll: slide the three pattern tilings, one attribute per panel per frame */
   const tilings = ["srcPat", "tgtPat", "tgtFadePat"]
     .map(function (id) { return document.getElementById(id); })
     .filter(Boolean);
-  let t0 = null, raf = null, running = false;
+  let t0 = null, raf = null, running = false, elapsed = 0;
   const SPEED = 26; // px per second
 
+  /* elapsed survives a pause, so the strip resumes where it stopped instead of
+     jumping back to its first frame in front of the visitor */
   function frame(ts) {
     if (!running) return;
-    if (t0 === null) t0 = ts;
-    const off = -(((ts - t0) / 1000) * SPEED % W);
+    if (t0 === null) t0 = ts - elapsed;
+    elapsed = ts - t0;
+    const off = -((elapsed / 1000) * SPEED % W);
     for (let i = 0; i < tilings.length; i++) {
       tilings[i].setAttribute("patternTransform", "translate(" + off.toFixed(2) + ",0)");
     }
@@ -181,11 +222,12 @@ function periodic(rand, n) {
   }
 
   /* The loop costs a full repaint per frame, so it runs only while the strip is
-     BOTH on screen and in a visible tab. Without IntersectionObserver we fall
-     back to assuming it is on screen and rely on visibility alone. */
+     on screen, in a visible tab, not paused by the visitor and not under reduced
+     motion. Without IntersectionObserver we fall back to assuming it is on
+     screen and rely on the other conditions alone. */
   let onScreen = !("IntersectionObserver" in window);
   let pageVisible = !document.hidden;
-  function sync() { (onScreen && pageVisible) ? start() : stop(); }
+  function sync() { (onScreen && pageVisible && !userPaused && !reduced) ? start() : stop(); }
 
   if ("IntersectionObserver" in window) {
     new IntersectionObserver(function (es) {
@@ -195,6 +237,25 @@ function periodic(rand, n) {
   }
   document.addEventListener("visibilitychange", function () {
     pageVisible = !document.hidden;
+    sync();
+  });
+
+  /* Pause control for motion that runs longer than five seconds (WCAG 2.2.2).
+     The button ships hidden and only appears when there is motion to pause;
+     the motion-paused class on <html> stops the CSS animations, and sync()
+     stops the scrolling loop. */
+  const motion = document.getElementById("motionToggle");
+  if (motion) {
+    motion.hidden = reduced;
+    motion.addEventListener("click", function () {
+      userPaused = !userPaused;
+      motion.setAttribute("aria-pressed", userPaused ? "true" : "false");
+      document.documentElement.classList.toggle("motion-paused", userPaused);
+      sync();
+    });
+  }
+  onReducedChange(function () {
+    if (motion) motion.hidden = reduced;
     sync();
   });
   sync();
@@ -360,13 +421,18 @@ function periodic(rand, n) {
 /* ======================================================================== */
 (function playback() {
   const figs = document.querySelectorAll("[data-fig]");
+  const replays = document.querySelectorAll("[data-replay]");
+  if (!figs.length && !replays.length) return;
   const liveTimers = new Map();
   function play(fig) {
     if (reduced) return;                       // final static state already rendered
     const svg = fig.querySelector("svg");
     if (!svg) return;
+    /* Only a restart needs a reflow between dropping and re-adding the class;
+       the first play has nothing to restart. */
+    const replaying = svg.classList.contains("is-playing");
     svg.classList.remove("is-playing", "is-live");
-    void svg.getBoundingClientRect();          // force reflow so the animation restarts
+    if (replaying) void svg.getBoundingClientRect();
     svg.classList.add("is-playing");
     /* Fig. 1 keeps a slow data flow along its wires once it has been built */
     if (fig.getAttribute("data-fig") === "f1") {
@@ -382,12 +448,17 @@ function periodic(rand, n) {
     }, { threshold: 0.25 });
     figs.forEach(function (f) { io.observe(f); });
   }
-  document.querySelectorAll("[data-replay]").forEach(function (btn) {
+  /* With reduced motion there is nothing to replay, so the buttons are hidden
+     rather than left disabled. */
+  replays.forEach(function (btn) {
     btn.addEventListener("click", function () {
       const fig = document.querySelector('[data-fig="' + btn.getAttribute("data-replay") + '"]');
       if (fig) play(fig);
     });
-    if (reduced) { btn.disabled = true; btn.title = "Animation disabled by your reduced-motion setting"; }
+    btn.hidden = reduced;
+  });
+  onReducedChange(function () {
+    replays.forEach(function (btn) { btn.hidden = reduced; });
   });
 })();
 
@@ -418,26 +489,54 @@ function periodic(rand, n) {
 /* ======================================================================== */
 /* 7. SCROLL REVEAL — sections, findings, charts                            */
 /* ======================================================================== */
-/* CSS hides [data-reveal] content only under html.js; this adds .is-in once the
-   element scrolls into view. Reduced motion or no observer: show everything. */
+/* CSS hides [data-reveal] content only under html.reveal-on, a class this block
+   adds itself once the observer has reported the first batch. That way nothing
+   is hidden unless the page can reveal it: the items already on screen (or
+   above it, after a jump to an anchor) get .is-in in that same batch and never
+   flash, and the ones below are hidden before anyone sees them. Reduced motion,
+   a hidden tab, an automated browser, no observer or any error: the class is
+   never added and everything stays visible. */
 (function reveal() {
   const items = document.querySelectorAll("[data-reveal]");
+  if (!items.length) return;
   /* Nobody watches a page loaded hidden (background tab, crawler, headless
-     renderer), and an observer may never fire there: show it final at once. */
-  if (reduced || document.hidden || navigator.webdriver || !("IntersectionObserver" in window)) {
-    items.forEach(function (n) { n.classList.add("is-in"); });
-    return;
-  }
-  const io = new IntersectionObserver(function (entries) {
-    entries.forEach(function (e) {
-      if (e.isIntersecting) { e.target.classList.add("is-in"); io.unobserve(e.target); }
+     renderer), and an observer may never fire there: leave it all visible. */
+  if (reduced || document.hidden || navigator.webdriver || !("IntersectionObserver" in window)) return;
+  try {
+    let armed = false;
+    /* The first batch describes what is already painted. The -8% bottom margin
+       would leave an item that starts in the last strip of the viewport out of
+       it, and arming would then fade that visible item away, so on that batch
+       anything starting above the viewport's bottom edge counts as seen. */
+    const io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        const seen = !armed && e.boundingClientRect.top < window.innerHeight;
+        if (e.isIntersecting || e.boundingClientRect.bottom < 0 || seen) {
+          e.target.classList.add("is-in");
+          io.unobserve(e.target);
+        }
+      });
+      if (!armed) {
+        armed = true;
+        document.documentElement.classList.add("reveal-on");
+      }
+    }, { threshold: 0, rootMargin: "0px 0px -8% 0px" });
+    items.forEach(function (n) { io.observe(n); });
+    /* An anchor present at load is covered by the first batch. A later jump
+       (the Cite button, a link to a section) skips the items in between without
+       them ever intersecting, so reveal whatever now lies above the viewport.
+       A print shows everything. */
+    window.addEventListener("hashchange", function () {
+      items.forEach(function (n) {
+        if (n.getBoundingClientRect().bottom < 0) { n.classList.add("is-in"); io.unobserve(n); }
+      });
     });
-  }, { threshold: 0, rootMargin: "0px 0px -8% 0px" });
-  items.forEach(function (n) { io.observe(n); });
-  /* a jump to an anchor or a print must never leave content hidden */
-  window.addEventListener("beforeprint", function () {
-    items.forEach(function (n) { n.classList.add("is-in"); });
-  });
+    window.addEventListener("beforeprint", function () {
+      items.forEach(function (n) { n.classList.add("is-in"); });
+    });
+  } catch (err) {
+    /* never armed: the content stays visible */
+  }
 })();
 
 /* ======================================================================== */
@@ -450,42 +549,156 @@ function periodic(rand, n) {
      — i.e. once CONFIG carries something the static block does not. */
   if (bib && CONFIG.arxivUrl) bib.textContent = CONFIG.bibtex;
 
-  const code = document.getElementById("btnCode");
-  if (code) code.href = CONFIG.codeUrl;
-
-  const note = document.getElementById("arxivNote");
-  /* The PDF button is a real relative link to docs/paper.pdf and is left alone.
-     Only the arXiv button follows CONFIG.arxivUrl. index.html ships the muted
-     "soon" state, so with JS off the button never over-promises. */
-  const ax = document.getElementById("btnArxiv");
-  if (ax && CONFIG.arxivUrl) {
-    ax.href = CONFIG.arxivUrl;
-    ax.classList.remove("btn--muted");
-    ax.removeAttribute("aria-disabled");
-    const lbl = ax.querySelector(".btn__label");
-    if (lbl) lbl.textContent = "arXiv"; else ax.textContent = "arXiv";
-  }
-  if (note) note.textContent = CONFIG.arxivUrl ? CONFIG.arxivUrl : CONFIG.arxivPlaceholder;
-
   const copy = document.getElementById("copyBib");
   const status = document.getElementById("copyStatus");
+  let statusTimer = null;
   if (copy) copy.addEventListener("click", function () {
-    /* The button label stays "Copy" so its accessible name never changes
+    /* The button label stays "Copy BibTeX" so its accessible name never changes
        underneath a screen reader; the outcome goes to the live region. */
-    const done = function (ok) {
+    const say = function (msg) {
       if (!status) return;
-      status.textContent = ok ? "Copied" : "Copy failed, select the text manually";
-      setTimeout(function () { status.textContent = ""; }, 4000);
+      clearTimeout(statusTimer);
+      /* Emptying the region first and writing the message a moment later makes
+         a screen reader announce it again even when the text has not changed. */
+      status.textContent = "";
+      statusTimer = setTimeout(function () {
+        status.textContent = msg;
+        statusTimer = setTimeout(function () { status.textContent = ""; }, 4000);
+      }, 50);
     };
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(CONFIG.bibtex).then(function () { done(true); }, function () { done(false); });
-    } else if (bib) {
+    /* Fallback when the clipboard is unavailable or refuses: select the block
+       so the visitor can copy it with the keyboard. */
+    const select = function () {
+      if (!bib) { say("Copy failed"); return; }
       const r = document.createRange();
       r.selectNodeContents(bib);
       const s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
-      done(false);
+      say("BibTeX selected, press Ctrl+C (Cmd+C on a Mac) to copy");
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(CONFIG.bibtex).then(function () { say("BibTeX copied to the clipboard"); }, select);
     } else {
-      done(false);
+      select();
     }
+  });
+})();
+
+/* ======================================================================== */
+/* 9. SCROLL REGIONS — keyboard access to wide content                      */
+/* ======================================================================== */
+/* A box that scrolls sideways is out of reach of the keyboard unless it can take
+   focus. It becomes a named, focusable region only while its content really
+   overflows, so a box that fits adds no extra tab stop. */
+(function scrollRegions() {
+  const regions = document.querySelectorAll("[data-scroll-region]");
+  if (!regions.length) return;
+  function markRegion(n, overflows) {
+    if (overflows) {
+      n.setAttribute("tabindex", "0");
+      n.setAttribute("role", "region");
+      n.setAttribute("aria-label", n.getAttribute("data-scroll-region"));
+    } else {
+      n.removeAttribute("tabindex");
+      n.removeAttribute("role");
+      n.removeAttribute("aria-label");
+    }
+  }
+  if (!("ResizeObserver" in window)) {
+    regions.forEach(function (n) { markRegion(n, true); });
+    return;
+  }
+  /* The callback runs after layout, so reading the sizes is normally free; all
+     reads come before any write so the attribute changes cannot force a second
+     layout. The content is observed too, since a late font can widen it while
+     the box keeps its size. Watching starts once the page has loaded and gone
+     idle: during load, other observers and the font swap keep invalidating
+     layout, and a read in that window would force one. */
+  function watch() {
+    const ro = new ResizeObserver(function () {
+      const flags = [];
+      regions.forEach(function (n) { flags.push(n.scrollWidth > n.clientWidth); });
+      regions.forEach(function (n, i) { markRegion(n, flags[i]); });
+    });
+    regions.forEach(function (n) {
+      ro.observe(n);
+      if (n.firstElementChild) ro.observe(n.firstElementChild);
+    });
+  }
+  function whenIdle() {
+    if ("requestIdleCallback" in window) requestIdleCallback(watch, { timeout: 2000 });
+    else setTimeout(watch, 200);
+  }
+  if (document.readyState === "complete") whenIdle();
+  else window.addEventListener("load", whenIdle);
+})();
+
+/* ======================================================================== */
+/* 10. WEBMCP — read-only tools for in-browser agents                       */
+/* ======================================================================== */
+/* Browsers that implement WebMCP let a page offer tools to an in-browser agent.
+   The three tools below only read what the page already shows. Everywhere else
+   this block does nothing. */
+(function webmcp() {
+  const mc = document.modelContext || navigator.modelContext;
+  if (!mc || typeof mc.registerTool !== "function") return;
+
+  const result = function (s) { return { content: [{ type: "text", text: s }] }; };
+  const links = function () {
+    /* the abstract page is the url field of the BibTeX; the arXiv button links the DOI */
+    const abs = /url\s*=\s*\{([^}]+)\}/.exec(CONFIG.bibtex);
+    const out = { arxiv: abs ? abs[1] : CONFIG.arxivUrl, doi: CONFIG.arxivUrl, code: CONFIG.codeUrl };
+    [["doi", "btnArxiv"], ["pdf", "btnPdf"], ["code", "btnCode"], ["demo", "btnDemo"]].forEach(function (p) {
+      const a = document.getElementById(p[1]);
+      const href = a && a.getAttribute("href");
+      if (href) out[p[0]] = new URL(href, location.href).href;
+    });
+    out.datasets = CONFIG.datasets;
+    return out;
+  };
+  const keyResults = function () {
+    const out = [];
+    document.querySelectorAll("[data-k]").forEach(function (n) {
+      out.push({
+        key: n.getAttribute("data-k"),
+        label: n.getAttribute("data-k-label") || "",
+        value: n.textContent.trim()
+      });
+    });
+    return out;
+  };
+  const schema = function () {
+    return { type: "object", properties: {}, additionalProperties: false };
+  };
+  /* A refused registration (older API shape, duplicate name) must never reach
+     the console, so both a throw and a rejected promise are swallowed. */
+  const register = function (tool) {
+    try {
+      const p = mc.registerTool(tool);
+      if (p && typeof p.then === "function") Promise.resolve(p).catch(function () {});
+    } catch (err) {
+      /* the page works the same without the tool */
+    }
+  };
+
+  register({
+    name: "get_citation",
+    description: "BibTeX entry for the paper World Models for Cross-Machine CNC Transfer under Partial Sensor Overlap (arXiv:2609.16071).",
+    inputSchema: schema(),
+    annotations: { readOnlyHint: true },
+    execute: function () { return Promise.resolve(result(CONFIG.bibtex)); }
+  });
+  register({
+    name: "get_links",
+    description: "Links for the paper: arXiv abstract, DOI, PDF, source code, demo and the two public datasets.",
+    inputSchema: schema(),
+    annotations: { readOnlyHint: true },
+    execute: function () { return Promise.resolve(result(JSON.stringify(links()))); }
+  });
+  register({
+    name: "get_key_results",
+    description: "Headline results shown on the page, as key, label and value.",
+    inputSchema: schema(),
+    annotations: { readOnlyHint: true },
+    execute: function () { return Promise.resolve(result(JSON.stringify(keyResults()))); }
   });
 })();

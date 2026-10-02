@@ -9,6 +9,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- A build for the project page, `tools/site/build.py` (`make site`; `make site-check` writes nothing
+  and fails when anything is stale). It inlines `docs/fonts/faces.css` and `docs/styles.css`,
+  minified, into one `<style>` in `docs/index.html`, minifies `docs/main.js` into
+  `docs/main.min.js`, loaded with a content-hash query string, and writes the Content-Security-Policy
+  with the loader's hash. Generated markup stays between `<!-- build:… -->` markers; `main.js` and
+  `styles.css` remain the hand-edited sources. The check also compares the three BibTeX copies,
+  validates the JSON-LD, and requires the four "last modified" dates to agree.
+- A `site` job in CI that runs `make site-check` and `node --check` on both scripts. The lint job
+  calls `make format-check`, so the list of formatted files lives only in the Makefile.
+- A "Pause animations" button under the hero strip that stops its scrolling loop and the CSS
+  animations (WCAG 2.2.2); it stays hidden when the visitor asks for reduced motion.
+- Three read-only WebMCP tools on the project page (`get_citation`, `get_links`,
+  `get_key_results`) for in-browser agents; browsers without WebMCP ignore them.
+- `docs/UPDATING.md` §6: the build, the security policy, the fonts pipeline, the GitHub Pages
+  limits and how to enable the WebMCP origin trial.
+
 - The locked model on Replicate, [ostertagmatthieu-dev/saac-jepa-world-model](https://replicate.com/ostertagmatthieu-dev/saac-jepa-world-model),
   packaged with Cog in `replicate/` and linked from a README badge, the `## Demo` section, the
   project-page footer and `docs/llms.txt`. It serves the same ONNX export as the Space on CPU. A
@@ -62,6 +78,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   rewriting `main`.
 
 ### Changed
+
+- The project page serves its own fonts instead of loading Google Fonts: four OFL subsets of
+  Barlow Condensed, Source Serif 4 and JetBrains Mono (about 77 KiB in all, against roughly
+  388 KiB before), renamed SAAC Display, SAAC Serif and SAAC Mono, with metric-matched fallback
+  faces so the swap moves no text. `tools/site/fonts.py` (`make fonts`) builds them reproducibly
+  from pinned upstream files, and the check fails when the page uses a character a subset lacks.
+- The page arrives as one HTML response with all its CSS inline; the two fonts of the
+  above-the-fold text are preloaded and `main.min.js` loads after the content is parsed.
+- Scroll reveals no longer hide content unless the script can reveal it: without JavaScript,
+  with reduced motion, in a background tab or in a crawler, everything is visible.
+- Structured data: the `FAQPage` is removed (Google requires FAQ markup to match questions and
+  answers shown as such, and the key-finding cards are not an FAQ), the two `Dataset` nodes gain
+  `identifier`, `isAccessibleForFree` and `includedInDataCatalog` (DS03 also `version`),
+  `dateModified` follows the page, and the JSON-LD block moves to the end of `<body>`.
+  `docs/UPDATING.md` §3 is re-baselined for the copies the FAQ answers held.
 
 - The project page no longer calls the pretraining objective a loss. Its four terms all contain a
   stop-gradient, so the weighted sum L_SSL was not a function whose gradient training follows. The
@@ -128,6 +159,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `docs/index.html` — Google Scholar `citation_arxiv_id`, the JSON-LD `identifier`, the
   static BibTeX copy, the arXiv button and the cite note). The three BibTeX copies now
   cite `url = {https://arxiv.org/abs/2609.16071}` instead of the project page.
+
+### Fixed
+
+- Accessibility of the project page: section numbers are hidden from screen readers so headings
+  read as their titles, the key-finding questions and boxed notes are headings, wide figures and
+  tables become focusable named regions only when they actually scroll, low-contrast text
+  colours are darkened, and "Copy BibTeX" reports its outcome through a live region.
+
+### Security
+
+- The project page carries a Content-Security-Policy (as a `<meta>`, since GitHub Pages sends no
+  custom headers) with Trusted Types: the only script allowed is a hashed one-line loader, which
+  inserts `main.min.js` through the single permitted policy; everything else is same-origin, with
+  no plugins, `<base>` or form submission. `docs/404.html` gets its own policy with no script.
 
 ## [0.1.0] - 2026-09-11
 
