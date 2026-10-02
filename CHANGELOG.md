@@ -185,6 +185,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   custom headers) with Trusted Types: the only script allowed is a hashed one-line loader, which
   inserts `main.min.js` through the single permitted policy; everything else is same-origin, with
   no plugins, `<base>` or form submission. `docs/404.html` gets its own policy with no script.
+- `uv.lock` pins `virtualenv` 21.7.13 (was 21.7.10), pulled in by `pre-commit` in the `dev` extra,
+  which fixes GHSA-p58f-9548-mpm2, GHSA-x78j-v8h9-3j2q, GHSA-94p9-xgh2-xp45 and
+  GHSA-9h9j-4vrj-gf7g (command injection in the activation scripts, unverified seed wheels,
+  configuration injection through the prompt).
 
 ## [0.1.0] - 2026-09-11
 
