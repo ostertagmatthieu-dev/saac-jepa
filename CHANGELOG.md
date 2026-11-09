@@ -203,6 +203,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Dependabot reported against the old pin. Pillow 13 needs Python 3.11, so the project drops
   Python 3.10, past its end of life since October 2026: `requires-python` is `>=3.11`, ruff targets
   `py311`, and CI tests 3.11 and 3.12.
+- `uv.lock` pins `certifi` 2026.10.23 (was 2026.7.22), `filelock` 4.2.9 (was 3.32.7), `setuptools`
+  84.2.1 (was 84.0.0) and `virtualenv` 21.15.6 (was 21.7.13), all transitive, which fixes the 30
+  advisories Dependabot reported against the old pins, among them GHSA-6q48-6c7w-9gw2 (`certifi`
+  bundled emSign root CAs with compromised intermediate keys). `virtualenv` brings
+  `python-discovery` 1.9.5 (was 1.6.0) with it.
 
 ## [0.1.0] - 2026-09-11
 
