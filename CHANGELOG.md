@@ -199,6 +199,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   which fixes GHSA-p58f-9548-mpm2, GHSA-x78j-v8h9-3j2q, GHSA-94p9-xgh2-xp45 and
   GHSA-9h9j-4vrj-gf7g (command injection in the activation scripts, unverified seed wheels,
   configuration injection through the prompt).
+- `uv.lock` pins Pillow 13.0.0 (was 12.3.0), pulled in by `matplotlib`, which fixes the 41 advisories
+  Dependabot reported against the old pin. Pillow 13 needs Python 3.11, so the project drops
+  Python 3.10, past its end of life since October 2026: `requires-python` is `>=3.11`, ruff targets
+  `py311`, and CI tests 3.11 and 3.12.
 
 ## [0.1.0] - 2026-09-11
 

@@ -11,7 +11,7 @@ A from-scratch PyTorch world model trained on one CNC machine (17 sensors) whose
   <a href="https://replicate.com/ostertagmatthieu-dev/saac-jepa-world-model"><img src="https://img.shields.io/badge/API-Replicate-000000" alt="API on Replicate"></a>
   <a href="https://ostertagmatthieu-dev.github.io/saac-jepa/paper.pdf"><img src="https://img.shields.io/badge/paper-PDF-b31b1b" alt="Paper PDF"></a>
   <a href="https://github.com/ostertagmatthieu-dev/saac-jepa/actions/workflows/ci.yml"><img src="https://github.com/ostertagmatthieu-dev/saac-jepa/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
-  <img src="https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-3776AB?logo=python&logoColor=white" alt="Python 3.10 | 3.11 | 3.12">
+  <img src="https://img.shields.io/badge/python-3.11%20%7C%203.12-3776AB?logo=python&logoColor=white" alt="Python 3.11 | 3.12">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green" alt="MIT licence"></a>
 </p>
 
